@@ -27,10 +27,6 @@ export class ExchangerService {
     console.log('exchangers: ', exchanger_types);
 
     for (const exchanger_type of exchanger_types) {
-//      if (exchanger_type !== ExchangerType.RAMSES) {
-//        continue;
-//      }
-
       try {
         const pools = await this.adaptersService.getPools(exchanger_type);
         console.log('Pools from exhanger: ', pools);
