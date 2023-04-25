@@ -4,6 +4,7 @@ import axios from 'axios';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { AdaptersService } from '../adapters.service';
+import { ChainType } from 'src/exchanger/models/inner/chain.type';
 
 @Injectable()
 export class VelodromeService {
@@ -39,6 +40,7 @@ export class VelodromeService {
             poolData.decimals = item.decimals;
             poolData.tvl = item.tvl;
             poolData.apr = item.apr;
+            poolData.chain = ChainType.OPTIMISM;
             pools.push(poolData);
             this.logger.log(`=========${ExchangerType.VELODROME}=========`);
             itemCount++;

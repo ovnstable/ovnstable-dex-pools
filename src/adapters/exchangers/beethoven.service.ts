@@ -3,6 +3,7 @@ import { PoolData } from './dto/pool.data.dto';
 import fetch from 'node-fetch';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
+import { ChainType } from '../../exchanger/models/inner/chain.type';
 
 @Injectable()
 export class BeethovenService {
@@ -43,6 +44,7 @@ export class BeethovenService {
           parseInt(token1.totalBalance) + parseInt(token2.totalBalance)
         ).toString();
         poolData.apr = (pool.dynamicData.apr.total * 100).toString();
+        poolData.chain = ChainType.OPTIMISM;
         pools.push(poolData);
         this.logger.log(`=========${ExchangerType.BEETHOVEN}=========`);
         itemCount++;

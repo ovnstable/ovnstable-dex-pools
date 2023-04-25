@@ -4,16 +4,16 @@ import axios from 'axios';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { AdaptersService } from '../adapters.service';
+import { ChainType } from '../../exchanger/models/inner/chain.type';
 
 @Injectable()
 export class RamsesService {
   private readonly logger = new Logger(RamsesService.name);
 
-  BASE_API_URL = 'https://velocore-api-v2.up.railway.app/api';
-  API_VERSION = 'v1';
+  BASE_API_URL = 'https://ramses-api-5msw7.ondigitalocean.app';
   METHOD_GET_PAIRS = 'pairs';
   async getPoolsData(): Promise<PoolData[]> {
-    const url = `${this.BASE_API_URL}/${this.API_VERSION}/${this.METHOD_GET_PAIRS}`;
+    const url = `${this.BASE_API_URL}/${this.METHOD_GET_PAIRS}`;
 
     const response = axios
       .get(url, {
@@ -21,9 +21,13 @@ export class RamsesService {
       })
       .then((data): PoolData[] => {
         const pools: PoolData[] = [];
-        const pairs = data.data.data;
+        const poolsData = data.data;
+        const keys = Object.keys(poolsData);
         let itemCount = 0;
-        pairs.forEach((item) => {
+        for (let i = 0; i < keys.length; i++) {
+          const property = keys[i];
+          const item = poolsData[property];
+          console.log(item);
           if (
             item &&
             item.symbol &&
@@ -32,11 +36,13 @@ export class RamsesService {
             )
           ) {
             const poolData: PoolData = new PoolData();
-            poolData.address = item.gauge_address;
+            poolData.address = item.pair_address;
             poolData.name = item.symbol;
             poolData.decimals = item.decimals;
             poolData.tvl = item.tvl;
             poolData.apr = item.lp_apr;
+            poolData.chain = ChainType.ARBITRUM;
+
             pools.push(poolData);
             this.logger.log(`=========${ExchangerType.RAMSES}=========`);
             itemCount++;
@@ -44,7 +50,7 @@ export class RamsesService {
             this.logger.log('Found ovn pool: ', poolData);
             this.logger.log('==================');
           }
-        });
+        }
 
         return pools;
       })

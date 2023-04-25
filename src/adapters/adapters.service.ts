@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Exchanger } from 'src/exchanger/models/entities/exchanger.entity';
 import { ExchangerType } from 'src/exchanger/models/inner/exchanger.type';
 import { BeethovenService } from './exchangers/beethoven.service';
 import { RamsesService } from './exchangers/ramses.service';
@@ -23,34 +22,28 @@ export class AdaptersService {
     private velodromService: VelodromeService,
     private wombatService: WombatService,
   ) {}
-  async getPools(exchanger: Exchanger): Promise<PoolData[]> {
-    if (exchanger.exchanger_type === ExchangerType.BEETHOVEN) {
+  async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
+    if (exchanger_type === ExchangerType.BEETHOVEN) {
       return await this.beethovenService.getPoolsData();
     }
-    if (exchanger.exchanger_type === ExchangerType.RAMSES) {
+    if (exchanger_type === ExchangerType.RAMSES) {
       return this.ramsesService.getPoolsData();
     }
-    if (exchanger.exchanger_type === ExchangerType.THENA) {
+    if (exchanger_type === ExchangerType.THENA) {
       return await this.thenaService.getPoolsData();
     }
-    if (exchanger.exchanger_type === ExchangerType.VELOCORE) {
+    if (exchanger_type === ExchangerType.VELOCORE) {
       return await this.velocoreService.getPoolsData();
     }
-    if (exchanger.exchanger_type === ExchangerType.VELODROME) {
+    if (exchanger_type === ExchangerType.VELODROME) {
       return await this.velodromService.getPoolsData();
     }
-    if (exchanger.exchanger_type === ExchangerType.WOMBAT) {
+    if (exchanger_type === ExchangerType.WOMBAT) {
       return await this.wombatService.getPoolsData();
     }
 
     this.logger.error(
-      `Error when get pools data. Exhange type not found: ${exchanger.exchanger_type}`,
+      `Error when get pools data. Exhange type not found: ${exchanger_type}`,
     );
   }
-
-  //  processPool(pool: Pool, exchanger: Exchanger) {
-  //    throw new Error('Method not implemented.');
-  //      console.log("Pool: ", pool)
-  //      console.log("Exchanger: ", pool)
-  //  }
 }

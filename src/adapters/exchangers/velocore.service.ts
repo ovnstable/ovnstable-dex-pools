@@ -4,6 +4,7 @@ import axios from 'axios';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { AdaptersService } from '../adapters.service';
+import { ChainType } from 'src/exchanger/models/inner/chain.type';
 
 @Injectable()
 export class VelocoreService {
@@ -37,6 +38,7 @@ export class VelocoreService {
             poolData.decimals = item.decimals;
             poolData.tvl = item.tvl;
             poolData.apr = item.apr;
+            poolData.chain = ChainType.ZKSYNK;
             pools.push(poolData);
             this.logger.log(`=========${ExchangerType.VELOCORE}=========`);
             itemCount++;

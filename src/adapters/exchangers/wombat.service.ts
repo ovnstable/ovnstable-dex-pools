@@ -4,6 +4,7 @@ import fetch from 'node-fetch';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { AdaptersService } from '../adapters.service';
+import { ChainType } from 'src/exchanger/models/inner/chain.type';
 
 @Injectable()
 export class WombatService {
@@ -48,6 +49,7 @@ export class WombatService {
             poolData.decimals = item.decimals;
             poolData.tvl = item.totalTradeVolumeUSD;
             poolData.apr = item.apr;
+            poolData.chain = ChainType.ARBITRUM;
             pools.push(poolData);
             this.logger.log(`=========${ExchangerType.WOMBAT}=========`);
             itemCount++;

@@ -9,16 +9,16 @@ export class PoolDto {
 
   tvl: string;
 
-  apr: string;
+  //  apr: string;
 
   updateDate: Date;
 
   constructor(pool: Pool) {
-    this.platform = pool.exchanger.exchanger_type;
+    this.platform = pool.platform;
     this.name = pool.name;
     this.address = pool.address;
     this.tvl = pool.tvl;
-    this.apr = pool.apr;
-    this.updateDate = pool.updated_at;
+    //    this.apr = pool.apr;
+    this.updateDate = pool.update_date;
   }
 }

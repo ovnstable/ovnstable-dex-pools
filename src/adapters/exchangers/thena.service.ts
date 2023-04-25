@@ -4,6 +4,7 @@ import axios from 'axios';
 import { ExchangerRequestError } from 'src/exceptions/exchanger.request.error';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { AdaptersService } from '../adapters.service';
+import { ChainType } from '../../exchanger/models/inner/chain.type';
 
 @Injectable()
 export class ThenaService {
@@ -37,6 +38,7 @@ export class ThenaService {
             poolData.decimals = item.decimals;
             poolData.tvl = item.tvl;
             poolData.apr = item.gauge.apr;
+            poolData.chain = ChainType.BSC;
             pools.push(poolData);
             this.logger.log(`========= ${ExchangerType.THENA} =========`);
             itemCount++;

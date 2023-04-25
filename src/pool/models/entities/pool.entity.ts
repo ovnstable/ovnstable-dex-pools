@@ -1,38 +1,38 @@
 import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-  ManyToOne,
-} from 'typeorm';
-import { Exchanger } from '../../../exchanger/models/entities/exchanger.entity';
+    Entity,
+    Column,
+    UpdateDateColumn,
+    PrimaryColumn
+} from "typeorm";
 
-@Entity('pools')
+@Entity({ schema: 'anal', name: 'pools' })
 export class Pool {
-  @PrimaryGeneratedColumn()
-  id: number;
 
-  @ManyToOne(() => Exchanger, (exchanger) => exchanger.pools)
-  exchanger: Exchanger;
+  @Column({ nullable: false })
+  platform: string;
 
   @Column({ nullable: false })
   name: string;
 
-  @Column({ nullable: false })
+  @PrimaryColumn()
+//  @Column({ nullable: false })
   address: string;
 
-  @Column({ default: 18, nullable: false })
-  decimals: number;
+//  @Column({ default: 18, nullable: false })
+//  decimals: number;
 
   @Column({ type: 'real' })
   tvl: string;
 
-  @Column({ type: 'real' })
-  apr: string;
+  @Column()
+  chain: string;
+
+//  @Column({ type: 'real' })
+//  apr: string;
 
   @Column({ default: true, nullable: false })
-  enable: boolean;
+  add_to_sync: boolean;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  update_date: Date;
 }

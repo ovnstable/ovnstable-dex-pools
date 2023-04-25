@@ -25,6 +25,10 @@ export class PoolData {
   @IsNotEmpty()
   apr: string;
 
+  @IsString()
+  @IsNotEmpty()
+  chain: string;
+
   @IsBoolean()
   @IsNotEmpty()
   enable: boolean;
