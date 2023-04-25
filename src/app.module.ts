@@ -3,10 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { PoolModule } from './pool/pool.module';
 import { ExchangerModule } from './exchanger/exchanger.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
+    ScheduleModule.forRoot(),
     PoolModule,
     ExchangerModule,
   ],
