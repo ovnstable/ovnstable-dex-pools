@@ -1,0 +1,8 @@
+export enum ExchangerType {
+  VELODROME = 'VELODROME',
+  THENA = 'THENA',
+  BEETHOVEN = 'BEETHOVEN',
+  WOMBAT = 'WOMBAT',
+  RAMSES = 'RAMSES',
+  VELOCORE = 'VELOCORE',
+}
