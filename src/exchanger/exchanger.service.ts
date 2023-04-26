@@ -43,7 +43,7 @@ export class ExchangerService {
             // update data
             dbPool.name = this.getCleanPoolName(poolData.name);
             dbPool.tvl = poolData.tvl ? poolData.tvl : '0';
-            dbPool.apr = poolData.apr ? poolData.apr : '0';
+            dbPool.apr = poolData.apr ? poolData.apr : dbPool.apr; // old value
             dbPool.update_date = nowTime;
             await this.poolService.update(dbPool.address, dbPool);
             continue;
