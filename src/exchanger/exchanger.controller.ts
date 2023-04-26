@@ -1,7 +1,4 @@
-import {
-  Controller,
-  Get,
-} from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { ExchangerService } from './exchanger.service';
 
 @Controller('exchanger')

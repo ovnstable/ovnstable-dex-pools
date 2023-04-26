@@ -30,7 +30,7 @@ export class BeethovenService {
       .then(async (data): Promise<PoolData[]> => {
         const pools: PoolData[] = [];
         const [responseBody] = await Promise.all([data.json()]);
-        console.log(responseBody);
+        //        console.log(responseBody);
         let itemCount = 0;
         const pool = responseBody.data.pool;
         const token1 = pool.tokens[0];

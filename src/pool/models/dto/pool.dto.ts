@@ -9,7 +9,7 @@ export class PoolDto {
 
   tvl: string;
 
-  //  apr: string;
+  apr: string;
 
   updateDate: Date;
 
@@ -18,7 +18,7 @@ export class PoolDto {
     this.name = pool.name;
     this.address = pool.address;
     this.tvl = pool.tvl;
-    //    this.apr = pool.apr;
+    this.apr = pool.apr;
     this.updateDate = pool.update_date;
   }
 }

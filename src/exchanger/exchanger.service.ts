@@ -14,7 +14,7 @@ export class ExchangerService {
     private adaptersService: AdaptersService,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   async runScheduler(): Promise<void> {
     console.log('Running scheduler...');
     await this.updateAllPools();
@@ -43,7 +43,7 @@ export class ExchangerService {
             // update data
             dbPool.name = this.getCleanPoolName(poolData.name);
             dbPool.tvl = poolData.tvl ? poolData.tvl : '0';
-            //            dbPool.apr = poolData.apr ? poolData.apr : '0';
+            dbPool.apr = poolData.apr ? poolData.apr : '0';
             dbPool.update_date = nowTime;
             await this.poolService.update(dbPool.address, dbPool);
             continue;
@@ -53,9 +53,8 @@ export class ExchangerService {
           const newPool = new Pool();
           newPool.name = this.getCleanPoolName(poolData.name);
           newPool.address = poolData.address;
-          //          newPool.decimals = poolData.decimals ? poolData.decimals : 0;
           newPool.tvl = poolData.tvl ? poolData.tvl : '0';
-          //          newPool.apr = poolData.apr ? poolData.apr : '0';
+          newPool.apr = poolData.apr ? poolData.apr : '0';
           newPool.add_to_sync = true;
           newPool.update_date = nowTime;
           newPool.platform = exchanger_type;

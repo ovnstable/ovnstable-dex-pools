@@ -30,9 +30,8 @@ export class WombatService {
       .then(async (data): Promise<PoolData[]> => {
         const pools: PoolData[] = [];
         const [responseBody] = await Promise.all([data.json()]);
-        console.log(responseBody);
-
-        console.log(responseBody.data.assetsNow);
+        //        console.log(responseBody);
+        //        console.log(responseBody.data.assetsNow);
         const pairs = responseBody.data.assetsNow;
         let itemCount = 0;
         pairs.forEach((item) => {
@@ -60,33 +59,6 @@ export class WombatService {
         });
 
         return pools;
-
-        //        const pairs = data.data;
-        //        let itemCount = 0;
-        //        pairs.forEach((item) => {
-        //          if (
-        //            item &&
-        //            item.symbol &&
-        //            item.symbol.toLowerCase().includes('usd+')
-        //          ) {
-        //            console.log(responseBody);
-        //            console.log(responseBody.data.pool.tokens[0].totalBalance);
-        //            console.log(responseBody.data.pool.tokens[1].totalBalance);
-        //            const poolData: PoolData = new PoolData();
-        //            poolData.address = item.gauge_address;
-        //            poolData.name = item.symbol;
-        //            poolData.decimals = item.decimals;
-        //            poolData.tvl = item.tvl;
-        //            poolData.apr = item.lp_apr;
-        //            pools.push(poolData);
-        //            this.logger.log(`=========${ExchangerType.WOMBAT}=========`);
-        //            itemCount++;
-        //            this.logger.log('Found ovn pool #: ', itemCount);
-        //            this.logger.log('Found ovn pool: ', poolData);
-        //            this.logger.log('==================');
-        //          }
-        //        });
-        //        return pools;
       })
       .catch((e) => {
         const errorMessage = `Error when load ${ExchangerType.WOMBAT} pairs.`;

@@ -1,13 +1,7 @@
-import {
-    Entity,
-    Column,
-    UpdateDateColumn,
-    PrimaryColumn
-} from "typeorm";
+import { Entity, Column, UpdateDateColumn, PrimaryColumn } from 'typeorm';
 
 @Entity({ schema: 'anal', name: 'pools' })
 export class Pool {
-
   @Column({ nullable: false })
   platform: string;
 
@@ -15,11 +9,7 @@ export class Pool {
   name: string;
 
   @PrimaryColumn()
-//  @Column({ nullable: false })
   address: string;
-
-//  @Column({ default: 18, nullable: false })
-//  decimals: number;
 
   @Column({ type: 'real' })
   tvl: string;
@@ -27,8 +17,8 @@ export class Pool {
   @Column()
   chain: string;
 
-//  @Column({ type: 'real' })
-//  apr: string;
+  @Column({ type: 'real' })
+  apr: string;
 
   @Column({ default: true, nullable: false })
   add_to_sync: boolean;

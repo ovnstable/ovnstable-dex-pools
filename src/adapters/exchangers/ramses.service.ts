@@ -27,7 +27,7 @@ export class RamsesService {
         for (let i = 0; i < keys.length; i++) {
           const property = keys[i];
           const item = poolsData[property];
-          console.log(item);
+          //          console.log(item);
           if (
             item &&
             item.symbol &&
