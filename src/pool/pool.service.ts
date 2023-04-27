@@ -36,12 +36,16 @@ export class PoolService {
   async delete(id: number): Promise<void> {
     await this.poolRepository.delete(id);
   }
+
   async getByAddress(address: string): Promise<PoolDto> {
     const dbPool = await this.innerFindByAddress(address);
     return new PoolDto(dbPool);
   }
+
   async getAll(): Promise<PoolDto[]> {
-    const pools: Pool[] = await this.getPoolsWithTvlLimit(this.POOLS_DAPP_TVL_LIMIT);
+    const pools: Pool[] = await this.getPoolsWithTvlLimit(
+      this.POOLS_DAPP_TVL_LIMIT,
+    );
     const poolDtos: PoolDto[] = [];
 
     for (let i = 0; i < pools.length; i++) {
