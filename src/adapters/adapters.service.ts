@@ -7,6 +7,7 @@ import { VelocoreService } from './exchangers/velocore.service';
 import { VelodromeService } from './exchangers/velodrome.service';
 import { WombatService } from './exchangers/wombat.service';
 import { PoolData } from './exchangers/dto/pool.data.dto';
+import { SoluneaService } from "./exchangers/solunea.service";
 
 @Injectable()
 export class AdaptersService {
@@ -21,6 +22,7 @@ export class AdaptersService {
     private velocoreService: VelocoreService,
     private velodromService: VelodromeService,
     private wombatService: WombatService,
+    private soluneaService: SoluneaService,
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
     if (exchanger_type === ExchangerType.BEETHOVEN) {
@@ -40,6 +42,9 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.WOMBAT) {
       return await this.wombatService.getPoolsData();
+    }
+    if (exchanger_type === ExchangerType.SOLUNEA) {
+      return await this.soluneaService.getPoolsData();
     }
 
     this.logger.error(

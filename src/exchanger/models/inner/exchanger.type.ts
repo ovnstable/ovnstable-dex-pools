@@ -5,4 +5,5 @@ export enum ExchangerType {
   WOMBAT = 'Wombat',
   RAMSES = 'Ramses',
   VELOCORE = 'Velocore',
+  SOLUNEA = 'Solunea',
 }

@@ -6,6 +6,7 @@ import { ThenaService } from './exchangers/thena.service';
 import { VelocoreService } from './exchangers/velocore.service';
 import { VelodromeService } from './exchangers/velodrome.service';
 import { WombatService } from './exchangers/wombat.service';
+import { SoluneaService } from './exchangers/solunea.service';
 //
 @Module({
   providers: [
@@ -17,6 +18,7 @@ import { WombatService } from './exchangers/wombat.service';
     VelocoreService,
     VelodromeService,
     WombatService,
+    SoluneaService,
   ],
   exports: [AdaptersService],
 })

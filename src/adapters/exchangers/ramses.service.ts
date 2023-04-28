@@ -20,6 +20,7 @@ export class RamsesService {
         timeout: 80_000, // 80 sec
       })
       .then((data): PoolData[] => {
+        //        console.log('Response data: ', data.data);
         const pools: PoolData[] = [];
         const poolsData = data.data;
         const keys = Object.keys(poolsData);
@@ -27,7 +28,6 @@ export class RamsesService {
         for (let i = 0; i < keys.length; i++) {
           const property = keys[i];
           const item = poolsData[property];
-          //          console.log(item);
           if (
             item &&
             item.symbol &&
