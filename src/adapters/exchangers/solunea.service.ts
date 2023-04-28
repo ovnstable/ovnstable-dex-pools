@@ -39,7 +39,7 @@ export class SoluneaService {
             poolData.decimals = item.decimals;
             poolData.tvl = item.tvl;
             poolData.apr = item.gauge ? item.gauge.stakeAprMin : item.apr;
-            poolData.chain = ChainType.ZKSYNK;
+            poolData.chain = ChainType.ZKSYNC;
             pools.push(poolData);
             this.logger.log(`=========${ExchangerType.SOLUNEA}=========`);
             itemCount++;
