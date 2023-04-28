@@ -1,11 +1,13 @@
 ## Установка
 
 ```bash
-# выполняем установку зависимостей
+# install dependencies
 npm install
 ```
 
 ## Запуск приложения
+
+Create .env from .env.example
 
 ```bash
 # development
