@@ -72,6 +72,6 @@ export class ExchangerService {
   }
 
   private getCleanPoolName(poolName: string): string {
-    return poolName.replace(/LP-|sAMM-|vAMM-|bb-|crAMM-/g, '');
+    return poolName.replace(/LP-|sAMM-|vAMM-|bb-|crAMM-|s-/g, '');
   }
 }
