@@ -3,5 +3,5 @@ export enum ChainType {
   OPTIMISM = 'OPTIMISM',
   POLYGON = 'POLYGON',
   ARBITRUM = 'ARBITRUM',
-  ZKSYNK = 'ZKSYNK',
+  ZKSYNC = 'ZKSYNC',
 }

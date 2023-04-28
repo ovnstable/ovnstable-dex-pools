@@ -39,7 +39,7 @@ export class VelocoreService {
             poolData.decimals = item.decimals;
             poolData.tvl = item.tvl;
             poolData.apr = item.apr;
-            poolData.chain = ChainType.ZKSYNK;
+            poolData.chain = ChainType.ZKSYNC;
             pools.push(poolData);
             this.logger.log(`=========${ExchangerType.VELOCORE}=========`);
             itemCount++;
