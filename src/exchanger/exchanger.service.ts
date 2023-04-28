@@ -28,6 +28,11 @@ export class ExchangerService {
 
     for (const exchanger_type of exchanger_types) {
       try {
+        if (exchanger_type !== ExchangerType.SOLUNEA) {
+          console.log(`${exchanger_type} exchange skipped`);
+          continue;
+        }
+
         const pools = await this.adaptersService.getPools(exchanger_type);
         console.log('Pools from exhanger: ', pools);
         const nowTime = new Date();

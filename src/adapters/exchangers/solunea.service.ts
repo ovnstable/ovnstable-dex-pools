@@ -1,18 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PoolData } from './dto/pool.data.dto';
 import axios from 'axios';
-import { ExchangerRequestError } from 'src/exceptions/exchanger.request.error';
+import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { AdaptersService } from '../adapters.service';
-import { ChainType } from '../../exchanger/models/inner/chain.type';
+import { ChainType } from 'src/exchanger/models/inner/chain.type';
 
 @Injectable()
-export class ThenaService {
-  private readonly logger = new Logger(ThenaService.name);
+export class SoluneaService {
+  private readonly logger = new Logger(SoluneaService.name);
 
-  BASE_API_URL = 'https://api.thena.fi/api';
+  BASE_API_URL = 'https://api.solunea.xyz/api';
   API_VERSION = 'v1';
-  METHOD_GET_PAIRS = 'pools';
+  METHOD_GET_PAIRS = 'pairs';
   async getPoolsData(): Promise<PoolData[]> {
     const url = `${this.BASE_API_URL}/${this.API_VERSION}/${this.METHOD_GET_PAIRS}`;
 
@@ -21,9 +21,9 @@ export class ThenaService {
         timeout: 80_000, // 80 sec
       })
       .then((data): PoolData[] => {
+        console.log('Response data: ', data.data);
         const pools: PoolData[] = [];
-        //        console.log('Response data: ', data.data);
-        const pairs = data.data.data;
+        const pairs = data.data;
         let itemCount = 0;
         pairs.forEach((item) => {
           if (
@@ -38,10 +38,10 @@ export class ThenaService {
             poolData.name = item.symbol;
             poolData.decimals = item.decimals;
             poolData.tvl = item.tvl;
-            poolData.apr = item.gauge.apr;
-            poolData.chain = ChainType.BSC;
+            poolData.apr = item.gauge ? item.gauge.stakeAprMin : item.apr;
+            poolData.chain = ChainType.ZKSYNK;
             pools.push(poolData);
-            this.logger.log(`========= ${ExchangerType.THENA} =========`);
+            this.logger.log(`=========${ExchangerType.SOLUNEA}=========`);
             itemCount++;
             this.logger.log('Found ovn pool #: ', itemCount);
             this.logger.log('Found ovn pool: ', poolData);
@@ -52,7 +52,7 @@ export class ThenaService {
         return pools;
       })
       .catch((e) => {
-        const errorMessage = `Error when load ${ExchangerType.THENA} pairs.`;
+        const errorMessage = `Error when load ${ExchangerType.SOLUNEA} pairs.`;
         this.logger.error(errorMessage, e);
         throw new ExchangerRequestError(errorMessage);
       });
