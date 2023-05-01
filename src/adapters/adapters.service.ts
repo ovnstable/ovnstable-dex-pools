@@ -47,8 +47,8 @@ export class AdaptersService {
       return await this.soluneaService.getPoolsData();
     }
 
-    this.logger.error(
-      `Error when get pools data. Exhange type not found: ${exchanger_type}`,
-    );
-  }
+        this.logger.error(
+            `Error when get pools data. Exchange type not found: ${exchanger_type}`,
+        );
+    }
 }
