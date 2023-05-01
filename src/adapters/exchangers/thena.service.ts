@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PoolData } from './dto/pool.data.dto';
 import axios from 'axios';
-import { ExchangerRequestError } from 'src/exceptions/exchanger.request.error';
+import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { AdaptersService } from '../adapters.service';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
