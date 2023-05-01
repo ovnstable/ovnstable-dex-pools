@@ -11,11 +11,11 @@ export class WombatService {
   private readonly logger = new Logger(WombatService.name);
 
   BASE_GRAPHQL_URL =
-    'https://api.thegraph.com/subgraphs/name/wombat-exchange/wombat-exchange';
+    'https://api.thegraph.com/subgraphs/name/wombat-exchange/wombat-exchange-arbone';
 
   async getPoolsData(): Promise<PoolData[]> {
     const query =
-      '\n      query{\n        assetsNow: assets {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n        assets24hAgo: assets (block:{number:27518248}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }';
+      '\n      query{\n        assetsNow: assets {\nid\nsymbol\ntotalTradeVolumeUSD\ntvl\nwomBaseApr\navgBoostedApr\ntotalBonusTokenApr}\n        assets24hAgo: assets (block:{number:85794583}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }';
     const response = fetch(this.BASE_GRAPHQL_URL, {
       method: 'POST',
       headers: {
@@ -30,9 +30,10 @@ export class WombatService {
       .then(async (data): Promise<PoolData[]> => {
         const pools: PoolData[] = [];
         const [responseBody] = await Promise.all([data.json()]);
-        //        console.log(responseBody);
-        //        console.log(responseBody.data.assetsNow);
+        console.log(responseBody);
+        console.log(responseBody.data.assetsNow);
         const pairs = responseBody.data.assetsNow;
+        const pairsTwo = responseBody.data.assets24hAgo;
         let itemCount = 0;
         pairs.forEach((item) => {
           if (
@@ -42,12 +43,14 @@ export class WombatService {
               item.symbol.toLowerCase().includes(str),
             )
           ) {
+            console.log('Found!');
+            console.log(item);
             const poolData: PoolData = new PoolData();
             poolData.address = item.id;
             poolData.name = item.symbol;
             poolData.decimals = item.decimals;
-            poolData.tvl = item.totalTradeVolumeUSD;
-            poolData.apr = item.apr;
+            poolData.tvl = item.tvl;
+            poolData.apr = this.getCalculatedApr(item);
             poolData.chain = ChainType.ARBITRUM;
             pools.push(poolData);
             this.logger.log(`=========${ExchangerType.WOMBAT}=========`);
@@ -67,5 +70,13 @@ export class WombatService {
       });
 
     return await response;
+  }
+
+  getCalculatedApr(item): string {
+    return (
+      item.avgBoostedApr * 100 +
+      item.womBaseApr * 100 +
+      item.totalBonusTokenApr * 100
+    ).toString();
   }
 }
