@@ -76,7 +76,6 @@ export class PoolService {
 
     queryBuilder.where('pool.tvl > :tvl', { tvl: this.POOLS_DAPP_TVL_LIMIT });
     queryBuilder.andWhere('pool.chain = :chain', { chain: chain });
-    //queryBuilder.andWhere('pool.removed == false and pool.skimmed == false');
     const pools = await queryBuilder.getMany();
     return pools;
   }

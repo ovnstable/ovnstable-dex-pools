@@ -22,6 +22,15 @@ import {
     TelegramServiceConfig
 } from "@overnight-contracts/eth-utils/dist/module/telegram/telegramService";
 
+
+/**
+ * SkimService
+ *
+ * What is it doing?
+ *
+ * Monitoring available pools from database and adding are new pools to skim list
+ */
+
 @Injectable()
 export class SkimService {
     private readonly logger = new Logger(SkimService.name);
@@ -53,8 +62,16 @@ export class SkimService {
     @Cron(CronExpression.EVERY_30_MINUTES)
     async runScheduler(): Promise<void> {
         this.logger.log('Update skim pools...');
-        await this.updatePools();
+        await this.updateSkims();
     }
+
+    /**
+     * Init PayoutListener contract for all support chains.
+     *
+     * 1) Get contract addresses from database
+     * 2) Get RPC for chains from env
+     * 3) Create PayoutListener contract and put in map by ID Chain
+     */
 
     async loadPayoutListenerContracts() {
         const contracts = await this.contractService.getAllPayoutListeners();
@@ -69,19 +86,25 @@ export class SkimService {
             }
 
             const provider = new ethers.providers.StaticJsonRpcProvider(rpc);
-            const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-            this.payoutListenerMap.set(contract.chain, new ethers.Contract(contract.address, GlobalPayoutListener, wallet));
+            this.payoutListenerMap.set(contract.chain, new ethers.Contract(contract.address, GlobalPayoutListener, provider));
         }
 
     }
 
-    async updatePools(): Promise<void> {
+    /**
+     * How to update skim list?
+     *
+     * 1) Get filter pools by getPools()
+     * 2) Get PayoutListener contract by Chain ID
+     * 3) Check: PayoutListener contains this pool and token (USD+|DAI+) for skim
+     * 4) If not contains then create transaction to adding in skim list
+     */
+
+    async updateSkims(): Promise<void> {
 
         const pools = await this.getPools();
 
-        const filterPools = pools.filter(value => this.dexWhitelist.has(value.platform));
-
-        for (const pool of filterPools) {
+        for (const pool of pools) {
             this.logger.log(`${pool.platform}:Pool: ${pool.name}:${pool.tvl}`);
 
             if (this.payoutListenerMap.has(pool.chain)) {
@@ -94,43 +117,11 @@ export class SkimService {
 
                 const foundItems = await pl.findItemsByPool(pool.address);
 
-                for (const token of tokensInPool) {
-                    const tokenItem: Contract = await this.contractService.getUsdPlusByChain(pool.chain, token)
-                    const isFound = foundItems.some(skimItem => skimItem.token.toLowerCase() === tokenItem.address.toLowerCase());
-
+                for (const tokenName of tokensInPool) {
+                    const tokenContract: Contract = await this.contractService.getUsdPlusByChain(pool.chain, tokenName)
+                    const isFound = foundItems.some(skimItem => skimItem.token.toLowerCase() === tokenContract.address.toLowerCase());
                     if (!isFound) {
-                        this.logger.log(`${token} need to add to skim for pool: ${pool.platform}:${pool.name}`);
-
-                        const request = new TransactionRequest();
-                        request.to = pl.address;
-
-                        const skimDto = new SkimDto();
-                        skimDto.pool = pool.address;
-                        skimDto.token = tokenItem.address;
-                        skimDto.poolName = pool.name;
-                        skimDto.bribe = ZERO_ADDRESS;
-                        skimDto.operation = Operation.SKIM;
-                        skimDto.to = REWARD_WALLET;
-                        skimDto.dexName = pool.platform;
-                        skimDto.feePercent = 0;
-                        skimDto.feeReceiver = ZERO_ADDRESS;
-
-                        request.data = pl.interface.encodeFunctionData('addItem', [skimDto]);
-
-                        request.provider = pl.provider;
-                        request.wallet = this.wallet;
-
-                        const response = await this.transactionService.send(request);
-
-                        if (response.status == TransactionStatus.OK) {
-                            const message = `${pool.platform}:${pool.name}:${token} success added to skim: ` + response.hash;
-                            this.logger.log(message);
-                            this.telegramService.sendMessage(message);
-                        } else {
-                            const message = `${pool.platform}:${pool.name}:${token} error added to skim - msg:${response.error}, hash${response.hash}`;
-                            this.logger.error(message);
-                            this.telegramService.sendErrorMessage(message);
-                        }
+                        await this.createSkimAndSendTransaction(pool, pl, tokenName, tokenContract);
                     }
                 }
             }
@@ -138,6 +129,59 @@ export class SkimService {
 
     }
 
+    /**
+     * Create transaction for PayoutListener and execute it.
+     * @param pool - skim pool
+     * @param pl - contract PayoutListener
+     * @param tokenName - symbol or name of token for Skim
+     * @param token - token contract
+     */
+
+    async createSkimAndSendTransaction(pool: Pool, pl: ethers.Contract, tokenName: string, token: Contract) {
+
+        this.logger.log(`${tokenName} need to add to skim for pool: ${pool.platform}:${pool.name}`);
+
+        const request = new TransactionRequest();
+        request.to = pl.address;
+
+        const skimDto = new SkimDto();
+        skimDto.pool = pool.address;
+        skimDto.token = token.address;
+        skimDto.poolName = pool.name;
+        skimDto.bribe = ZERO_ADDRESS;
+        skimDto.operation = Operation.SKIM;
+        skimDto.to = REWARD_WALLET;
+        skimDto.dexName = pool.platform;
+        skimDto.feePercent = 0;
+        skimDto.feeReceiver = ZERO_ADDRESS;
+
+        request.data = pl.interface.encodeFunctionData('addItem', [skimDto]);
+
+        request.provider = pl.provider;
+        request.wallet = this.wallet;
+
+        const response = await this.transactionService.send(request);
+
+        if (response.status == TransactionStatus.OK) {
+            const message = `${pool.platform}:${pool.name}:${tokenName} success added to skim: ` + response.hash;
+            this.logger.log(message);
+            this.telegramService.sendMessage(message);
+        } else {
+            const message = `${pool.platform}:${pool.name}:${tokenName} error added to skim - msg:${response.error}, hash${response.hash}`;
+            this.logger.error(message);
+            this.telegramService.sendErrorMessage(message);
+        }
+    }
+
+    /**
+     * Get available pools for adding to skim list.
+     *
+     * How to filter pools?
+     *
+     * 1) Get pools from database in search filter by TVL > 10k
+     * 2) If PlDashboard contains record then not needed to include this pool
+     * 3) Filter by whitelist dex (this list support skim operations)
+     */
 
     async getPools(): Promise<Pool[]> {
         const foundPools: Pool[] = [];
@@ -155,6 +199,7 @@ export class SkimService {
                 }
             }
         }
-        return foundPools;
+
+        return foundPools.filter(value => this.dexWhitelist.has(value.platform));
     }
 }

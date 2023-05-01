@@ -13,6 +13,6 @@ export class SkimController {
 
   @Get('/updatePools')
   async updatePools(): Promise<any> {
-    return await this.skimService.updatePools();
+    return await this.skimService.updateSkims();
   }
 }
