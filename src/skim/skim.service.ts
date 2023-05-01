@@ -49,14 +49,21 @@ export class SkimService {
             this.logger.log(`${exchangerType}`);
         }
 
-        this.transactionService = new TransactionService();
-        this.wallet = new ethers.Wallet(process.env['PRIVATE_KEY']);
-        const config = new TelegramServiceConfig();
-        config.name = 'Dex-Pool Service';
-        config.polling = false;
-        this.telegramService = new TelegramService(config);
+        const privateKey = process.env['PRIVATE_KEY'];
 
-        this.telegramService.sendMessage('DexPool service is running');
+        if (privateKey){
+
+            this.transactionService = new TransactionService();
+            this.wallet = new ethers.Wallet(privateKey);
+            const config = new TelegramServiceConfig();
+            config.name = 'Dex-Pool Service';
+            config.polling = false;
+            this.telegramService = new TelegramService(config);
+
+            this.telegramService.sendMessage('DexPool service is running');
+        }else {
+            this.logger.error('PRIVATE_KEY is not defined -> skim service cannot send transaction');
+        }
     }
 
     @Cron(CronExpression.EVERY_30_MINUTES)
@@ -159,6 +166,12 @@ export class SkimService {
 
         request.provider = pl.provider;
         request.wallet = this.wallet;
+
+
+        if (this.wallet === undefined){
+            this.logger.error('Wallet is undefined -> skim service cannot send transaction');
+            return;
+        }
 
         const response = await this.transactionService.send(request);
 
