@@ -10,6 +10,9 @@ import { ChainType } from 'src/exchanger/models/inner/chain.type';
 export class WombatService {
   private readonly logger = new Logger(WombatService.name);
 
+  // get all api info / api data
+  // https://api.thegraph.com/subgraphs/name/wombat-exchange/wombat-exchange-arbone/graphql?query=%0A%7B%0A++__schema+%7B%0A++++types+%7B%0A++++++name%0A++++++fields+%7B%0A++++++++name%0A++++++++description%0A++++++%7D%0A++++%7D%0A++%7D%0A%7D
+
   BASE_GRAPHQL_URL =
     'https://api.thegraph.com/subgraphs/name/wombat-exchange/wombat-exchange-arbone';
 
