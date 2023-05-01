@@ -21,7 +21,6 @@ export class SkimModule  implements OnModuleInit {
   async onModuleInit() {
     console.log(`Initialization...`);
     await this.skimService.loadPayoutListenerContracts();
-    await this.skimService.updatePools();
   }
 
 }

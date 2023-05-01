@@ -37,7 +37,7 @@
     "rxjs": "^7.2.0",
     "typeorm": "^0.2.44",
     "ethers": "^5.7.2",
-    "@overnight-contracts/eth-utils": "1.1.9"
+    "@overnight-contracts/eth-utils": "1.1.11"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",

@@ -8,11 +8,19 @@ import {ethers} from "ethers";
 import {ContractService} from "../contract/contract.service";
 import GlobalPayoutListener from "./abi/GlobalPayoutListener.json";
 import * as process from "process";
-import {SkimDto} from "./dto/skim.dto";
+import {Operation, REWARD_WALLET, SkimDto, ZERO_ADDRESS} from "./dto/skim.dto";
 import {AdaptersService} from "../adapters/adapters.service";
 import {Contract} from "../contract/models/contract.entity";
-import {isBoolean} from "class-validator";
 import {DEX_SUPPORT_SKIM} from "../exchanger/models/inner/exchanger.type";
+import {
+    TransactionRequest,
+    TransactionService,
+    TransactionStatus
+} from "@overnight-contracts/eth-utils/dist/module/transaction/transactionService"
+import {
+    TelegramService,
+    TelegramServiceConfig
+} from "@overnight-contracts/eth-utils/dist/module/telegram/telegramService";
 
 @Injectable()
 export class SkimService {
@@ -20,19 +28,31 @@ export class SkimService {
 
     payoutListenerMap: Map<string, ethers.Contract> = new Map<string, ethers.Contract>();
     dexWhitelist: Set<string> = new Set;
+    transactionService: TransactionService;
+    wallet: ethers.Wallet;
+    telegramService: TelegramService;
 
     constructor(private poolService: PoolService, private contractService: ContractService) {
 
-      this.logger.log('==== Dex Support Skim ====')
-      for (const exchangerType of DEX_SUPPORT_SKIM) {
-        this.dexWhitelist.add(exchangerType);
-        this.logger.log(`${exchangerType}`);
-      }
+        this.logger.log('==== Dex Support Skim ====')
+        for (const exchangerType of DEX_SUPPORT_SKIM) {
+            this.dexWhitelist.add(exchangerType);
+            this.logger.log(`${exchangerType}`);
+        }
+
+        this.transactionService = new TransactionService();
+        this.wallet = new ethers.Wallet(process.env['PRIVATE_KEY']);
+        const config = new TelegramServiceConfig();
+        config.name = 'Dex-Pool Service';
+        config.polling = false;
+        this.telegramService = new TelegramService(config);
+
+        this.telegramService.sendMessage('DexPool service is running');
     }
 
     @Cron(CronExpression.EVERY_30_MINUTES)
     async runScheduler(): Promise<void> {
-        console.log('Running scheduler...');
+        this.logger.log('Update skim pools...');
         await this.updatePools();
     }
 
@@ -78,8 +98,39 @@ export class SkimService {
                     const tokenItem: Contract = await this.contractService.getUsdPlusByChain(pool.chain, token)
                     const isFound = foundItems.some(skimItem => skimItem.token.toLowerCase() === tokenItem.address.toLowerCase());
 
-                    if (!isFound){
-                      this.logger.log(`${token} need to add to skim for pool: ${pool.platform}:${pool.name}`);
+                    if (!isFound) {
+                        this.logger.log(`${token} need to add to skim for pool: ${pool.platform}:${pool.name}`);
+
+                        const request = new TransactionRequest();
+                        request.to = pl.address;
+
+                        const skimDto = new SkimDto();
+                        skimDto.pool = pool.address;
+                        skimDto.token = tokenItem.address;
+                        skimDto.poolName = pool.name;
+                        skimDto.bribe = ZERO_ADDRESS;
+                        skimDto.operation = Operation.SKIM;
+                        skimDto.to = REWARD_WALLET;
+                        skimDto.dexName = pool.platform;
+                        skimDto.feePercent = 0;
+                        skimDto.feeReceiver = ZERO_ADDRESS;
+
+                        request.data = pl.interface.encodeFunctionData('addItem', [skimDto]);
+
+                        request.provider = pl.provider;
+                        request.wallet = this.wallet;
+
+                        const response = await this.transactionService.send(request);
+
+                        if (response.status == TransactionStatus.OK) {
+                            const message = `${pool.platform}:${pool.name}:${token} success added to skim: ` + response.hash;
+                            this.logger.log(message);
+                            this.telegramService.sendMessage(message);
+                        } else {
+                            const message = `${pool.platform}:${pool.name}:${token} error added to skim - msg:${response.error}, hash${response.hash}`;
+                            this.logger.error(message);
+                            this.telegramService.sendErrorMessage(message);
+                        }
                     }
                 }
             }
@@ -87,26 +138,18 @@ export class SkimService {
 
     }
 
-    async createSkimRequest(): Promise<SkimDto> {
-
-        return new SkimDto();
-    }
 
     async getPools(): Promise<Pool[]> {
         const foundPools: Pool[] = [];
         for (const chain in ChainType) {
-            console.log('Chain: ', chain);
             const pools: Pool[] = await this.poolService.getPoolsForSkim(chain);
-            console.log('Pools: ', pools);
             const skims: PlDashboard[] = await this.poolService.getSkims(chain);
-            console.log('Skims: ', skims);
             for (let i = 0; i < pools.length; i++) {
                 const pool = pools[i];
                 const check = skims.some(
                     (skim) =>
                         skim.pool_address.toLowerCase() === pool.address.toLowerCase(),
                 );
-                console.log(pool.address.toLowerCase() + ' ' + check);
                 if (!check) {
                     foundPools.push(pool);
                 }
