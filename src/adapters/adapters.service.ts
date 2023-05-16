@@ -7,7 +7,7 @@ import { VelocoreService } from './exchangers/velocore.service';
 import { VelodromeService } from './exchangers/velodrome.service';
 import { WombatService } from './exchangers/wombat.service';
 import { PoolData } from './exchangers/dto/pool.data.dto';
-import { SoluneaService } from "./exchangers/solunea.service";
+import { SoluneaService } from './exchangers/solunea.service';
 
 @Injectable()
 export class AdaptersService {

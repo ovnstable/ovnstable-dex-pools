@@ -13,8 +13,24 @@ export class SoluneaService {
   BASE_API_URL = 'https://api.solunea.xyz/api';
   API_VERSION = 'v1';
   METHOD_GET_PAIRS = 'pairs';
+  ARBITRUM_BASE_API_URL = 'https://api.solunea.xyz/arbapi';
   async getPoolsData(): Promise<PoolData[]> {
-    const url = `${this.BASE_API_URL}/${this.API_VERSION}/${this.METHOD_GET_PAIRS}`;
+    const arbitrumPools = await this.getPools(
+      this.ARBITRUM_BASE_API_URL,
+      ChainType.ARBITRUM,
+    );
+    const zkSyncPools = await this.getPools(
+      this.BASE_API_URL,
+      ChainType.ZKSYNC,
+    );
+    return [...zkSyncPools, ...arbitrumPools];
+  }
+
+  async getPools(
+    baseApiUrl: string,
+    chainType: ChainType,
+  ): Promise<PoolData[]> {
+    const url = `${baseApiUrl}/${this.API_VERSION}/${this.METHOD_GET_PAIRS}`;
 
     const response = axios
       .get(url, {
@@ -39,9 +55,11 @@ export class SoluneaService {
             poolData.decimals = item.decimals;
             poolData.tvl = item.tvl;
             poolData.apr = item.gauge ? item.gauge.stakeAprMin : item.apr;
-            poolData.chain = ChainType.ZKSYNC;
+            poolData.chain = chainType;
             pools.push(poolData);
-            this.logger.log(`=========${ExchangerType.SOLUNEA}=========`);
+            this.logger.log(
+              `========= ${ExchangerType.SOLUNEA} ${chainType} =========`,
+            );
             itemCount++;
             this.logger.log('Found ovn pool #: ', itemCount);
             this.logger.log('Found ovn pool: ', poolData);
