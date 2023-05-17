@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { AdaptersService } from '../adapters.service';
-import { ChainType } from 'src/exchanger/models/inner/chain.type';
+import { ChainType } from '../../exchanger/models/inner/chain.type';
 
 @Injectable()
 export class WombatService {

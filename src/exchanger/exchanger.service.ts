@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AdaptersService } from '../adapters/adapters.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { Pool } from 'src/pool/models/entities/pool.entity';
+import { Pool } from '../pool/models/entities/pool.entity';
 import { PoolService } from '../pool/pool.service';
 import { ExchangerType } from './models/inner/exchanger.type';
 

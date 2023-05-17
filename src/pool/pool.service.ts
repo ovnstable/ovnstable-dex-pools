@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Pool } from './models/entities/pool.entity';
 import { PoolDto } from './models/dto/pool.dto';
+import { PlDashboard } from './models/entities/pldashboard.entity';
 
 @Injectable()
 export class PoolService {
@@ -11,6 +12,8 @@ export class PoolService {
   constructor(
     @InjectRepository(Pool)
     private poolRepository: Repository<Pool>,
+    @InjectRepository(PlDashboard)
+    private plDashboardRepository: Repository<PlDashboard>,
   ) {}
 
   async findAll(): Promise<Pool[]> {
@@ -66,5 +69,23 @@ export class PoolService {
     queryBuilder.orderBy('pool.tvl', 'DESC');
     const pools = await queryBuilder.getMany();
     return pools;
+  }
+
+  async getPoolsForSkim(chain: string): Promise<Pool[]> {
+    const queryBuilder = this.poolRepository.createQueryBuilder('pool');
+
+    queryBuilder.where('pool.tvl > :tvl', { tvl: this.POOLS_DAPP_TVL_LIMIT });
+    queryBuilder.andWhere('pool.chain = :chain', { chain: chain });
+    const pools = await queryBuilder.getMany();
+    return pools;
+  }
+
+  async getSkims(chain: string): Promise<PlDashboard[]> {
+    const queryBuilder =
+      this.plDashboardRepository.createQueryBuilder('pl_dashboard');
+
+    queryBuilder.where('pl_dashboard.chain = :chain', { chain: chain });
+    const skims = await queryBuilder.getMany();
+    return skims;
   }
 }
