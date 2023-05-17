@@ -6,6 +6,7 @@ export enum ExchangerType {
   RAMSES = 'Ramses',
   VELOCORE = 'Velocore',
   SOLUNEA = 'Solunea',
+  CRONOS = 'Cronos',
 }
 
 export const DEX_SUPPORT_SKIM: ExchangerType[] = [

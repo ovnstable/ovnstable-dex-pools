@@ -7,6 +7,7 @@ import { VelocoreService } from './exchangers/velocore.service';
 import { VelodromeService } from './exchangers/velodrome.service';
 import { WombatService } from './exchangers/wombat.service';
 import { SoluneaService } from './exchangers/solunea.service';
+import { CronosService } from './exchangers/cronos.service';
 //
 @Module({
   providers: [
@@ -19,6 +20,7 @@ import { SoluneaService } from './exchangers/solunea.service';
     VelodromeService,
     WombatService,
     SoluneaService,
+    CronosService,
   ],
   exports: [AdaptersService],
 })

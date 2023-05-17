@@ -8,6 +8,7 @@ import { VelodromeService } from './exchangers/velodrome.service';
 import { WombatService } from './exchangers/wombat.service';
 import { PoolData } from './exchangers/dto/pool.data.dto';
 import { SoluneaService } from './exchangers/solunea.service';
+import { CronosService } from './exchangers/cronos.service';
 
 @Injectable()
 export class AdaptersService {
@@ -23,6 +24,7 @@ export class AdaptersService {
     private velodromService: VelodromeService,
     private wombatService: WombatService,
     private soluneaService: SoluneaService,
+    private cronosService: CronosService,
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
     if (exchanger_type === ExchangerType.BEETHOVEN) {
@@ -47,8 +49,12 @@ export class AdaptersService {
       return await this.soluneaService.getPoolsData();
     }
 
-        this.logger.error(
-            `Error when get pools data. Exchange type not found: ${exchanger_type}`,
-        );
+    if (exchanger_type === ExchangerType.CRONOS) {
+      return await this.cronosService.getPoolsData();
     }
+
+    this.logger.error(
+      `Error when get pools data. Exchange type not found: ${exchanger_type}`,
+    );
+  }
 }

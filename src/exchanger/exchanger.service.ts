@@ -27,7 +27,15 @@ export class ExchangerService {
     console.log('exchangers: ', exchanger_types);
 
     for (const exchanger_type of exchanger_types) {
+
+ //     for target test
+//      if (exchanger_type != ExchangerType.CRONOS) {
+//        this.logger.log('Ignore: ' + exchanger_type);
+//        continue;
+//      }
+
       try {
+        this.logger.log('Process with: ' + exchanger_type);
         const pools = await this.adaptersService.getPools(exchanger_type);
         console.log('Pools from exhanger: ', pools);
         const nowTime = new Date();
