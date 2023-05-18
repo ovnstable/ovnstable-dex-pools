@@ -80,13 +80,13 @@ export class CronosService {
             console.log(item);
             const poolData: PoolData = new PoolData();
             poolData.address = item.id;
-            poolData.name = item.token0.name + '/' + item.token1.name;
+            poolData.name = this.getFilteredName(item.token0.name) + '/' + this.getFilteredName(item.token1.name);
             poolData.decimals = item.token0.decimals;
             poolData.tvl = (item.reserve0 * 1 + item.reserve1 * 1).toString();
             poolData.apr = await this.getCalculatedApr(item);
             poolData.chain = ChainType.ARBITRUM;
             pools.push(poolData);
-            this.logger.log(`========= ${ExchangerType.CRONOS} =========`);
+            this.logger.log(`========= ${ExchangerType.CHRONOS} =========`);
             itemCount++;
             this.logger.log('Found ovn pool #: ', itemCount);
             this.logger.log('Found ovn pool: ', poolData);
@@ -100,7 +100,7 @@ export class CronosService {
           return pools;
       })
       .catch((e) => {
-        const errorMessage = `Error when load ${ExchangerType.CRONOS} pairs.`;
+        const errorMessage = `Error when load ${ExchangerType.CHRONOS} pairs.`;
         this.logger.error(errorMessage, e);
         throw new ExchangerRequestError(errorMessage);
       });
@@ -111,7 +111,7 @@ export class CronosService {
   async getCalculatedApr(item): Promise<string> {
     const contractsData = this.GAUGE_CONTRACTS_MAP.get(item.id);
     if (!contractsData || !this.gaugeContractMap.has(contractsData.address)) {
-        this.logger.log('Calculation apr not availible on this pool: ' + ExchangerType.CRONOS + ' ' + item.id);
+        this.logger.log('Calculation apr not availible on this pool: ' + ExchangerType.CHRONOS + ' ' + item.id);
         return (0).toString();
     }
 
@@ -137,6 +137,27 @@ export class CronosService {
     return (apr).toString();
   }
 
+  getFilteredName(name): string {
+    if (!name) {
+      return name;
+    }
+
+    if (name.toLowerCase().includes('dola')) {
+      return "DOLA";
+    }
+
+    if (name.toLowerCase().includes('lusd')) {
+      return "LUSD";
+    }
+
+
+    if (name.toLowerCase().includes('usd coin')) {
+      return "USDC";
+    }
+
+    return name;
+  }
+
   async loadGaugeContracts() {
     const contracts = Array.from(this.GAUGE_CONTRACTS_MAP.values());
 
@@ -144,15 +165,15 @@ export class CronosService {
       this.logger.log(`Try to init Gauge contract: ${contract.chain}:${contract.address}`);
 
       //return after tesst
-//      const nameEnv = 'WEB3_RPC_' + contract.chain.toUpperCase();
-//      const rpc = process.env[nameEnv];
-//      if (rpc == undefined) {
-//        throw new Error(`${nameEnv} cannot be undefined`)
-//      }
+      const nameEnv = 'WEB3_RPC_' + contract.chain.toUpperCase();
+      const rpc = process.env[nameEnv];
+      if (rpc == undefined) {
+        throw new Error(`${nameEnv} cannot be undefined`)
+      }
 
-      const url = "https://arb-mainnet.g.alchemy.com/v2/Rfm20AVr0ZqULyM3zpwIC8oh-yfs42Dk"
-
-      const provider = new ethers.providers.StaticJsonRpcProvider(url);
+//      const url = "https://arb-mainnet.g.alchemy.com/v2/Rfm20AVr0ZqULyM3zpwIC8oh-yfs42Dk"
+//      const provider = new ethers.providers.StaticJsonRpcProvider(url);
+      const provider = new ethers.providers.StaticJsonRpcProvider(rpc);
       this.gaugeContractMap.set(contract.address, new ethers.Contract(contract.address, CronosGauge, provider));
     }
   }

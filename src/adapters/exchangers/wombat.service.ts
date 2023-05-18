@@ -16,25 +16,35 @@ export class WombatService {
   BASE_GRAPHQL_URL =
     'https://api.thegraph.com/subgraphs/name/wombat-exchange/wombat-exchange-arbone';
 
+  BASE_BSC_GRAPHQL_URL =
+    'https://api.thegraph.com/subgraphs/name/wombat-exchange/wombat-exchange-bsc-develop';
+
   async getPoolsData(): Promise<PoolData[]> {
-    const query =
+    const pollDataArbitrum = await this.getPools(this.BASE_GRAPHQL_URL, ChainType.ARBITRUM);
+    const pollDataBsc = await this.getPools(this.BASE_BSC_GRAPHQL_URL, ChainType.BSC);
+    return [...pollDataArbitrum, ...pollDataBsc];
+  }
+
+  async getPools(url: string, chainType: ChainType): Promise<PoolData[]> {
+    {
+      const query =
       '\n      query{\n        assetsNow: assets {\nid\nsymbol\ntotalTradeVolumeUSD\ntvl\nwomBaseApr\navgBoostedApr\ntotalBonusTokenApr}\n        assets24hAgo: assets (block:{number:85794583}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }';
-    const response = fetch(this.BASE_GRAPHQL_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({
-        query,
-        variables: {},
-      }),
-    })
+      const response = fetch(this.BASE_GRAPHQL_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          query,
+          variables: {},
+        }),
+      })
       .then(async (data): Promise<PoolData[]> => {
         const pools: PoolData[] = [];
         const [responseBody] = await Promise.all([data.json()]);
-        console.log(responseBody);
-        console.log(responseBody.data.assetsNow);
+        //        console.log(responseBody);
+        //        console.log(responseBody.data.assetsNow);
         const pairs = responseBody.data.assetsNow;
         const pairsTwo = responseBody.data.assets24hAgo;
         let itemCount = 0;
@@ -44,8 +54,8 @@ export class WombatService {
             item.symbol &&
             AdaptersService.OVN_POOLS_NAMES.some((str) =>
               item.symbol.toLowerCase().includes(str),
-            )
-          ) {
+              )
+              ) {
             console.log('Found!');
             console.log(item);
             const poolData: PoolData = new PoolData();
@@ -54,9 +64,9 @@ export class WombatService {
             poolData.decimals = item.decimals;
             poolData.tvl = item.tvl;
             poolData.apr = this.getCalculatedApr(item);
-            poolData.chain = ChainType.ARBITRUM;
+            poolData.chain = chainType;
             pools.push(poolData);
-            this.logger.log(`=========${ExchangerType.WOMBAT}=========`);
+            this.logger.log(`========= ${ExchangerType.WOMBAT} ${chainType} =========`);
             itemCount++;
             this.logger.log('Found ovn pool #: ', itemCount);
             this.logger.log('Found ovn pool: ', poolData);
@@ -72,7 +82,8 @@ export class WombatService {
         throw new ExchangerRequestError(errorMessage);
       });
 
-    return await response;
+      return await response;
+    }
   }
 
   getCalculatedApr(item): string {

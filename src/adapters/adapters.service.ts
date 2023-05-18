@@ -50,7 +50,7 @@ export class AdaptersService {
     if (exchanger_type === ExchangerType.SOLUNEA) {
       return await this.soluneaService.getPoolsData();
     }
-    if (exchanger_type === ExchangerType.CRONOS) {
+    if (exchanger_type === ExchangerType.CHRONOS) {
       return await this.cronosService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.VESYNC) {

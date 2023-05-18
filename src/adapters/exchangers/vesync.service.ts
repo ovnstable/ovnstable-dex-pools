@@ -33,7 +33,7 @@ export class VesyncService {
         timeout: 80_000, // 80 sec
       })
       .then((data): PoolData[] => {
-        console.log('Response data: ', data.data);
+//        console.log('Response data: ', data.data);
         const pools: PoolData[] = [];
         const pairs = data.data;
         let itemCount = 0;

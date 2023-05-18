@@ -6,7 +6,7 @@ export enum ExchangerType {
   RAMSES = 'Ramses',
   VELOCORE = 'Velocore',
   SOLUNEA = 'Solunea',
-  CRONOS = 'Cronos',
+  CHRONOS = 'Chronos',
   VESYNC = 'Vesync',
 }
 
