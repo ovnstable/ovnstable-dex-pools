@@ -12,7 +12,7 @@ import {ContractModule} from "../contract/contract.module";
   controllers: [SkimController],
   exports: [SkimService],
 })
-export class SkimModule  implements OnModuleInit {
+export class SkimModule implements OnModuleInit {
 
 
   constructor(private skimService: SkimService) {

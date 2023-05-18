@@ -7,6 +7,7 @@ export enum ExchangerType {
   VELOCORE = 'Velocore',
   SOLUNEA = 'Solunea',
   CRONOS = 'Cronos',
+  VESYNC = 'Vesync',
 }
 
 export const DEX_SUPPORT_SKIM: ExchangerType[] = [

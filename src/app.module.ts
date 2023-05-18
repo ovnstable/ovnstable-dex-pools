@@ -5,6 +5,7 @@ import { PoolModule } from './pool/pool.module';
 import { ExchangerModule } from './exchanger/exchanger.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SkimModule } from './skim/skim.module';
+import { ExternalModule } from './external/external.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { SkimModule } from './skim/skim.module';
     PoolModule,
     SkimModule,
     ExchangerModule,
+    ExternalModule,
   ],
   controllers: [],
   providers: [],

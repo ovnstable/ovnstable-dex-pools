@@ -110,6 +110,7 @@ export class SkimService {
     async updateSkims(): Promise<void> {
 
         const pools = await this.getPools();
+        const skimedPools: Pool[] = [];
 
         for (const pool of pools) {
             this.logger.log(`${pool.platform}:Pool: ${pool.name}:${pool.tvl}`);
@@ -129,11 +130,38 @@ export class SkimService {
                     const isFound = foundItems.some(skimItem => skimItem.token.toLowerCase() === tokenContract.address.toLowerCase());
                     if (!isFound) {
                         await this.createSkimAndSendTransaction(pool, pl, tokenName, tokenContract);
+                        skimedPools.push(pool);
                     }
                 }
             }
         }
 
+        await this.updateSkimData(skimedPools);
+    }
+
+
+    /**
+     * Mark all skimed pools as skim passed, turn off skim flag on other pools;
+     * @param skimedPools - pool with passed skim
+     */
+
+    async updateSkimData(skimedPools: Pool[]) {
+        const pools = await this.poolService.findAll();
+        const nowTime = new Date();
+
+        for(let i = 0; i < pools.length; i++) {
+            const pool = pools[i];
+            const isFound = skimedPools.some(skimedPool => skimedPool.address.toLowerCase() === pool.address.toLowerCase());
+            if (isFound) {
+                pool.skim_enabled = true;
+                pool.skim_update_date = nowTime;
+                continue;
+            }
+
+            pool.skim_enabled = false;
+        }
+
+        await this.poolService.saveAll(pools)
     }
 
     /**

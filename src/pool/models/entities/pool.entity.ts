@@ -25,4 +25,10 @@ export class Pool {
 
   @UpdateDateColumn()
   update_date: Date;
+
+  @Column({ default: true, nullable: false })
+  skim_enabled: boolean;
+
+  @UpdateDateColumn()
+  skim_update_date: Date;
 }

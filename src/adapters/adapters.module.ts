@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from "@nestjs/common";
 import { AdaptersService } from './adapters.service';
 import { BeethovenService } from './exchangers/beethoven.service';
 import { RamsesService } from './exchangers/ramses.service';
@@ -8,8 +8,11 @@ import { VelodromeService } from './exchangers/velodrome.service';
 import { WombatService } from './exchangers/wombat.service';
 import { SoluneaService } from './exchangers/solunea.service';
 import { CronosService } from './exchangers/cronos.service';
+import { VesyncService } from "./exchangers/vesync.service";
+import { ExternalModule } from "src/external/external.module";
 //
 @Module({
+  imports: [ExternalModule],
   providers: [
     AdaptersService,
     // Exchangers:
@@ -21,7 +24,18 @@ import { CronosService } from './exchangers/cronos.service';
     WombatService,
     SoluneaService,
     CronosService,
+    VesyncService,
   ],
   exports: [AdaptersService],
 })
-export class AdaptersModule {}
+export class AdaptersModule implements OnModuleInit {
+
+
+  constructor(private cronosService: CronosService) {
+  }
+
+  async onModuleInit() {
+    console.log(`Initialization adapters...`);
+    await this.cronosService.loadGaugeContracts();
+  }
+}

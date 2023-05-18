@@ -36,6 +36,17 @@ export class PoolService {
     await this.poolRepository.update(address, pool);
   }
 
+  async saveAll(pools: Pool[]) {
+    const savedPools: Pool[] = [];
+
+    for (const pool of pools) {
+      const savedPool = await this.poolRepository.save(pool);
+      savedPools.push(savedPool);
+    }
+
+    return savedPools;
+  }
+
   async delete(id: number): Promise<void> {
     await this.poolRepository.delete(id);
   }

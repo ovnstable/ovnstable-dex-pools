@@ -9,6 +9,7 @@ import { WombatService } from './exchangers/wombat.service';
 import { PoolData } from './exchangers/dto/pool.data.dto';
 import { SoluneaService } from './exchangers/solunea.service';
 import { CronosService } from './exchangers/cronos.service';
+import { VesyncService } from "./exchangers/vesync.service";
 
 @Injectable()
 export class AdaptersService {
@@ -25,6 +26,7 @@ export class AdaptersService {
     private wombatService: WombatService,
     private soluneaService: SoluneaService,
     private cronosService: CronosService,
+    private vesyncService: VesyncService,
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
     if (exchanger_type === ExchangerType.BEETHOVEN) {
@@ -48,9 +50,11 @@ export class AdaptersService {
     if (exchanger_type === ExchangerType.SOLUNEA) {
       return await this.soluneaService.getPoolsData();
     }
-
     if (exchanger_type === ExchangerType.CRONOS) {
       return await this.cronosService.getPoolsData();
+    }
+    if (exchanger_type === ExchangerType.VESYNC) {
+      return await this.vesyncService.getPoolsData();
     }
 
     this.logger.error(
