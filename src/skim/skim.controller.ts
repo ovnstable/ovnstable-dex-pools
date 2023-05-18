@@ -8,7 +8,7 @@ export class SkimController {
 
   @Get('/getPools')
   async getPools(): Promise<Pool[]> {
-    return await this.skimService.getPools();
+    return await this.skimService.getPools(false);
   }
 
   @Get('/updatePools')

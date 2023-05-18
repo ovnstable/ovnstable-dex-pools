@@ -27,8 +27,10 @@ export class WombatService {
 
   async getPools(url: string, chainType: ChainType): Promise<PoolData[]> {
     {
+
+      // fix block number 91549963 bsc: 28284246
       const query =
-      '\n      query{\n        assetsNow: assets {\nid\nsymbol\ntotalTradeVolumeUSD\ntvl\nwomBaseApr\navgBoostedApr\ntotalBonusTokenApr}\n        assets24hAgo: assets (block:{number:85794583}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }';
+      '\n      query{\n        assetsNow: assets {\nid\nsymbol\ntotalTradeVolumeUSD\ntvl\nwomBaseApr\navgBoostedApr\ntotalBonusTokenApr}\n        assets24hAgo: assets (block:{number:91549963}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }';
       const response = fetch(this.BASE_GRAPHQL_URL, {
         method: 'POST',
         headers: {

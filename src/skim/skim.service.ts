@@ -52,7 +52,6 @@ export class SkimService {
         const privateKey = process.env['PRIVATE_KEY'];
 
         if (privateKey){
-
             this.transactionService = new TransactionService();
             this.wallet = new ethers.Wallet(privateKey);
             const config = new TelegramServiceConfig();
@@ -61,7 +60,7 @@ export class SkimService {
             this.telegramService = new TelegramService(config);
 
             this.telegramService.sendMessage('DexPool service is running');
-        }else {
+        } else {
             this.logger.error('PRIVATE_KEY is not defined -> skim service cannot send transaction');
         }
     }
@@ -109,7 +108,7 @@ export class SkimService {
 
     async updateSkims(): Promise<void> {
 
-        const pools = await this.getPools();
+        const pools = await this.getPools(false);
         const skimedPools: Pool[] = [];
 
         for (const pool of pools) {
@@ -141,13 +140,23 @@ export class SkimService {
 
 
     /**
-     * Mark all skimed pools as skim passed, turn off skim flag on other pools;
+     * Mark all skimed pools as skim passed
      * @param skimedPools - pool with passed skim
      */
 
     async updateSkimData(skimedPools: Pool[]) {
-        const pools = await this.poolService.findAll();
+        this.logger.log(" ====== Update skim data ====== ");
+        this.logger.log("Now skimed pools count: " + skimedPools.length);
+        const plDashboardPools = await this.getPools(true);
+        this.logger.log("Prevuesly skimed pools count: " + plDashboardPools.length);
+        skimedPools.push(...plDashboardPools); // skimed now and prev skimed
+
         const nowTime = new Date();
+
+        // fill with prevuesly pools
+        const pools = await this.poolService.findAll();
+        this.logger.log("All pools count: " + pools.length);
+        let enabledSkimPoolsCount = 0;
 
         for(let i = 0; i < pools.length; i++) {
             const pool = pools[i];
@@ -155,13 +164,17 @@ export class SkimService {
             if (isFound) {
                 pool.skim_enabled = true;
                 pool.skim_update_date = nowTime;
+                this.logger.log("Pool with skim: " + pool.address);
+                enabledSkimPoolsCount++;
                 continue;
             }
 
+            this.logger.log("Pool without skim: " + pool.address);
             pool.skim_enabled = false;
         }
 
-        await this.poolService.saveAll(pools)
+        await this.poolService.saveAll(pools);
+        this.logger.log(` ====== All skim data for pools updated ${enabledSkimPoolsCount} ====== `);
     }
 
     /**
@@ -224,18 +237,27 @@ export class SkimService {
      * 3) Filter by whitelist dex (this list support skim operations)
      */
 
-    async getPools(): Promise<Pool[]> {
+    async getPools(isExistInPlDashboard: boolean): Promise<Pool[]> {
         const foundPools: Pool[] = [];
         for (const chain in ChainType) {
             const pools: Pool[] = await this.poolService.getPoolsForSkim(chain);
+            this.logger.log("Get pools. Pools skims count: ", pools.length, chain);
             const skims: PlDashboard[] = await this.poolService.getSkims(chain);
+            this.logger.log("Get pools. PlDashboard skims count: ", skims.length, chain);
+
             for (let i = 0; i < pools.length; i++) {
                 const pool = pools[i];
                 const check = skims.some(
                     (skim) =>
                         skim.pool_address.toLowerCase() === pool.address.toLowerCase(),
                 );
-                if (!check) {
+
+                if (isExistInPlDashboard && check) {
+                    foundPools.push(pool);
+                    continue;
+                }
+
+                if (!isExistInPlDashboard && !check) {
                     foundPools.push(pool);
                 }
             }
