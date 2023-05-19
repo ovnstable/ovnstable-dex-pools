@@ -13,25 +13,47 @@ export class WombatService {
   // get all api info / api data
   // https://api.thegraph.com/subgraphs/name/wombat-exchange/wombat-exchange-arbone/graphql?query=%0A%7B%0A++__schema+%7B%0A++++types+%7B%0A++++++name%0A++++++fields+%7B%0A++++++++name%0A++++++++description%0A++++++%7D%0A++++%7D%0A++%7D%0A%7D
 
-  BASE_GRAPHQL_URL =
+  ARBITRUM_BASE_GRAPHQL_URL =
     'https://api.thegraph.com/subgraphs/name/wombat-exchange/wombat-exchange-arbone';
+  ARBITRUM_TOKENS_QUERY = '{"query":"\n      query{\n        assetsNow: assets {\nid\nsymbol\ntotalTradeVolumeUSD\ntvl\nwomBaseApr\navgBoostedApr\ntotalBonusTokenApr}\n        assets24hAgo: assets (block:{number:91866496}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }"}'
 
-  BASE_BSC_GRAPHQL_URL =
+  BSC_BASE_GRAPHQL_URL =
     'https://api.thegraph.com/subgraphs/name/wombat-exchange/wombat-exchange-bsc-develop';
+  BSC_TOKENS_QUERY = '{"query":"\n      query{\n        assetsNow: assets {\nid\nsymbol\ntotalTradeVolumeUSD\ntvl\nwomBaseApr\navgBoostedApr\ntotalBonusTokenApr}\n        assets24hAgo: assets (block:{number:28311702}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }"}'
 
   async getPoolsData(): Promise<PoolData[]> {
-    const pollDataArbitrum = await this.getPools(this.BASE_GRAPHQL_URL, ChainType.ARBITRUM);
-    const pollDataBsc = await this.getPools(this.BASE_BSC_GRAPHQL_URL, ChainType.BSC);
-    return [...pollDataArbitrum, ...pollDataBsc];
+    const arbitrumPoolsData = await this.getPools(this.ARBITRUM_BASE_GRAPHQL_URL, (91866496).toString(), ChainType.ARBITRUM);
+    const bscPoolsData = await this.getPools(this.BSC_BASE_GRAPHQL_URL, (28311702).toString(), ChainType.BSC);
+    return [...arbitrumPoolsData, ...bscPoolsData];
   }
 
-  async getPools(url: string, chainType: ChainType): Promise<PoolData[]> {
-    {
+  // arbitrum
+  //  get block arbitrum
+  //  https://api.thegraph.com/subgraphs/name/wombat-exchange/arbitrum-one-block 91866496
+  //  {"query":"\n    {\n      blocks(first: 1, orderBy: timestamp, orderDirection: desc, where: {timestamp_lte: 1684393459}) {\n        number\n        timestamp\n      }\n    }\n    "}
 
-      // fix block number 91549963 bsc: 28284246
+  // get tokens
+  //  https://api.thegraph.com/subgraphs/name/wombat-exchange/wombat-exchange-arbone
+  //  {"query":"\n      query{\n        assetsNow: assets {\nid\nsymbol\ntotalTradeVolumeUSD\ntvl\nwomBaseApr\navgBoostedApr\ntotalBonusTokenApr}\n        assets24hAgo: assets (block:{number:91866496}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }"}
+
+
+//    bsc
+//  get blocks
+  //  https://api.thegraph.com/subgraphs/name/matthewlilley/bsc-blocks  28311702
+  // {"query":"\n    {\n      blocks(first: 1, orderBy: timestamp, orderDirection: desc, where: {timestamp_lte: 1684393638}) {\n        number\n        timestamp\n      }\n    }\n    "}
+
+  // get tokens
+//  https://api.thegraph.com/subgraphs/name/wombat-exchange/wombat-exchange-bsc-develop
+  // {"query":"\n      query{\n        assetsNow: assets {\nid\nsymbol\ntotalTradeVolumeUSD\ntvl\nwomBaseApr\navgBoostedApr\ntotalBonusTokenApr}\n        assets24hAgo: assets (block:{number:28311702}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }"}
+
+//  '\n      query{\n        assetsNow: assets {\nid\nsymbol\ntotalTradeVolumeUSD\ntvl\nwomBaseApr\navgBoostedApr\ntotalBonusTokenApr}\n        assets24hAgo: assets (block:{number:91549963}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }';
+  async getPools(url: string, blockNumber: string, chainType: ChainType): Promise<PoolData[]> {
+    {
       const query =
-      '\n      query{\n        assetsNow: assets {\nid\nsymbol\ntotalTradeVolumeUSD\ntvl\nwomBaseApr\navgBoostedApr\ntotalBonusTokenApr}\n        assets24hAgo: assets (block:{number:91549963}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }';
-      const response = fetch(this.BASE_GRAPHQL_URL, {
+      '\n      query{\n        assetsNow: assets {\nid\nsymbol\ntotalTradeVolumeUSD\ntvl\nwomBaseApr\navgBoostedApr\ntotalBonusTokenApr}\n        assets24hAgo: assets (block:{number:' + blockNumber + '}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }';
+
+
+      const response = fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,8 +67,8 @@ export class WombatService {
       .then(async (data): Promise<PoolData[]> => {
         const pools: PoolData[] = [];
         const [responseBody] = await Promise.all([data.json()]);
-        //        console.log(responseBody);
-        //        console.log(responseBody.data.assetsNow);
+//                console.log(responseBody);
+//                console.log(responseBody.data.assetsNow);
         const pairs = responseBody.data.assetsNow;
         const pairsTwo = responseBody.data.assets24hAgo;
         let itemCount = 0;

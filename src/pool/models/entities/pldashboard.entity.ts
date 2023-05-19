@@ -1,6 +1,6 @@
 import { Entity, Column, UpdateDateColumn, PrimaryColumn } from 'typeorm';
 
-@Entity({ schema: 'skims', name: 'pl_dashboard' })
+@Entity({ schema: 'core', name: 'skims' })
 export class PlDashboard {
   @Column()
   chain: string;

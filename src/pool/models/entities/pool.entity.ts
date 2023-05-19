@@ -1,6 +1,6 @@
 import { Entity, Column, UpdateDateColumn, PrimaryColumn } from 'typeorm';
 
-@Entity({ schema: 'anal', name: 'pools' })
+@Entity({ schema: 'core', name: 'pools' })
 export class Pool {
   @Column({ nullable: false })
   platform: string;
