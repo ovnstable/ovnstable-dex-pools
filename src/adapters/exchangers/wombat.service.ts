@@ -15,15 +15,15 @@ export class WombatService {
 
   ARBITRUM_BASE_GRAPHQL_URL =
     'https://api.thegraph.com/subgraphs/name/wombat-exchange/wombat-exchange-arbone';
-  ARBITRUM_TOKENS_QUERY = '{"query":"\n      query{\n        assetsNow: assets {\nid\nsymbol\ntotalTradeVolumeUSD\ntvl\nwomBaseApr\navgBoostedApr\ntotalBonusTokenApr}\n        assets24hAgo: assets (block:{number:91866496}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }"}'
+  ARBITRUM_TOKENS_QUERY = '{"query":"\n      query{\n        assetsNow: assets {\nid\nsymbol\ntotalTradeVolumeUSD\ntvl\nwomBaseApr\navgBoostedApr\ntotalBonusTokenApr}\n        assets24hAgo: assets (block:{number:94402703}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }"}'
 
   BSC_BASE_GRAPHQL_URL =
     'https://api.thegraph.com/subgraphs/name/wombat-exchange/wombat-exchange-bsc-develop';
-  BSC_TOKENS_QUERY = '{"query":"\n      query{\n        assetsNow: assets {\nid\nsymbol\ntotalTradeVolumeUSD\ntvl\nwomBaseApr\navgBoostedApr\ntotalBonusTokenApr}\n        assets24hAgo: assets (block:{number:28311702}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }"}'
+  BSC_TOKENS_QUERY = '{"query":"\n      query{\n        assetsNow: assets {\nid\nsymbol\ntotalTradeVolumeUSD\ntvl\nwomBaseApr\navgBoostedApr\ntotalBonusTokenApr}\n        assets24hAgo: assets (block:{number:28529064}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }"}'
 
   async getPoolsData(): Promise<PoolData[]> {
-    const arbitrumPoolsData = await this.getPools(this.ARBITRUM_BASE_GRAPHQL_URL, (91866496).toString(), ChainType.ARBITRUM);
-    const bscPoolsData = await this.getPools(this.BSC_BASE_GRAPHQL_URL, (28311702).toString(), ChainType.BSC);
+    const arbitrumPoolsData = await this.getPools(this.ARBITRUM_BASE_GRAPHQL_URL, (94402703).toString(), ChainType.ARBITRUM);
+    const bscPoolsData = await this.getPools(this.BSC_BASE_GRAPHQL_URL, (28529064).toString(), ChainType.BSC);
     return [...arbitrumPoolsData, ...bscPoolsData];
   }
 
