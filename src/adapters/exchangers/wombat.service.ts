@@ -22,8 +22,8 @@ export class WombatService {
   BSC_TOKENS_QUERY = '{"query":"\n      query{\n        assetsNow: assets {\nid\nsymbol\ntotalTradeVolumeUSD\ntvl\nwomBaseApr\navgBoostedApr\ntotalBonusTokenApr}\n        assets24hAgo: assets (block:{number:28529064}) {\n          id\n          symbol\n          totalTradeVolumeUSD\n        }\n      }"}'
 
   async getPoolsData(): Promise<PoolData[]> {
-    const arbitrumPoolsData = await this.getPools(this.ARBITRUM_BASE_GRAPHQL_URL, (94402703).toString(), ChainType.ARBITRUM);
-    const bscPoolsData = await this.getPools(this.BSC_BASE_GRAPHQL_URL, (28529064).toString(), ChainType.BSC);
+    const arbitrumPoolsData = await this.getPools(this.ARBITRUM_BASE_GRAPHQL_URL, (100313086).toString(), ChainType.ARBITRUM);
+    const bscPoolsData = await this.getPools(this.BSC_BASE_GRAPHQL_URL, (29029839).toString(), ChainType.BSC);
     return [...arbitrumPoolsData, ...bscPoolsData];
   }
 

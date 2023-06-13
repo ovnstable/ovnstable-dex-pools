@@ -12,9 +12,11 @@ export class ThenaService {
 
   BASE_API_URL = 'https://api.thena.fi/api';
   API_VERSION = 'v1';
-  METHOD_GET_PAIRS = 'pools';
+//  METHOD_GET_PAIRS = 'pools';
+  METHOD_GET_PAIRS = 'fusions';
   async getPoolsData(): Promise<PoolData[]> {
     const url = `${this.BASE_API_URL}/${this.API_VERSION}/${this.METHOD_GET_PAIRS}`;
+    console.log("Load data by url:", url);
 
     const response = axios
       .get(url, {
@@ -37,8 +39,8 @@ export class ThenaService {
             poolData.address = item.address;
             poolData.name = item.symbol;
             poolData.decimals = item.decimals;
-            poolData.tvl = item.tvl;
-            poolData.apr = item.gauge.apr;
+            poolData.tvl = (item.token0.reserve * 1 + item.token1.reserve * 1).toString();;
+            poolData.apr = item.gauge ? item.gauge.apr : null;
             poolData.chain = ChainType.BSC;
             pools.push(poolData);
             this.logger.log(`========= ${ExchangerType.THENA} =========`);

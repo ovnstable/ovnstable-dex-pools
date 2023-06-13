@@ -29,15 +29,15 @@ export class ExchangerService {
     for (const exchanger_type of exchanger_types) {
 
 //      for target test
-//      if (exchanger_type != ExchangerType.WOMBAT) {
-//        this.logger.log('Ignore: ' + exchanger_type);
-//        continue;
-//      }
+//       if (exchanger_type != ExchangerType.THENA) {
+//         this.logger.log('Ignore: ' + exchanger_type);
+//         continue;
+//       }
 
       try {
         this.logger.log('Process with: ' + exchanger_type);
         const pools = await this.adaptersService.getPools(exchanger_type);
-        console.log('Pools from exhanger: ', pools);
+        console.log('Pools from exchanger: ', pools);
         const nowTime = new Date();
         for (let i = 0; i < pools.length; i++) {
           const poolData = pools[i];
