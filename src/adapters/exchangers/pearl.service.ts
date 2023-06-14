@@ -7,13 +7,12 @@ import { AdaptersService } from '../adapters.service';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
 
 @Injectable()
-export class ThenaService {
-  private readonly logger = new Logger(ThenaService.name);
-
-  BASE_API_URL = 'https://api.thena.fi/api';
+export class PearlService {
+  private readonly logger = new Logger(PearlService.name);
+  BASE_API_URL = 'https://api.pearl.exchange/api';
   API_VERSION = 'v1';
-//  METHOD_GET_PAIRS = 'pools';
-  METHOD_GET_PAIRS = 'fusions';
+  METHOD_GET_PAIRS = 'pools';
+  
   async getPoolsData(): Promise<PoolData[]> {
     const url = `${this.BASE_API_URL}/${this.API_VERSION}/${this.METHOD_GET_PAIRS}`;
     console.log("Load data by url:", url);
@@ -39,11 +38,11 @@ export class ThenaService {
             poolData.address = item.address;
             poolData.name = item.symbol;
             poolData.decimals = item.decimals;
-            poolData.tvl = (item.token0.reserve * 1 + item.token1.reserve * 1).toString();
+            poolData.tvl = (item.tvl).toString();
             poolData.apr = item.gauge ? item.gauge.apr : null;
-            poolData.chain = ChainType.BSC;
+            poolData.chain = ChainType.POLYGON;
             pools.push(poolData);
-            this.logger.log(`========= ${ExchangerType.THENA} =========`);
+            this.logger.log(`========= ${ExchangerType.PEARL} =========`);
             itemCount++;
             this.logger.log('Found ovn pool #: ', itemCount);
             this.logger.log('Found ovn pool: ', poolData);
@@ -54,7 +53,7 @@ export class ThenaService {
         return pools;
       })
       .catch((e) => {
-        const errorMessage = `Error when load ${ExchangerType.THENA} pairs.`;
+        const errorMessage = `Error when load ${ExchangerType.PEARL} pairs.`;
         this.logger.error(errorMessage, e);
         throw new ExchangerRequestError(errorMessage);
       });

@@ -10,6 +10,7 @@ import { SoluneaService } from './exchangers/solunea.service';
 import { CronosService } from './exchangers/cronos.service';
 import { VesyncService } from "./exchangers/vesync.service";
 import { ExternalModule } from "src/external/external.module";
+import { PearlService } from "./exchangers/pearl.service";
 //
 @Module({
   imports: [ExternalModule],
@@ -25,6 +26,7 @@ import { ExternalModule } from "src/external/external.module";
     SoluneaService,
     CronosService,
     VesyncService,
+    PearlService,
   ],
   exports: [AdaptersService],
 })
