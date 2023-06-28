@@ -11,6 +11,8 @@ import { CronosService } from './exchangers/cronos.service';
 import { VesyncService } from "./exchangers/vesync.service";
 import { ExternalModule } from "src/external/external.module";
 import { PearlService } from "./exchangers/pearl.service";
+import { VeplusService } from "./exchangers/veplus.service";
+
 //
 @Module({
   imports: [ExternalModule],
@@ -27,6 +29,7 @@ import { PearlService } from "./exchangers/pearl.service";
     CronosService,
     VesyncService,
     PearlService,
+    VeplusService,
   ],
   exports: [AdaptersService],
 })

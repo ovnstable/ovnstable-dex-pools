@@ -29,7 +29,7 @@ export class ExchangerService {
     for (const exchanger_type of exchanger_types) {
 
 //      for target test
-//       if (exchanger_type != ExchangerType.THENA) {
+//       if (exchanger_type != ExchangerType.VEPLUS) {
 //         this.logger.log('Ignore: ' + exchanger_type);
 //         continue;
 //       }
@@ -80,6 +80,6 @@ export class ExchangerService {
   }
 
   private getCleanPoolName(poolName: string): string {
-    return poolName.replace(/LP-|sAMM-|vAMM-|bb-|crAMM-|s-/g, '');
+    return poolName.replace(/LP-|sAMM-|vAMM-|bb-|crAMM-|s-|sAMMV2-/g, '');
   }
 }

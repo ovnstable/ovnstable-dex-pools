@@ -11,6 +11,7 @@ import { SoluneaService } from './exchangers/solunea.service';
 import { CronosService } from './exchangers/cronos.service';
 import { VesyncService } from "./exchangers/vesync.service";
 import { PearlService } from "./exchangers/pearl.service";
+import { VeplusService } from "./exchangers/veplus.service";
 
 @Injectable()
 export class AdaptersService {
@@ -29,6 +30,7 @@ export class AdaptersService {
     private cronosService: CronosService,
     private vesyncService: VesyncService,
     private pearlService: PearlService,
+    private veplusService: VeplusService,
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
     if (exchanger_type === ExchangerType.BEETHOVEN) {
@@ -58,9 +60,11 @@ export class AdaptersService {
     if (exchanger_type === ExchangerType.VESYNC) {
       return await this.vesyncService.getPoolsData();
     }
-
     if (exchanger_type === ExchangerType.PEARL) {
       return await this.pearlService.getPoolsData();
+    }
+    if (exchanger_type === ExchangerType.VEPLUS) {
+      return await this.veplusService.getPoolsData();
     }
 
     this.logger.error(
