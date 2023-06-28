@@ -29,7 +29,7 @@ export class ExchangerService {
     for (const exchanger_type of exchanger_types) {
 
 //      for target test
-//       if (exchanger_type != ExchangerType.VEPLUS) {
+//       if (exchanger_type != ExchangerType.VELODROME) {
 //         this.logger.log('Ignore: ' + exchanger_type);
 //         continue;
 //       }

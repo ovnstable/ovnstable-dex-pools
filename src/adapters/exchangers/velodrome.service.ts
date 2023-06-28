@@ -28,7 +28,14 @@ export class VelodromeService {
     try {
 
       // Launch a headless browser
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch(
+        {
+          headless: true,
+          ignoreHTTPSErrors :true,
+          executablePath: '/usr/bin/google-chrome',
+          args: ['--no-sandbox']
+        }
+      );
 
       // Create a new page
       const page = await browser.newPage();
