@@ -12,6 +12,7 @@ import { VesyncService } from "./exchangers/vesync.service";
 import { ExternalModule } from "src/external/external.module";
 import { PearlService } from "./exchangers/pearl.service";
 import { VeplusService } from "./exchangers/veplus.service";
+import { GndService } from "./exchangers/gnd.service";
 
 //
 @Module({
@@ -30,6 +31,7 @@ import { VeplusService } from "./exchangers/veplus.service";
     VesyncService,
     PearlService,
     VeplusService,
+    GndService,
   ],
   exports: [AdaptersService],
 })
