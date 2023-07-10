@@ -8,8 +8,8 @@ import { ChainType } from '../../exchanger/models/inner/chain.type';
 const puppeteer = require('puppeteer');
 
 const POOLS_MAP = { // pool name: pool address
-    "DAI-DAI+": "0xd8769d8826149b137af488b1e9ac0e3afdbc058a",
-    "USD+-USDC": "0xd8769d8826149b137af488b1e9ac0e3afdbc058a"
+    "DAI/DAI+": "0xd8769d8826149B137AF488b1e9Ac0e3AFdbC058a_dai-dai+",
+    "USD+/USDC": "0xd8769d8826149b137af488b1e9ac0e3afdbc058a_usd+-usdc"
 }
 
 const TRY_COUNT = 30;
@@ -100,7 +100,7 @@ export class GndService {
                     continue;
                 }
 
-                const name = matchName[0];
+                const name = matchName[0].replace(/-/g, "/");
                 const tvl = [];
                 this.logger.log("Name:", name);
 
