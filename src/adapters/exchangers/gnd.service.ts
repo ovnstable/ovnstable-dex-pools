@@ -23,16 +23,19 @@ export class GndService {
     async getPoolsData(): Promise<PoolData[]> {
         const url = `${this.BASE_API_URL}`;
 
-        try {
-            // Launch a headless browser
-            const browser = await puppeteer.launch(
-                {
-                    headless: true,
-                    ignoreHTTPSErrors :true,
-                    executablePath: '/usr/bin/google-chrome',
-                    args: ['--no-sandbox']
-                }
+        // Launch a headless browser
+        const browser = await puppeteer.launch(
+            {
+                headless: true,
+                ignoreHTTPSErrors :true,
+                executablePath: '/usr/bin/google-chrome',
+                args: ['--no-sandbox']
+            }
             );
+
+        this.logger.debug("Browser is start. " + ExchangerType.GND);
+
+        try {
 
             // Create a new page
             const page = await browser.newPage();
@@ -151,9 +154,13 @@ export class GndService {
             await browser.close();
             return pools;
         } catch (e) {
+
             const errorMessage = `Error when load ${ExchangerType.GND} pairs. url: ${url}`;
             this.logger.error(errorMessage, e);
             throw new ExchangerRequestError(errorMessage);
+        } finally {
+            this.logger.debug("Browser is close. " + ExchangerType.GND);
+            await browser.close();
         }
     }
 }

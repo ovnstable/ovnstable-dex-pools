@@ -25,17 +25,19 @@ export class VelodromeService {
   async getPoolsData(): Promise<PoolData[]> {
     const url = `${this.BASE_API_URL}/${this.METHOD_GET_PAIRS}`;
 
-    try {
+    // Launch a headless browser
+    const browser = await puppeteer.launch(
+      {
+        headless: true,
+        ignoreHTTPSErrors :true,
+        executablePath: '/usr/bin/google-chrome',
+        args: ['--no-sandbox']
+      }
+    );
 
-      // Launch a headless browser
-      const browser = await puppeteer.launch(
-        {
-          headless: true,
-          ignoreHTTPSErrors :true,
-          executablePath: '/usr/bin/google-chrome',
-          args: ['--no-sandbox']
-        }
-      );
+    this.logger.debug("Browser is start. " + ExchangerType.VELODROME);
+
+    try {
 
       // Create a new page
       const page = await browser.newPage();
@@ -114,31 +116,11 @@ export class VelodromeService {
       const errorMessage = `Error when load ${ExchangerType.VELODROME} pairs. url: ${url}`;
       this.logger.error(errorMessage, e);
       throw new ExchangerRequestError(errorMessage);
+    } finally {
+      this.logger.debug("Browser is close. " + ExchangerType.VELODROME);
+      await browser.close();
     }
 
     return [];
   }
-
-  private getHeaders() {
-    return {
-      accept:
-        'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-      //      'accept-encoding': 'gzip, deflate, br',
-      //      'accept-language': 'ru-RU,ru;q=0.8',
-      //      'cache-control': 'max-age=0',
-      //      'sec-ch-ua': '"Chromium";v="112", "Brave";v="112", "Not:A-Brand";v="99"',
-      //      'sec-ch-ua-mobile': '?0',
-      //      'sec-ch-ua-platform': '"macOS"',
-      //      'sec-fetch-dest': 'document',
-      //      'sec-fetch-mode': 'navigate',
-      //      'sec-fetch-site': 'none',
-      //      'sec-fetch-user': '?1',
-      //      'sec-gpc': '1',
-      //      'upgrade-insecure-requests': '1',
-      'user-agent':
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36',
-    };
-  }
-
-
 }
