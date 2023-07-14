@@ -13,7 +13,7 @@ import { ExternalModule } from "src/external/external.module";
 import { PearlService } from "./exchangers/pearl.service";
 import { VeplusService } from "./exchangers/veplus.service";
 import { GndService } from "./exchangers/gnd.service";
-// import { DraculaService } from "./exchangers/dracula.service";
+import { DraculaService } from "./exchangers/dracula.service";
 
 //
 @Module({
@@ -33,7 +33,7 @@ import { GndService } from "./exchangers/gnd.service";
     PearlService,
     VeplusService,
     GndService,
-    // DraculaService,
+    DraculaService,
   ],
   exports: [AdaptersService],
 })

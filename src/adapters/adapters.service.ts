@@ -13,7 +13,7 @@ import { VesyncService } from "./exchangers/vesync.service";
 import { PearlService } from "./exchangers/pearl.service";
 import { VeplusService } from "./exchangers/veplus.service";
 import { GndService } from "./exchangers/gnd.service";
-// import { DraculaService } from "./exchangers/dracula.service";
+import { DraculaService } from "./exchangers/dracula.service";
 
 @Injectable()
 export class AdaptersService {
@@ -34,7 +34,7 @@ export class AdaptersService {
     private pearlService: PearlService,
     private veplusService: VeplusService,
     private gndService: GndService,
-    // private draculaService: DraculaService,
+    private draculaService: DraculaService,
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
     if (exchanger_type === ExchangerType.BEETHOVEN) {
@@ -73,9 +73,9 @@ export class AdaptersService {
     if (exchanger_type === ExchangerType.GND) {
       return await this.gndService.getPoolsData();
     }
-   /* if (exchanger_type === ExchangerType.DRACULA) {
+    if (exchanger_type === ExchangerType.DRACULA) {
       return await this.draculaService.getPoolsData();
-    }*/
+    }
 
     this.logger.error(
       `Error when get pools data. Exchange type not found: ${exchanger_type}`,
