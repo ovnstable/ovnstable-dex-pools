@@ -40,7 +40,7 @@ export class DraculaService {
                         poolData.address = item.address;
                         poolData.name = item.symbol;
                         poolData.decimals = item.decimals;
-                        poolData.tvl = (parseFloat(item.reserve0) + parseFloat(item.reserve1)).toString();
+                        poolData.tvl = (item.reserve0 * 1 + item.reserve1 * 1).toString();
                         poolData.apr = null;
                         poolData.chain = ChainType.ZKSYNC;
                         pools.push(poolData);
