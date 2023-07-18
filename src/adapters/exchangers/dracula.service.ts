@@ -13,12 +13,12 @@ export class DraculaService {
     BASE_API_URL = 'https://api-dex.draculafi.xyz';
     METHOD_GET_PAIRS = 'pairs';
 
+    COINGECKO_API_URL = "https://api.coingecko.com/api/v3/simple/price?ids=ethereum%2Cusd-coin%2Cusd&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false&precision=full";
+
     async getPoolsData(): Promise<PoolData[]> {
-        const apiUrl =
-            "https://api.coingecko.com/api/v3/simple/price?ids=ethereum%2Cusd-coin%2Cusd&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false&precision=full";
 
         try {
-            const coinGeckoResponse = await fetch(apiUrl);
+            const coinGeckoResponse = await fetch(this.COINGECKO_API_URL);
             if (!coinGeckoResponse.ok) {
                 throw new Error("Error: " + coinGeckoResponse.status);
             }
@@ -53,9 +53,9 @@ export class DraculaService {
                     poolData.name = item.symbol;
                     poolData.decimals = item.decimals;
                     if (item.symbol === "vAMM-WETH/USD+") {
-                        poolData.tvl = (item.reserve0 * ethereumPrice + item.reserve1 * usdPrice).toString();
+                        poolData.tvl = (item.reserve0 * ethereumPrice + item.reserve1 * 1).toString();
                     } else {
-                        poolData.tvl = (item.reserve0 * usdCoinPrice + item.reserve1 * usdPrice).toString();
+                        poolData.tvl = (item.reserve0 * usdCoinPrice + item.reserve1 * 1).toString();
                     }
                     poolData.apr = null;
                     poolData.chain = ChainType.ZKSYNC;
@@ -72,10 +72,9 @@ export class DraculaService {
 
             return pools;
         } catch (error) {
-            console.error(error);
-            throw new ExchangerRequestError(
-                `Error when loading ${ExchangerType.DRACULA} pairs.`
-            );
+            const errorMessage = `Error when load ${ExchangerType.DRACULA} pairs.`;
+            this.logger.error(errorMessage, error);
+            throw new ExchangerRequestError(errorMessage);
         }
     }
 }
