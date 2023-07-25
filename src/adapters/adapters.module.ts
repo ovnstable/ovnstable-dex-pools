@@ -14,6 +14,7 @@ import { PearlService } from "./exchangers/pearl.service";
 import { VeplusService } from "./exchangers/veplus.service";
 import { GndService } from "./exchangers/gnd.service";
 import { DraculaService } from "./exchangers/dracula.service";
+import { DefiedgeService } from "./exchangers/defiedge.service";
 
 //
 @Module({
@@ -34,6 +35,7 @@ import { DraculaService } from "./exchangers/dracula.service";
     VeplusService,
     GndService,
     DraculaService,
+    DefiedgeService
   ],
   exports: [AdaptersService],
 })

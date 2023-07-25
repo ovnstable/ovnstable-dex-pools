@@ -4,6 +4,7 @@ export enum ExchangerType {
   PEARL = 'Pearl',
   VEPLUS = 'Veplus',
   BEETHOVEN = 'Beethoven',
+  DEFIEDGE = 'Defiedge',
   WOMBAT = 'Wombat',
   RAMSES = 'Ramses',
   VELOCORE = 'Velocore',
