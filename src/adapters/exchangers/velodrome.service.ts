@@ -49,20 +49,23 @@ export class VelodromeService {
       await page.goto(url);
       const markerOfLoadingIsFinish = '.border-neutral-200';
 
+
       // Wait for the desired content to load
       await page.waitForSelector(markerOfLoadingIsFinish);
 
+
       // Extract the data from the page
       const data = await page.evaluate(() => {
-        const markerListOfData = '.flex.w-full.justify-between'; //.border-neutral-200
+        const markerListOfData = '.border-neutral-200';
 
         // This function runs in the context of the browser page
         // You can use DOM manipulation and JavaScript to extract the data
-        const elements = document.querySelectorAll(markerListOfData);
+        const elementsData = document.querySelectorAll(markerListOfData);
+        const elements = elementsData[0].textContent.split("Deposit");
         const extractedData = [];
 
         elements.forEach(element => {
-          extractedData.push(element.textContent);
+          extractedData.push(element);
         });
 
         return extractedData;
@@ -76,9 +79,13 @@ export class VelodromeService {
       for(let i = 0; i < data.length; i++) {
         const element = data[i];
         const str: string = element;
+        this.logger.log("String:", str);
+        if (!str) {
+          continue;
+        }
 
         // Extracting name: The name is at the beginning of the string and ends just before first –.
-        const nameRegex = /(.+?)(?=–)/;
+        const nameRegex = /(sAMMV2-.+?Stable Pool)/;
         const name = str.match(nameRegex)[0].replace("Stable Pool","").replace(" ", "");
         const address = POOLS_MAP[name];
         if (!address) {
@@ -87,12 +94,14 @@ export class VelodromeService {
         }
 
         // Extracting TVL: TVL starts with "$" and ends just before "Total".
-        const tvlRegex = /\$(.+?)(?=Total)/;
-        const tvl = Number(str.match(tvlRegex)[0].slice(1).replace(/,/g, ''));
+        const tvlRegex = /TVL\s*~\$(.*?)APR/;
+        const tvlData = str.match(tvlRegex)[1];
+        const tvl = parseFloat(tvlData.replace(/,/g, ""));
 
         // Extracting APR: APR is after "APR" and ends just before "%".
-        const aprRegex = /(?<=APR)(.+?)(?=\%)/;
-        const apr = Number(str.match(aprRegex)[0]);
+        const aprRegex = /APR(.*?%)Volume/;
+        const aprData = str.match(aprRegex)[1];
+        const apr = parseFloat(aprData.replace('%', ""));
 
 
         const poolData: PoolData = new PoolData();
