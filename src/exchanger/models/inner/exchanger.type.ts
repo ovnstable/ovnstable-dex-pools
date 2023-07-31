@@ -13,6 +13,7 @@ export enum ExchangerType {
   VESYNC = 'Vesync',
   GND = 'Gnd',
   DRACULA = 'Dracula',
+  MAVERICK = 'Maverick',
 }
 
 export const DEX_SUPPORT_SKIM: ExchangerType[] = [

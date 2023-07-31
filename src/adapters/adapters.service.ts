@@ -15,6 +15,7 @@ import { VeplusService } from "./exchangers/veplus.service";
 import { GndService } from "./exchangers/gnd.service";
 import { DraculaService } from "./exchangers/dracula.service";
 import { DefiedgeService } from "./exchangers/defiedge.service";
+import { MaverickService } from "./exchangers/maverick.service";
 
 @Injectable()
 export class AdaptersService {
@@ -37,6 +38,8 @@ export class AdaptersService {
     private gndService: GndService,
     private draculaService: DraculaService,
     private defiedgeService: DefiedgeService,
+    private maverickService: MaverickService,
+
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
     if (exchanger_type === ExchangerType.BEETHOVEN) {
@@ -80,6 +83,9 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.DEFIEDGE) {
       return await this.defiedgeService.getPoolsData();
+    }
+    if (exchanger_type === ExchangerType.MAVERICK) {
+      return await this.maverickService.getPoolsData();
     }
 
     this.logger.error(
