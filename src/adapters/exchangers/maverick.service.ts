@@ -37,7 +37,7 @@ export class MaverickService {
                         const poolData: PoolData = new PoolData();
 
                         poolData.address = item.id;
-                        poolData.name = item.name;
+                        poolData.name = item.name.replace('-', '/');
                         poolData.decimals = item.tokenBData.decimals;
                         poolData.tvl = (item.tvl.amount).toString();
                         poolData.apr = (item.topBin.annualizedFeeGrowth * 100).toFixed(2);
