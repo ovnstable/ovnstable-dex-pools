@@ -73,7 +73,7 @@ export class DefiedgeService {
         try {
             const response = await axios.get(url);
             console.log(response.data);
-            return response.data && response.data.lmInfo ? response.data.lmInfo.apr : 0;
+            return response.data && response.data.totalApy ? response.data.totalApy : 0;
         } catch (error) {
             console.log("Error when get apr.", error);
         }
