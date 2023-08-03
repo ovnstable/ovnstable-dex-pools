@@ -16,6 +16,7 @@ import { GndService } from "./exchangers/gnd.service";
 import { DraculaService } from "./exchangers/dracula.service";
 import { DefiedgeService } from "./exchangers/defiedge.service";
 import { MaverickService } from "./exchangers/maverick.service";
+import { CurveService } from './exchangers/curve.service';
 
 @Injectable()
 export class AdaptersService {
@@ -39,6 +40,7 @@ export class AdaptersService {
     private draculaService: DraculaService,
     private defiedgeService: DefiedgeService,
     private maverickService: MaverickService,
+    private curveService: CurveService,
 
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
@@ -86,6 +88,9 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.MAVERICK) {
       return await this.maverickService.getPoolsData();
+    }
+    if (exchanger_type === ExchangerType.CURVE) {
+      return await this.curveService.getPoolsData();
     }
 
     this.logger.error(
