@@ -29,10 +29,10 @@ export class ExchangerService {
     for (const exchanger_type of exchanger_types) {
 
      // for target test
-        if (exchanger_type != ExchangerType.CURVE) {
-          this.logger.log('Ignore: ' + exchanger_type);
-          continue;
-        }
+     //   if (exchanger_type != ExchangerType.MAVERICK) {
+     //     this.logger.log('Ignore: ' + exchanger_type);
+     //     continue;
+     //   }
 
       try {
         this.logger.log('Process with: ' + exchanger_type);

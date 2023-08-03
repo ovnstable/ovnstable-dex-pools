@@ -88,7 +88,7 @@ export class SkimService {
             const nameEnv = 'WEB3_RPC_' + contract.chain.toUpperCase();
             const rpc = process.env[nameEnv];
             if (rpc == undefined) {
-//                throw new Error(`${nameEnv} cannot be undefined`)
+                throw new Error(`${nameEnv} cannot be undefined`)
             }
 
             const provider = new ethers.providers.StaticJsonRpcProvider(rpc);
