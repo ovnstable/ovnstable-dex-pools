@@ -11,7 +11,7 @@ export class RamsesService {
   private readonly logger = new Logger(RamsesService.name);
 
   BASE_API_URL = 'https://ramses-api-5msw7.ondigitalocean.app';
-  METHOD_GET_PAIRS = 'pairs';
+  METHOD_GET_PAIRS = 'mixed-pairs';
   async getPoolsData(): Promise<PoolData[]> {
     const url = `${this.BASE_API_URL}/${this.METHOD_GET_PAIRS}`;
 
@@ -20,14 +20,10 @@ export class RamsesService {
         timeout: 80_000, // 80 sec
       })
       .then((data): PoolData[] => {
-        //        console.log('Response data: ', data.data);
         const pools: PoolData[] = [];
-        const poolsData = data.data;
-        const keys = Object.keys(poolsData);
+        const poolsData = data.data.pairs;
         let itemCount = 0;
-        for (let i = 0; i < keys.length; i++) {
-          const property = keys[i];
-          const item = poolsData[property];
+        for (const item of poolsData) {
           if (
             item &&
             item.symbol &&
@@ -35,12 +31,14 @@ export class RamsesService {
               item.symbol.toLowerCase().includes(str),
             )
           ) {
+
+            console.log(item)
             const poolData: PoolData = new PoolData();
-            poolData.address = item.pair_address;
+            poolData.address = item.id;
             poolData.name = item.symbol;
             poolData.decimals = item.decimals;
             poolData.tvl = item.tvl;
-            poolData.apr = item.lp_apr;
+            poolData.apr = item.lpApr;
             poolData.chain = ChainType.ARBITRUM;
 
             pools.push(poolData);
