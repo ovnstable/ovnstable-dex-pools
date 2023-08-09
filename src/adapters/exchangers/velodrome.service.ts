@@ -30,7 +30,7 @@ export class VelodromeService {
       {
         headless: true,
         ignoreHTTPSErrors :true,
-        executablePath: '/usr/bin/google-chrome',
+//        executablePath: '/usr/bin/google-chrome',
         args: ['--no-sandbox']
       }
     );
@@ -93,13 +93,16 @@ export class VelodromeService {
           continue
         }
 
+        console.log("TVL")
         // Extracting TVL: TVL starts with "$" and ends just before "Total".
         const tvlRegex = /TVL\s*~\$(.*?)APR/;
         const tvlData = str.match(tvlRegex)[1];
         const tvl = parseFloat(tvlData.replace(/,/g, ""));
 
         // Extracting APR: APR is after "APR" and ends just before "%".
-        const aprRegex = /APR(.*?%)Volume/;
+        const aprRegex = /APR([\d\.]+)/;
+        console.log("APR")
+
         const aprData = str.match(aprRegex)[1];
         const apr = parseFloat(aprData.replace('%', ""));
 

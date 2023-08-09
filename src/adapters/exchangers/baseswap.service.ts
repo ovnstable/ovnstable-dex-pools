@@ -8,9 +8,8 @@ import { ChainType } from '../../exchanger/models/inner/chain.type';
 const puppeteer = require('puppeteer');
 
 const POOLS_MAP = { // pool name: pool address
-    // todo: added when our pools release
-//    "DAI/DAI+": "0xd8769d8826149B137AF488b1e9Ac0e3AFdbC058a",
-//    "USD+/USDC": "0xd8769d8826149b137af488b1e9ac0e3afdbc058a"
+    "USD+/USDC": "0x696b4d181Eb58cD4B54a59d2Ce834184Cf7Ac31A",
+    "DAI+/USD+": "0x7Fb35b3967798cE8322cC50eF52553BC5Ee4c306"
 }
 
 const TRY_COUNT = 30;
@@ -32,7 +31,7 @@ export class BaseswapService {
                 executablePath: '/usr/bin/google-chrome',
                 args: ['--no-sandbox']
             }
-            );
+        );
 
         this.logger.debug("Browser is start. " + ExchangerType.BASESWAP);
 
@@ -133,7 +132,7 @@ export class BaseswapService {
                     poolData.decimals = null;
                     poolData.tvl = (tvlValue).toString();
                     poolData.apr = (apr).toString();
-                    poolData.chain = ChainType.ARBITRUM;
+                    poolData.chain = ChainType.BASE;
                     pools.push(poolData);
                     this.logger.log(`=========${ExchangerType.BASESWAP}=========`);
                     itemCount++;
