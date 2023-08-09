@@ -4,4 +4,5 @@ export enum ChainType {
   POLYGON = 'POLYGON',
   ARBITRUM = 'ARBITRUM',
   ZKSYNC = 'ZKSYNC',
+  BASE = 'BASE',
 }

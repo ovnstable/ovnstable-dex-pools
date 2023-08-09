@@ -17,6 +17,8 @@ import { DraculaService } from "./exchangers/dracula.service";
 import { DefiedgeService } from "./exchangers/defiedge.service";
 import { MaverickService } from "./exchangers/maverick.service";
 import { CurveService } from "./exchangers/curve.service";
+import { VelocimeterService } from "./exchangers/velocimeter.service";
+import { BaseswapService } from "./exchangers/baseswap.service";
 
 //
 @Module({
@@ -39,7 +41,9 @@ import { CurveService } from "./exchangers/curve.service";
     DraculaService,
     DefiedgeService,
     MaverickService,
-    CurveService
+    CurveService,
+    VelocimeterService,
+    BaseswapService
   ],
   exports: [AdaptersService],
 })

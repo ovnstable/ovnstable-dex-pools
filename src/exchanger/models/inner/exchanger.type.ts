@@ -15,6 +15,8 @@ export enum ExchangerType {
   DRACULA = 'Dracula',
   MAVERICK = 'Maverick',
   CURVE = 'Curve',
+  VELOCIMETER = 'Velocimeter',
+  BASESWAP = 'Baseswap',
 }
 
 export const DEX_SUPPORT_SKIM: ExchangerType[] = [
