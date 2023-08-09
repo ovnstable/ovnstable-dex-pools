@@ -29,7 +29,7 @@ export class BaseswapService {
             {
                 headless: true,
                 ignoreHTTPSErrors :true,
-//                executablePath: '/usr/bin/google-chrome',
+                executablePath: '/usr/bin/google-chrome',
                 args: ['--no-sandbox']
             }
             );
