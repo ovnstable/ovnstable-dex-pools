@@ -20,6 +20,7 @@ import { CurveService } from './exchangers/curve.service';
 import { VelocimeterService } from "./exchangers/velocimeter.service";
 import { BaseswapService } from './exchangers/baseswap.service';
 import { SwapbasedService } from './exchangers/swapbased.service';
+import { BalancerService } from './exchangers/balancer.service';
 
 @Injectable()
 export class AdaptersService {
@@ -46,7 +47,8 @@ export class AdaptersService {
     private curveService: CurveService,
     private velocimeterService: VelocimeterService,
     private baseswapService: BaseswapService,
-    private swapbasedService: SwapbasedService
+    private swapbasedService: SwapbasedService,
+    private balancerService: BalancerService,
 
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
@@ -106,6 +108,9 @@ export class AdaptersService {
     }
    if (exchanger_type === ExchangerType.SWAPBASED) {
      return await this.swapbasedService.getPoolsData();
+    }
+    if (exchanger_type === ExchangerType.BALANCER) {
+      return await this.balancerService.getPoolsData();
     }
 
     this.logger.error(

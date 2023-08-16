@@ -20,6 +20,7 @@ import { CurveService } from "./exchangers/curve.service";
 import { VelocimeterService } from "./exchangers/velocimeter.service";
 import { BaseswapService } from "./exchangers/baseswap.service";
 import { SwapbasedService } from "./exchangers/swapbased.service";
+import { BalancerService } from "./exchangers/balancer.service";
 
 //
 @Module({
@@ -45,7 +46,8 @@ import { SwapbasedService } from "./exchangers/swapbased.service";
     CurveService,
     VelocimeterService,
     BaseswapService,
-    SwapbasedService
+    SwapbasedService,
+    BalancerService
   ],
   exports: [AdaptersService],
 })
