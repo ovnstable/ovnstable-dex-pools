@@ -5,11 +5,11 @@ import { ExchangerRequestError } from '../../exceptions/exchanger.request.error'
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { AdaptersService } from '../adapters.service';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
-const puppeteer = require('puppeteer');
+import puppeteer from "puppeteer";
 
 const POOLS_MAP = { // pool name: pool address
-    "USD+/USDC": "0xd8769d8826149b137af488b1e9ac0e3afdbc058a_usd+-usdc",
-    "USD+/DAI+": "0xd8769d8826149B137AF488b1e9Ac0e3AFdbC058a_usd+-dai+"
+    "USD+/USDC": "0xb79dd08ea68a908a97220c76d19a6aa9cbde4376",
+    "USD+/DAI+": "0x65a2508c429a6078a7bc2f7df81ab575bd9d9275"
 }
 
 const TRY_COUNT = 30;
@@ -63,7 +63,7 @@ export class AlienbaseService {
             const data = await page.evaluate(() => {
 
 
-                const markerListOfData = '.bFhFSJ';
+                const markerListOfData = '.sc-9d28f6de-1';
 
                 // This function runs in the context of the browser page
                 // You can use DOM manipulation and JavaScript to extract the data
