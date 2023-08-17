@@ -13,18 +13,20 @@ export class BalancerService {
     BASE_GRAPHQL_API_URL = 'https://api.balancer.fi';
     BASE_GRAPHQL_URL = this.BASE_GRAPHQL_API_URL + '/graphql';
 
+    // лист адресов которые мы сканим
+    // https://api.balancer.fi/pools/42161/0xa8af146d79ac0bb981e4e0d8b788ec5711b1d5d000000000000000000000047b строим ссылку, пробегаемся и сканим
+
     async getPoolsData(): Promise<PoolData[]> {
         const query =
-            '{"query":"query { pools (orderBy: \\"totalLiquidity\\", orderDirection: \\"desc\\", where: {totalShares: {gt: 0.00001}, id: {not_in: [\\"\\"]}, tokensList: {contains: [\\"0x284eb68520c8fa83361c1a3a5910aec7f873c18b\\"]}, poolType: {in: [\\"Weighted\\", \\"Stable\\", \\"MetaStable\\", \\"LiquidityBootstrapping\\", \\"Investment\\", \\"StablePhantom\\", \\"ComposableStable\\"]}}, chainId: 42161, first: 2000) { pools { id address poolType poolTypeVersion swapFee tokensList totalLiquidity totalSwapVolume totalSwapFee totalShares volumeSnapshot feesSnapshot owner factory amp createTime swapEnabled symbol name protocolYieldFeeCache priceRateProviders { address token { address } } tokens { address balance weight priceRate symbol decimals token { latestUSDPrice pool { id totalShares address poolType mainIndex tokens { address balance weight priceRate symbol decimals token { latestUSDPrice pool { id totalShares address poolType mainIndex tokens { address balance weight priceRate symbol decimals token { latestUSDPrice pool { id totalShares address poolType mainIndex } } } } } } } } } isNew isInRecoveryMode isPaused apr { stakingApr { min max } swapFees tokenAprs { total breakdown } rewardAprs { total breakdown } protocolApr min max } } nextToken } }"}'
+            '{"query":"query { pools (orderBy: \\"totalLiquidity\\", orderDirection: \\"desc\\", where: {totalShares: {gt: 0.00001}, id: {not_in: [\\"\\"]}, tokensList: {contains: []}, poolType: {in: [\\"Weighted\\", \\"Stable\\", \\"MetaStable\\", \\"LiquidityBootstrapping\\", \\"Investment\\", \\"StablePhantom\\", \\"ComposableStable\\", \\"FX\\", \\"EulerLinear\\", \\"Gyro2\\", \\"Gyro3\\", \\"GyroE\\"]}}, chainId: 1, first: 20) { pools { id address poolType poolTypeVersion swapFee tokensList totalLiquidity totalSwapVolume totalSwapFee totalShares volumeSnapshot feesSnapshot owner factory amp createTime swapEnabled symbol name protocolYieldFeeCache priceRateProviders { address token { address } } tokens { address balance weight priceRate symbol decimals token { latestUSDPrice pool { id totalShares address poolType mainIndex tokens { address balance weight priceRate symbol decimals token { latestUSDPrice pool { id totalShares address poolType mainIndex tokens { address balance weight priceRate symbol decimals token { latestUSDPrice pool { id totalShares address poolType mainIndex } } } } } } } } } isNew isInRecoveryMode isPaused apr { stakingApr { min max } swapFees tokenAprs { total breakdown } rewardAprs { total breakdown } protocolApr min max } } nextToken } }"}'
         const response = fetch(this.BASE_GRAPHQL_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json;charset=UTF-8',
-                Accept: 'application/json;charset=UTF-8',
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
             },
             body: JSON.stringify({
-                query,
-                variables: {}
+                query
             })
         })
             .then(async (data): Promise<PoolData[]> => {
