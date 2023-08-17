@@ -18,6 +18,7 @@ export enum ExchangerType {
   VELOCIMETER = 'Velocimeter',
   BASESWAP = 'Baseswap',
   SWAPBASED = 'Swapbased',
+  ALIENBASE = 'Alienbase',
   BALANCER = 'Balancer',
 }
 

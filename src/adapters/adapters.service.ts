@@ -20,6 +20,7 @@ import { CurveService } from './exchangers/curve.service';
 import { VelocimeterService } from "./exchangers/velocimeter.service";
 import { BaseswapService } from './exchangers/baseswap.service';
 import { SwapbasedService } from './exchangers/swapbased.service';
+import { AlienbaseService } from "./exchangers/alienbase.service";
 import { BalancerService } from './exchangers/balancer.service';
 
 @Injectable()
@@ -48,6 +49,7 @@ export class AdaptersService {
     private velocimeterService: VelocimeterService,
     private baseswapService: BaseswapService,
     private swapbasedService: SwapbasedService,
+    private alienbaseService: AlienbaseService,
     private balancerService: BalancerService,
 
   ) {}
@@ -108,6 +110,9 @@ export class AdaptersService {
     }
    if (exchanger_type === ExchangerType.SWAPBASED) {
      return await this.swapbasedService.getPoolsData();
+    }
+    if (exchanger_type === ExchangerType.ALIENBASE) {
+      return await this.alienbaseService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.BALANCER) {
       return await this.balancerService.getPoolsData();
