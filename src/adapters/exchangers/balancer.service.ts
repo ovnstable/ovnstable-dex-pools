@@ -59,7 +59,7 @@ export class BalancerService {
                     poolData.name = item.tokens[0].symbol.replace('bb-', '') + '/' + item.tokens[1].symbol.replace('bb-', '');
                     poolData.decimals = item.tokens[0].decimals;
                     poolData.tvl = item.totalLiquidity.toString();
-                    poolData.apr = item.apr.min.toString();
+                    poolData.apr = (item.apr.min / 100).toString();
                     poolData.chain = ChainType.ARBITRUM;
 
                     pools.push(poolData);
