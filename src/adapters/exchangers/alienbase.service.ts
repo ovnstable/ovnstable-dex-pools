@@ -8,8 +8,8 @@ import { ChainType } from '../../exchanger/models/inner/chain.type';
 import puppeteer from "puppeteer";
 
 const POOLS_MAP = { // pool name: pool address
-    "USD+/USDC": "0xb79dd08ea68a908a97220c76d19a6aa9cbde4376",
-    "USD+/DAI+": "0x65a2508c429a6078a7bc2f7df81ab575bd9d9275"
+    "USD+/USDC": "0x553666081db0a8fdb337560009932852059d589a",
+    "USD+/DAI+": "0xd97a40434627D5c897790DE9a3d2E577Cba5F2E0"
 }
 
 const TRY_COUNT = 30;
