@@ -26,9 +26,9 @@ export class BaseswapService {
         // Launch a headless browser
         const browser = await puppeteer.launch(
             {
-                headless: false,
+                headless: true,
                 ignoreHTTPSErrors :true,
-//                executablePath: '/usr/bin/google-chrome',
+                executablePath: '/usr/bin/google-chrome',
                 args: ['--no-sandbox']
             }
         );
