@@ -20,6 +20,7 @@ export enum ExchangerType {
   SWAPBASED = 'Swapbased',
   ALIENBASE = 'Alienbase',
   BALANCER = 'Balancer',
+  CONVEX = 'Convex',
 }
 
 export const DEX_SUPPORT_SKIM: ExchangerType[] = [
