@@ -33,6 +33,10 @@ export class PoolData {
   @IsNotEmpty()
   enable: boolean;
 
+  @IsString()
+  @IsNotEmpty()
+  metaData: string; // some additional data
+
   toString() {
     return JSON.stringify(this);
   }

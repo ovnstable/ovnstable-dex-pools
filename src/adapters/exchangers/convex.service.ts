@@ -18,7 +18,6 @@ export class ConvexService {
     APR_API_URL = 'https://www.convexfinance.com';
     APYS = 'curve-arbitrum-apys';
 
-
     async getPoolsData(): Promise<PoolData[]> {
         const url = `${this.BASE_API_URL}/${this.API}/${this.UNDER_DEX}/${this.POOL_CHAIN}`;
         console.log("Load data by url:", url);
@@ -49,6 +48,7 @@ export class ConvexService {
 
                         poolData.apr = null;
                         poolData.chain = ChainType.ARBITRUM;
+                        poolData.metaData = item.convexPoolData && item.convexPoolData.id ? (item.convexPoolData.id).toString() : null
                         pools.push(poolData);
                         this.logger.log(`========= ${ExchangerType.CONVEX} =========`);
                         itemCount++;
@@ -80,8 +80,11 @@ export class ConvexService {
             })
             .then(async (data): Promise<PoolData[]> => {
                 const pairs = data.data;
-                const apr = pairs.apys['arbitrum-0xb34a7d1444a707349bc7b981b7f2e1f20f81f013-13'].baseApy + pairs.apys['arbitrum-0xb34a7d1444a707349bc7b981b7f2e1f20f81f013-13'].crvApy;
                 ovnPool.forEach(pool => {
+                    const chainName = pool.chain.toLowerCase();
+                    const pairKey = chainName + '-' + pool.address.toLocaleLowerCase() + '-' + pool.metaData
+                    console.log("Pair key for apys: ", pairKey)
+                    const apr = pairs.apys[pairKey].baseApy + pairs.apys[pairKey].crvApy;
                     pool.apr = apr ? apr.toString() : null;
                 });
                 return ovnPool;
