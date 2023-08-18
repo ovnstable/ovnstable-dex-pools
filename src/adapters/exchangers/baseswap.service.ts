@@ -26,9 +26,9 @@ export class BaseswapService {
         // Launch a headless browser
         const browser = await puppeteer.launch(
             {
-                headless: true,
+                headless: false,
                 ignoreHTTPSErrors :true,
-                executablePath: '/usr/bin/google-chrome',
+//                executablePath: '/usr/bin/google-chrome',
                 args: ['--no-sandbox']
             }
         );
@@ -85,6 +85,7 @@ export class BaseswapService {
             let itemCount = 0;
             for(let i = 0; i < data.length; i++) {
                 const element = data[i];
+
                 const str = element.toString();
 
                 // Extracting name: The name is at the beginning of the string and ends just before first –.
@@ -103,11 +104,11 @@ export class BaseswapService {
                     this.logger.log(`Found pool. Name: ${name}`);
 
                     // Extracting TVL: TVL starts with "$" and ends just before "Total".
-                    const tvlRegex = /(?<=\%Liquidity\$)[0-9,]+(?=Multiplier)/;
+                    const tvlRegex =  /Liquidity\$\s?([0-9\s]+)/;
                     const match = str.match(tvlRegex);
                     let tvlValue;
-                    if (match && match[0]) {
-                        tvlValue = parseFloat(match[0].replace(/,/g, ''));
+                    if (match && match[1]) {
+                        tvlValue = parseFloat(match[1].trim().replace(/\s/g, ''));
                     }
                     this.logger.log("TVL:", tvlValue)
 
@@ -130,8 +131,9 @@ export class BaseswapService {
                     poolData.address = address;
                     poolData.name = name;
                     poolData.decimals = null;
-                    poolData.tvl = (tvlValue).toString();
-                    poolData.apr = (apr).toString();
+
+                    poolData.tvl = tvlValue ? (tvlValue).toString() : null;
+                    poolData.apr = apr ? (apr).toString() : null;
                     poolData.chain = ChainType.BASE;
                     pools.push(poolData);
                     this.logger.log(`=========${ExchangerType.BASESWAP}=========`);
