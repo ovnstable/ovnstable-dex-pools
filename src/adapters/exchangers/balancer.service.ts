@@ -33,7 +33,7 @@ export class BalancerService {
     POOL = 'pools';
     CHAIN = '42161';
 
-    // лист адресов которые мы сканим
+    // symbol replace
     // https://api.balancer.fi/pools/42161/0xa8af146d79ac0bb981e4e0d8b788ec5711b1d5d000000000000000000000047b строим ссылку, пробегаемся и сканим
 
     async getPoolsData(): Promise<PoolData[]> {
@@ -56,7 +56,7 @@ export class BalancerService {
                     const poolData: PoolData = new PoolData();
 
                     poolData.address = item.address;
-                    poolData.name = item.tokens[0].symbol.replace('bb-', '') + '/' + item.tokens[1].symbol.replace('bb-', '');
+                    poolData.name = (item.tokens[0]?.token?.pool?.tokens[2]?.symbol || '') + '/' + (item.tokens[1]?.token?.pool?.tokens[2]?.symbol || 'DOLA');
                     poolData.decimals = item.tokens[0].decimals;
                     poolData.tvl = item.totalLiquidity.toString();
                     poolData.apr = (item.apr.min / 100).toString();
