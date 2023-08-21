@@ -144,7 +144,6 @@ export class BaseswapService {
                 }
             }
 
-            await browser.close();
             return pools;
         } catch (e) {
 

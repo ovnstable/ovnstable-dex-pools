@@ -141,7 +141,6 @@ export class AlienbaseService {
                 }
             }
 
-            await browser.close();
             return pools;
         } catch (e) {
 

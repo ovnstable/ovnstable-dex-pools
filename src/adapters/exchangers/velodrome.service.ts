@@ -122,7 +122,6 @@ export class VelodromeService {
         this.logger.log('==================');
       }
 
-      await browser.close();
       return pools;
     } catch (e) {
       const errorMessage = `Error when load ${ExchangerType.VELODROME} pairs. url: ${url}`;

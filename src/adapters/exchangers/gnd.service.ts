@@ -151,7 +151,6 @@ export class GndService {
                 }
             }
 
-            await browser.close();
             return pools;
         } catch (e) {
 
