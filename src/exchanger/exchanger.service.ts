@@ -29,7 +29,7 @@ export class ExchangerService {
     for (const exchanger_type of exchanger_types) {
 
 //      for target test
-//        if (exchanger_type != ExchangerType.BALANCER) {
+//        if (exchanger_type != ExchangerType.BASESWAP) {
 //          this.logger.log('Ignore: ' + exchanger_type);
 //          continue;
 //        }
