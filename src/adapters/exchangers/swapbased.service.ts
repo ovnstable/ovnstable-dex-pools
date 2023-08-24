@@ -70,8 +70,13 @@ export class SwapbasedService {
                     }
                 });
 
-                pools = await this.initAprs(pools);
-                return pools;
+                try {
+                    pools = await this.initAprs(pools);
+                    return pools;
+                } catch (e) {
+                    this.logger.error("Error when load apr for " + ExchangerType.SWAPBASED);
+                    return pools;
+                }
             })
             .catch((e) => {
                 const errorMessage = `Error when load ${ExchangerType.SWAPBASED} pairs.`;
