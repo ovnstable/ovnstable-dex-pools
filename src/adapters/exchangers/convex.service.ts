@@ -18,6 +18,8 @@ export class ConvexService {
     APR_API_URL = 'https://www.convexfinance.com';
     APYS = 'curve-arbitrum-apys';
 
+    ADDRESS_POSTFIX = '_convex'
+
     async getPoolsData(): Promise<PoolData[]> {
         const url = `${this.BASE_API_URL}/${this.API}/${this.UNDER_DEX}/${this.POOL_CHAIN}`;
         console.log("Load data by url:", url);
@@ -59,6 +61,13 @@ export class ConvexService {
                 });
 
                 pools = await this.initApr(pools);
+
+
+                // add postfix for agregator
+                pools = pools.map(pool => {
+                    pool.address += this.ADDRESS_POSTFIX;
+                    return pool;
+                });
                 return pools;
             })
             .catch((e) => {
