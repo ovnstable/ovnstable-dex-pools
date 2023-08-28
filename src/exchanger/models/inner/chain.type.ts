@@ -5,4 +5,5 @@ export enum ChainType {
   ARBITRUM = 'ARBITRUM',
   ZKSYNC = 'ZKSYNC',
   BASE = 'BASE',
+  LINEA = 'LINEA',
 }
