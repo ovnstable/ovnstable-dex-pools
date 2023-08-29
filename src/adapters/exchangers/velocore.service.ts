@@ -189,6 +189,7 @@ const puppeteer = require('puppeteer');
               throw new ExchangerRequestError(errorMessage);
           } finally {
               this.logger.debug(`Browser is closed. ${ExchangerType.VELOCORE}`);
+              await browser.close();
           }
       }
 
