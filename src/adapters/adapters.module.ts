@@ -23,6 +23,7 @@ import { SwapbasedService } from "./exchangers/swapbased.service";
 import { AlienbaseService } from "./exchangers/alienbase.service";
 import { BalancerService } from "./exchangers/balancer.service";
 import { ConvexService } from "./exchangers/convex.service";
+import { AerodromeService } from "./exchangers/aerodrome.service";
 
 //
 @Module({
@@ -52,6 +53,7 @@ import { ConvexService } from "./exchangers/convex.service";
     AlienbaseService,
     BalancerService,
     ConvexService,
+    AerodromeService,
   ],
   exports: [AdaptersService],
 })
