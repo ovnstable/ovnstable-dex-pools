@@ -24,7 +24,7 @@ export class AerodromeService {
     // Launch a headless browser
     const browser = await puppeteer.launch(
       {
-        headless: false,
+        headless: true,
         ignoreHTTPSErrors :true,
         executablePath: '/usr/bin/google-chrome',
         args: ['--no-sandbox']
