@@ -8,7 +8,11 @@ import { ChainType } from '../../exchanger/models/inner/chain.type';
 const puppeteer = require('puppeteer');
 
 const POOLS_MAP = { // pool name: pool address
-  "sAMM-DAI+/USD+": "0xcf77a3ba9a5ca399b7c97c74d54e5b1beb874e43",
+  "sAMM-DAI+/USD+": "0x1b05e4e814b3431a48b8164c41eac834d9ce2da6",
+  "sAMM-USD+/USDbC": "0x4a3636608d7bc5776cb19eb72caa36ebb9ea683b",
+  "vAMM-USD+/stERN": "0x607363389331f4b2d1b955d009506a67c565d75e",
+  "vAMM-USD+/USDbC": "0xdc0f1f6ecd03ec1c9ffc2a17bababd313477b20e",
+  "vAMM-gSIS/USD+": "0x888092c9d44cd647a073f8f1ed11305a31e4fa66",
 }
 
 
@@ -17,16 +21,16 @@ export class AerodromeService {
   private readonly logger = new Logger(AerodromeService.name);
 
   BASE_API_URL = 'https://aerodrome.finance/liquidity';
-  METHOD_GET_PAIRS = '?query=usd%2B&filter=default';
+  METHOD_GET_PAIRS = '?query=usd%2B&filter=all';
   async getPoolsData(): Promise<PoolData[]> {
     const url = `${this.BASE_API_URL}/${this.METHOD_GET_PAIRS}`;
 
     // Launch a headless browser
     const browser = await puppeteer.launch(
       {
-        headless: true,
+        headless: false,
         ignoreHTTPSErrors :true,
-        executablePath: '/usr/bin/google-chrome',
+//        executablePath: '/usr/bin/google-chrome',
         args: ['--no-sandbox']
       }
     );
@@ -82,8 +86,8 @@ export class AerodromeService {
 
         // Extracting name: The name is at the beginning of the string and ends just before first –.
         this.logger.log("Start search NAME")
-        const nameRegex = /(sAMM-.+?Stable Pool)/;
-        const name = str.match(nameRegex)[0].replace("Stable Pool","").replace(" ", "");
+        const nameRegex = /(sAMM-.+?Stable Pool|vAMM-.+?Volatile Pool)/;
+        const name = str.match(nameRegex)[0].replace("Stable Pool","").replace("Volatile Pool", "").replace(" ", "");
         this.logger.log("Name: " + name)
         const address = POOLS_MAP[name];
         if (!address) {

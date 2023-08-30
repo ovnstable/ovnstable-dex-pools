@@ -26,6 +26,7 @@ export enum ExchangerType {
 
 export const DEX_SUPPORT_SKIM: ExchangerType[] = [
     ExchangerType.VELODROME,
+    ExchangerType.AERODROME,
     ExchangerType.THENA,
     ExchangerType.RAMSES,
     ExchangerType.VELOCORE,
