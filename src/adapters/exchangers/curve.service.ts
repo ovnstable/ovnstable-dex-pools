@@ -17,7 +17,7 @@ export class CurveService {
         const arbitrumPoolsData = await this.loadPoolsData(ChainType.ARBITRUM);
         const optimismPools = await this.loadPoolsData(ChainType.OPTIMISM);
         const basePools = await this.loadPoolsData(ChainType.BASE);
-        return [...basePools];
+        return [...arbitrumPoolsData, ...optimismPools  ,...basePools];
     }
     
     async loadPoolsData(chainType: ChainType): Promise<PoolData[]> {
