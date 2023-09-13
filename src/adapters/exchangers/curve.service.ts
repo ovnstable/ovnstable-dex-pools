@@ -1,10 +1,10 @@
-import { Injectable, Logger } from "@nestjs/common";
-import { PoolData } from "./dto/pool.data.dto";
+import {Injectable, Logger} from "@nestjs/common";
+import {PoolData} from "./dto/pool.data.dto";
 import axios from "axios";
-import { ExchangerRequestError } from "../../exceptions/exchanger.request.error";
-import { ExchangerType } from "../../exchanger/models/inner/exchanger.type";
-import { AdaptersService } from "../adapters.service";
-import { ChainType } from "../../exchanger/models/inner/chain.type";
+import {ExchangerRequestError} from "../../exceptions/exchanger.request.error";
+import {ExchangerType} from "../../exchanger/models/inner/exchanger.type";
+import {AdaptersService} from "../adapters.service";
+import {ChainType} from "../../exchanger/models/inner/chain.type";
 
 @Injectable()
 export class CurveService {
@@ -16,7 +16,8 @@ export class CurveService {
     async getPoolsData(): Promise<PoolData[]> {
         const arbitrumPoolsData = await this.loadPoolsData(ChainType.ARBITRUM);
         const optimismPools = await this.loadPoolsData(ChainType.OPTIMISM);
-        return [...arbitrumPoolsData, ...optimismPools];
+        const basePools = await this.loadPoolsData(ChainType.BASE);
+        return [...basePools];
     }
     
     async loadPoolsData(chainType: ChainType): Promise<PoolData[]> {
