@@ -149,19 +149,19 @@ const puppeteer = require('puppeteer');
                       // totalAprValue = aprAfterLoop;
                   }
 
-                  let leastApr = foundedPoolAprs[0];
+                  let mostApr = foundedPoolAprs[0];
 
                   for (let k = 0; k < foundedPoolAprs.length; k++) {
-                      if (!leastApr) {
-                          leastApr = foundedPoolAprs[k];
+                      if (!mostApr) {
+                          mostApr = foundedPoolAprs[k];
                           continue;
                       }
-                      if (foundedPoolAprs[k] !== 0 && foundedPoolAprs[k] < leastApr) {
-                          leastApr = foundedPoolAprs[k];
+                      if (foundedPoolAprs[k] !== 0 && foundedPoolAprs[k] > mostApr) {
+                          mostApr = foundedPoolAprs[k];
                       }
                   }
 
-                  console.log("Total APR:", leastApr)
+                  console.log("Total APR:", mostApr)
 
                   if (!address) {
                       this.logger.error(`Pool address not found in map. name: ${name} exType: ${ExchangerType.VELOCORE}`)
@@ -173,7 +173,7 @@ const puppeteer = require('puppeteer');
                   poolData.name = name;
                   poolData.decimals = null;
                   poolData.tvl = totalTvlValue ? totalTvlValue.toString() : null;
-                  poolData.apr = leastApr ? leastApr.toString() : null;
+                  poolData.apr = mostApr ? mostApr.toString() : null;
                   poolData.chain = ChainType.LINEA;
                   pools.push(poolData);
                   this.logger.log(`=========${ExchangerType.VELOCORE}=========`);
