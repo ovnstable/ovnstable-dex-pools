@@ -43,13 +43,14 @@ export class AerodromeService {
 
       // Create a new page
       const page = await browser.newPage();
+      await page.setViewport({ width: 1280, height: 800 });
       await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36');
       // Set a default timeout of 20 seconds
       await page.setDefaultTimeout(60000);
 
       // Navigate to the SPA
       await page.goto(url);
-      const markerOfLoadingIsFinish = '.border-neutral-200';
+      const markerOfLoadingIsFinish = '.justify-between.bg-white.p-4.text-sm.text-gray-600';
 
 
       // Wait for the desired content to load
