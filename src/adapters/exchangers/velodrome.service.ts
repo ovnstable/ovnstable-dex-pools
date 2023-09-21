@@ -13,6 +13,7 @@ const POOLS_MAP = { // pool name: pool address
   "sAMMV2-USD+/DOLA": "0x0b28C2e41058EDc7D66c516c617b664Ea86eeC5d",
   "sAMMV2-FRAX/USD+": "0xD330841EF9527E3Bd0abc28a230C7cA8dec9423B",
   "sAMMV2-USD+/LUSD": "0x37e7D30CC180A750C83D68ED0C2511dA10694d63",
+  "vAMMV2-OVN/USD+": "0x844D7d2fCa6786Be7De6721AabdfF6957ACE73a0",
 }
 
 
@@ -21,7 +22,7 @@ export class VelodromeService {
   private readonly logger = new Logger(VelodromeService.name);
 
   BASE_API_URL = 'https://app.velodrome.finance/liquidity';
-  METHOD_GET_PAIRS = '?query=usd%2B&filter=default';
+  METHOD_GET_PAIRS = '?query=usd%2B&filter=all';
   async getPoolsData(): Promise<PoolData[]> {
     const url = `${this.BASE_API_URL}/${this.METHOD_GET_PAIRS}`;
 
@@ -47,7 +48,7 @@ export class VelodromeService {
 
       // Navigate to the SPA
       await page.goto(url);
-      const markerOfLoadingIsFinish = '.border-neutral-200';
+      const markerOfLoadingIsFinish = '.justify-between.bg-white.p-4.text-sm.text-gray-600';
 
 
       // Wait for the desired content to load
@@ -79,32 +80,35 @@ export class VelodromeService {
       for(let i = 0; i < data.length; i++) {
         const element = data[i];
         const str: string = element;
-        this.logger.log("String:", str);
+        this.logger.log("String: from browser", str);
         if (!str) {
           continue;
         }
 
         // Extracting name: The name is at the beginning of the string and ends just before first –.
-        const nameRegex = /(sAMMV2-.+?Stable Pool)/;
-        const name = str.match(nameRegex)[0].replace("Stable Pool","").replace(" ", "");
+        this.logger.log("Start search NAME")
+        const nameRegex = /(sAMMV2-.+?Stable Pool|vAMMV2-.+?Volatile Pool)/;
+        const name = str.match(nameRegex)[0].replace("Stable Pool","").replace("Volatile Pool", "").replace(" ", "");
+        this.logger.log("Name: " + name)
         const address = POOLS_MAP[name];
         if (!address) {
           this.logger.error(`Pool address not found in map. name: ${name} exType: ${ExchangerType.VELODROME}`)
           continue
         }
 
-        console.log("TVL")
+        this.logger.log("Start search TVL")
         // Extracting TVL: TVL starts with "$" and ends just before "Total".
         const tvlRegex = /TVL\s*~\$(.*?)APR/;
         const tvlData = str.match(tvlRegex)[1];
         const tvl = parseFloat(tvlData.replace(/,/g, ""));
+        this.logger.log("tvl: " + name)
 
         // Extracting APR: APR is after "APR" and ends just before "%".
         const aprRegex = /APR([\d\.]+)/;
-        console.log("APR")
-
+        console.log("Start search APR")
         const aprData = str.match(aprRegex)[1];
         const apr = parseFloat(aprData.replace('%', ""));
+        this.logger.log("apr: " + name)
 
 
         const poolData: PoolData = new PoolData();
