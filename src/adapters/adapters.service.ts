@@ -24,6 +24,7 @@ import { AlienbaseService } from "./exchangers/alienbase.service";
 import { BalancerService } from './exchangers/balancer.service';
 import { ConvexService } from "./exchangers/convex.service";
 import { AerodromeService } from './exchangers/aerodrome.service';
+import { BeefylService } from "./exchangers/beefy.service";
 
 @Injectable()
 export class AdaptersService {
@@ -55,6 +56,7 @@ export class AdaptersService {
     private balancerService: BalancerService,
     private convexService: ConvexService,
     private aerodromeService: AerodromeService,
+    private beefylService: BeefylService,
 
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
@@ -126,6 +128,9 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.AERODROME) {
       return await this.aerodromeService.getPoolsData();
+    }
+    if (exchanger_type === ExchangerType.BEEFY) {
+      return await this.beefylService.getPoolsData();
     }
 
     this.logger.error(

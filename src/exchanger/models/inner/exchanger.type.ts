@@ -3,6 +3,7 @@ export enum ExchangerType {
   AERODROME = 'Aerodrome',
   THENA = 'Thena',
   PEARL = 'Pearl',
+  BEEFY = 'Beefy',
   VEPLUS = 'Veplus',
   BEETHOVEN = 'Beethoven',
   DEFIEDGE = 'Defiedge',
