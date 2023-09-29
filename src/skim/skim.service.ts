@@ -59,7 +59,7 @@ export class SkimService {
             config.polling = false;
             this.telegramService = new TelegramService(config);
 
-            // this.telegramService.sendMessage('DexPool service is running');
+            this.telegramService.sendMessage('DexPool service is running');
         } else {
             this.logger.error('PRIVATE_KEY is not defined -> skim service cannot send transaction');
         }
