@@ -103,7 +103,7 @@ export class BeefylService {
         let apr = null;
         for (const [key, value] of Object.entries(pairs)) {
           if (key === poolName) {
-            apr = value['totalApy'];
+            apr = value['vaultApr'];
             break;
           }
         }
