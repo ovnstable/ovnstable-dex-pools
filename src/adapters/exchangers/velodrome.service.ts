@@ -106,7 +106,8 @@ export class VelodromeService {
         // Extracting APR: APR is after "APR" and ends just before "%".
         const aprRegex = /APR([\d\.]+)/;
         console.log("Start search APR")
-        const aprData = str.match(aprRegex)[1];
+        const aprStr = str.replace(/,/g, "");
+        const aprData = aprStr.match(aprRegex)[1];
         const apr = parseFloat(aprData.replace('%', ""));
         this.logger.log("apr: " + name)
 
