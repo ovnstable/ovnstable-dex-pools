@@ -7,7 +7,7 @@ import { AdaptersService } from '../adapters.service';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
 const puppeteer = require('puppeteer');
 
-    const poolsArray = [
+    const poolsLineaArray = [
         {
             name: 'USDC/USD+/USDT+',
             poolAddress: '0x1d0188c4b276a09366d05d6be06af61a73bc7535',
@@ -19,22 +19,31 @@ const puppeteer = require('puppeteer');
         },
     ];
 
-    const TIME_FOR_TRY = 10_000; // 5 sec.
+    const poolsZksyncArray = [
+        {
+            name: 'USD+/USDC',
+            poolAddress: '0xf5E67261CB357eDb6C7719fEFAFaaB280cB5E2A6',
+            tokens: [
+                '0x8FbF6e10BdD8668adDcd2A30F5a76aA3dF89bECE',
+                '0xfD9Ef3A008CC6068941Ca06e11D85dF39F4b9d8D'
+            ]
+        }
+    ]
+
+    const TIME_FOR_TRY = 20_000; // 5 sec.
 
     @Injectable()
     export class VelocoreService {
       private readonly logger = new Logger(VelocoreService.name);
 
-      BASE_API_URL = 'https://velocore-api-v2.up.railway.app/api';
-      API_VERSION = 'v1';
-      METHOD_GET_PAIRS = 'pairs';
+      BASE_POOL_ZKSYNC_URL = 'https://zksync.velocore.xyz/liquidity';
 
-      BASE_POOL_API = 'https://linea.velocore.xyz/liquidity';
+      BASE_POOL_LINEA_URL = 'https://linea.velocore.xyz/liquidity';
 
       async getPoolsData(): Promise<PoolData[]> {
           const lineaPools = await this.getLineaPoolsData();
           const zkSyncPools = await this.getPoolsDataZkSync();
-          return [...lineaPools, ...zkSyncPools]
+          return [...lineaPools ,...zkSyncPools]
       }
 
       async getLineaPoolsData(): Promise<PoolData[]> {
@@ -63,8 +72,8 @@ const puppeteer = require('puppeteer');
               let itemCount = 0;
 
 
-              for (let i = 0; i < poolsArray.length; i++) {
-                  const pool = poolsArray[i];
+              for (let i = 0; i < poolsLineaArray.length; i++) {
+                  const pool = poolsLineaArray[i];
                   const name = pool.name;
                   const address = pool.poolAddress;
                   const tokens = pool.tokens;
@@ -74,7 +83,7 @@ const puppeteer = require('puppeteer');
 
                   for (let j = 0; j < tokens.length; j++) {
                       const tokenAddress = tokens[j];
-                      const url = `${this.BASE_POOL_API}/${tokenAddress}`;
+                      const url = `${this.BASE_POOL_LINEA_URL}/${tokenAddress}`;
                       let tvlAfterLoop = 0;
 
                       // let aprAfterLoop = 0;
@@ -193,51 +202,160 @@ const puppeteer = require('puppeteer');
           }
       }
 
-  async getPoolsDataZkSync(): Promise<PoolData[]> {
-    const url = `${this.BASE_API_URL}/${this.API_VERSION}/${this.METHOD_GET_PAIRS}`;
-      await this.getLineaPoolsData();
+      async getPoolsDataZkSync(): Promise<PoolData[]> {
+          // Launch a headless browser
+          const browser = await puppeteer.launch(
+              {
+                headless: true,
+                ignoreHTTPSErrors :true,
+                executablePath: '/usr/bin/google-chrome',
+                args: ['--no-sandbox']
+              }
+          );
 
-    const response = axios
-      .get(url, {
-        timeout: 80_000, // 80 sec
-      })
-      .then((data): PoolData[] => {
-        //        console.log('Response data: ', data.data);
-        const pools: PoolData[] = [];
-        const pairs = data.data.data;
-        let itemCount = 0;
-        pairs.forEach((item) => {
-          if (
-            item &&
-            item.symbol &&
-            AdaptersService.OVN_POOLS_NAMES.some((str) =>
-              item.symbol.toLowerCase().includes(str),
-            )
-          ) {
-            const poolData: PoolData = new PoolData();
-            poolData.address = item.address;
-            poolData.name = item.symbol;
-            poolData.decimals = item.decimals;
-            poolData.tvl = item.tvl;
-            poolData.apr = item.apr;
-            poolData.chain = ChainType.ZKSYNC;
-            pools.push(poolData);
-            this.logger.log(`=========${ExchangerType.VELOCORE}=========`);
-            itemCount++;
-            this.logger.log('Found ovn pool #: ', itemCount);
-            this.logger.log('Found ovn pool: ', poolData);
-            this.logger.log('==================');
+          this.logger.debug("Browser is start. " + ExchangerType.VELOCORE);
+
+          try {
+              // Create a new page
+              const page = await browser.newPage();
+              await page.setViewport({width: 1280, height: 800});
+              await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36');
+
+              // Set a default timeout of 60 seconds
+              await page.setDefaultTimeout(60_000);
+
+              const pools: PoolData[] = [];
+              let itemCount = 0;
+
+
+              for (let i = 0; i < poolsZksyncArray.length; i++) {
+                  const pool = poolsZksyncArray[i];
+                  const name = pool.name;
+                  const address = pool.poolAddress;
+                  const tokens = pool.tokens;
+                  let totalTvlValue = 0;
+                  const foundedPoolAprs = [];
+
+
+                  for (let j = 0; j < tokens.length; j++) {
+                      const tokenAddress = tokens[j];
+                      const url = `${this.BASE_POOL_ZKSYNC_URL}/${tokenAddress}`;
+                      let tvlAfterLoop = 0;
+
+                      // let aprAfterLoop = 0;
+
+                      // Navigate to the SPA
+                      await page.goto(url);
+                      this.logger.log("GOTO: ", url)
+
+                      console.log(`Wait ${TIME_FOR_TRY / 1000} seconds`);
+                      await new Promise(resolve => setTimeout(resolve, TIME_FOR_TRY));
+
+                      // Wait for the desired content to load
+                      const elements = await page.$$('.css-tczy7u');
+                      this.logger.log("Amount of elements: ", elements.length);
+
+                      this.logger.log("The token url data successfully loaded");
+
+                      // Extract the data from the page
+                      const data = await page.evaluate(() => {
+                          const markerListOfData = '.body-cell';
+
+                          // This function runs in the context of the browser page
+                          // You can use DOM manipulation and JavaScript to extract the data
+                          const elements = document.querySelectorAll(markerListOfData);
+
+                          const extractedData = [];
+
+                          console.log("Elements: ", elements);
+                          elements.forEach(element => {
+                              extractedData.push(element.textContent);
+                          });
+
+                          return extractedData;
+                      });
+
+                      // Display the extracted data
+                      console.log("Data inside the token: ", data);
+
+                      for (let i = 0; i < data.length; i++) {
+                          const element = data[i];
+                          const str: string = element;
+                          this.logger.log("String: " + str);
+                          if (!str) {
+                              continue;
+                          }
+
+                          // Extracting TVL: TVL starts with "$".
+                          const tvlRegex = /\$ ([\d,.]+)/;
+                          const matchTvl = data[0].match(tvlRegex);
+                          let tvlValue;
+                          if (matchTvl && matchTvl[1]) {
+                              tvlValue = matchTvl[1];
+                              tvlAfterLoop = parseFloat(tvlValue);
+                          }
+
+                          // Extract APR value using regex
+                          const aprRegex = /([\d,.]+)%/;
+                          const matchApr = data[1].match(aprRegex);
+                          let aprValue;
+                          if (matchApr && matchApr[1]) {
+                              aprValue = parseFloat(matchApr[1]);
+                              foundedPoolAprs.push(aprValue);
+                              console.log("APR VALUE:", aprValue)
+                              /*if (aprValue > 0) {
+                                  aprAfterLoop = aprValue;
+                              }*/
+                          }
+                      }
+
+                      totalTvlValue += tvlAfterLoop;
+
+                      // totalAprValue = aprAfterLoop;
+                  }
+
+                  let mostApr = foundedPoolAprs[0];
+
+                  for (let k = 0; k < foundedPoolAprs.length; k++) {
+                      if (!mostApr) {
+                          mostApr = foundedPoolAprs[k];
+                          continue;
+                      }
+                      if (foundedPoolAprs[k] !== 0 && foundedPoolAprs[k] > mostApr) {
+                          mostApr = foundedPoolAprs[k];
+                      }
+                  }
+
+                  console.log("Total APR:", mostApr)
+
+                  if (!address) {
+                      this.logger.error(`Pool address not found in map. name: ${name} exType: ${ExchangerType.VELOCORE}`)
+                      continue
+                  }
+
+                  const poolData: PoolData = new PoolData();
+                  poolData.address = address;
+                  poolData.name = name;
+                  poolData.decimals = null;
+                  poolData.tvl = totalTvlValue ? totalTvlValue.toString() : null;
+                  poolData.apr = mostApr ? mostApr.toString() : null;
+                  poolData.chain = ChainType.ZKSYNC;
+                  pools.push(poolData);
+                  this.logger.log(`=========${ExchangerType.VELOCORE}=========`);
+                  itemCount++;
+                  this.logger.log('Found ovn pool #: ', itemCount);
+                  this.logger.log('Found ovn pool: ', poolData);
+                  this.logger.log('==================');
+              }
+              return pools;
+          } catch (e) {
+              const errorMessage = `Error occurred while loading ${ExchangerType.VELOCORE} pairs.`;
+              this.logger.error(errorMessage, e);
+              throw new ExchangerRequestError(errorMessage);
+          } finally {
+              this.logger.debug(`Browser is closed. ${ExchangerType.VELOCORE}`);
+              await browser.close();
           }
-        });
+      }
 
-        return pools;
-      })
-      .catch((e) => {
-        const errorMessage = `Error when load ${ExchangerType.VELOCORE} pairs.`;
-        this.logger.error(errorMessage, e);
-        throw new ExchangerRequestError(errorMessage);
-      });
-
-    return await response;
-  }
 }
