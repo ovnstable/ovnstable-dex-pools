@@ -15,10 +15,10 @@ export class CurveService {
     BASE_CHAIN = 'base';
 
     async getPoolsData(): Promise<PoolData[]> {
-        const arbitrumPoolsData = await this.loadPoolsData(ChainType.ARBITRUM);
-        const optimismPools = await this.loadPoolsData(ChainType.OPTIMISM);
+      /*  const arbitrumPoolsData = await this.loadPoolsData(ChainType.ARBITRUM);
+        const optimismPools = await this.loadPoolsData(ChainType.OPTIMISM);*/
         const basePools = await this.loadBasePoolsData();
-        return [...arbitrumPoolsData, ...optimismPools  ,...basePools];
+        return [...basePools];
     }
     
     async loadPoolsData(chainType: ChainType): Promise<PoolData[]> {
@@ -95,7 +95,7 @@ export class CurveService {
                         poolData.address = item.address;
                         poolData.name = item.coins[0].symbol + '/' + item.coins[1].symbol
                         poolData.tvl = (item.usdTotal).toString();
-                        poolData.apr = item.gaugeRewards[0].apy;
+                        poolData.apr = item.gaugeRewards[2].apy;
                         poolData.chain = ChainType.BASE;
                         pools.push(poolData);
                         this.logger.log(`========= ${ExchangerType.CURVE} =========`);
