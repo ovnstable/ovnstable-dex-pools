@@ -15,10 +15,10 @@ export class CurveService {
     BASE_CHAIN = 'base';
 
     async getPoolsData(): Promise<PoolData[]> {
-      /*  const arbitrumPoolsData = await this.loadPoolsData(ChainType.ARBITRUM);
-        const optimismPools = await this.loadPoolsData(ChainType.OPTIMISM);*/
+        const arbitrumPoolsData = await this.loadPoolsData(ChainType.ARBITRUM);
+        const optimismPools = await this.loadPoolsData(ChainType.OPTIMISM);
         const basePools = await this.loadBasePoolsData();
-        return [...basePools];
+        return [...arbitrumPoolsData, ...optimismPools, ...basePools];
     }
     
     async loadPoolsData(chainType: ChainType): Promise<PoolData[]> {
