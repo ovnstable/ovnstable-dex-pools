@@ -192,7 +192,7 @@ export class ConvexService {
                 return String(tvlValue);
             } else {
                 console.error("No valid TVL value found.");
-                return "N/A";
+                return null;
             }
 
         } catch (e) {
