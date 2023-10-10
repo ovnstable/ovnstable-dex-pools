@@ -63,7 +63,7 @@ export class AlienbaseService {
             const data = await page.evaluate(() => {
 
 
-                const markerListOfData = '.sc-9d28f6de-1';
+                const markerListOfData = '.sc-78704fdf-1';
 
                 // This function runs in the context of the browser page
                 // You can use DOM manipulation and JavaScript to extract the data
@@ -82,12 +82,12 @@ export class AlienbaseService {
 
             const pools: PoolData[] = [];
             let itemCount = 0;
-            for(let i = 0; i < data.length; i++) {
+            for (let i = 0; i < data.length; i++) {
                 const element = data[i];
                 const str = element.toString();
 
                 // Extracting name: The name is at the beginning of the string and ends just before first –.
-                const nameRegex = /.*(?=CoreEarned)/
+                const nameRegex = /.*(?=Earned)/;
                 const matchName = str.match(nameRegex);
                 if (!matchName || !matchName.length) {
                     this.logger.error(`Name not found. String: ${str}`);
@@ -108,21 +108,21 @@ export class AlienbaseService {
                     if (match && match[0]) {
                         tvlValue = parseFloat(match[0].replace(/,/g, ''));
                     }
-                    this.logger.log("TVL:", tvlValue)
+                    this.logger.log("TVL:", tvlValue);
 
-                    // // Extracting APR: APR is after "APR" and ends just before "%".
+                    // Extracting APR: APR is after "APR" and ends just before "%".
                     const aprRegex = /(?<=APR)\d+\.\d+(?=%Liquidity)/;
                     const matchApr = str.match(aprRegex);
                     let apr;
                     if (matchApr && matchApr[0]) {
                         apr = parseFloat(matchApr[0]);
                     }
-                    this.logger.log("APR:", apr)
+                    this.logger.log("APR:", apr);
 
                     const address = POOLS_MAP[name.toString()];
                     if (!address) {
-                        this.logger.error(`Pool address not found in map. name: ${name} exType: ${ExchangerType.ALIENBASE}`)
-                        continue
+                        this.logger.error(`Pool address not found in map. name: ${name} exType: ${ExchangerType.ALIENBASE}`);
+                        continue;
                     }
 
                     const poolData: PoolData = new PoolData();
