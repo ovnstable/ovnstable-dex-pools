@@ -5,6 +5,9 @@ import { ExchangerRequestError } from '../../exceptions/exchanger.request.error'
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { AdaptersService } from '../adapters.service';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
+import puppeteer from "puppeteer";
+
+const TIME_FOR_TRY = 5_000;
 
 @Injectable()
 export class ConvexService {
@@ -20,6 +23,8 @@ export class ConvexService {
 
     ADDRESS_POSTFIX = '_convex'
 
+    BASE_PUPETEER_URL = 'https://www.convexfinance.com/stake/arbitrum/13'
+
     async getPoolsData(): Promise<PoolData[]> {
         const url = `${this.BASE_API_URL}/${this.API}/${this.UNDER_DEX}/${this.POOL_CHAIN}`;
         console.log("Load data by url:", url);
@@ -31,6 +36,8 @@ export class ConvexService {
             .then(async (data): Promise<PoolData[]> => {
                 let pools: PoolData[] = [];
                 const pairs = data.data.pools;
+
+                const tvl = await this.getTvl();
 
                 let itemCount = 0;
                 pairs.forEach((item) => {
@@ -46,7 +53,7 @@ export class ConvexService {
                         poolData.address = item.address;
                         poolData.name = item.coins[0].symbol + '/' + item.coins[1].symbol.replace('BP-f', '');
                         poolData.decimals = item.decimals[0];
-                        poolData.tvl = (item.usdTotal).toString();
+                        poolData.tvl = tvl;
 
                         poolData.apr = null;
                         poolData.chain = ChainType.ARBITRUM;
@@ -105,5 +112,96 @@ export class ConvexService {
             });
 
         return await response;
+    }
+
+    async getTvl():Promise<string> {
+        const tvlUrl = `${this.BASE_PUPETEER_URL}`;
+
+        const browser = await puppeteer.launch(
+            {
+                headless: true,
+                ignoreHTTPSErrors: true,
+                executablePath: '/usr/bin/google-chrome',
+                args: ['--no-sandbox']
+            }
+        );
+
+        this.logger.debug("Browser is start. " + ExchangerType.CONVEX);
+
+        try {
+            // Create a new page
+            const page = await browser.newPage();
+            await page.setViewport({width: 1280, height: 800});
+            await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36');
+
+
+            // Set a default timeout of 60 seconds
+            await page.setDefaultTimeout(10_000);
+
+            // Navigate to the SPA
+            await page.goto(tvlUrl);
+            this.logger.log("GOTO: ", tvlUrl)
+
+            await new Promise(resolve => setTimeout(resolve, TIME_FOR_TRY));
+
+            // Wait for the desired content to load
+            const elements = await page.$$('.jsx-420173254');
+            this.logger.log("Amount of elements: ", elements.length);
+
+            this.logger.log("The data successfully loaded")
+
+            // Extract the data from the page
+            const data = await page.evaluate(() => {
+
+
+                const markerListOfData = '.jsx-2995461061';
+
+                // This function runs in the context of the browser page
+                // You can use DOM manipulation and JavaScript to extract the data
+                const elements = document.querySelectorAll(markerListOfData);
+                const extractedData = [];
+
+                elements.forEach(element => {
+                    extractedData.push(element.textContent);
+                });
+
+                return extractedData;
+            });
+
+            // Display the extracted data
+            console.log("Elements: ", data);
+
+            let tvlValue;
+            for (let i = 0; i < data.length; i++) {
+                const element = data[i];
+                const str = element.toString();
+
+                console.log("Extracting TVL from element:", str);
+
+                const tvlRegex = /\$([0-9,.]+)k/;
+                const match = str.match(tvlRegex);
+
+                if (match && match[1]) {
+                    console.log("Matched TVL:", match[1]);
+
+                    tvlValue = parseFloat(match[1].replace(/,/g, '')) * 1000;
+                    break;
+                }
+            }
+            if (!isNaN(tvlValue)) {
+                return String(tvlValue);
+            } else {
+                console.error("No valid TVL value found.");
+                return "N/A";
+            }
+
+        } catch (e) {
+            const errorMessage = `Error when load ${ExchangerType.CONVEX} pairs. url: ${tvlUrl}`;
+            this.logger.error(errorMessage, e);
+            throw new ExchangerRequestError(errorMessage);
+        } finally {
+            this.logger.debug("Browser is close. " + ExchangerType.CONVEX);
+            await browser.close();
+        }
     }
 }

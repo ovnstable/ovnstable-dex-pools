@@ -29,7 +29,7 @@ export class ExchangerService {
     for (const exchanger_type of exchanger_types) {
 
 //      for target test
-//        if (exchanger_type != ExchangerType.ALIENBASE) {
+//        if (exchanger_type != ExchangerType.CONVEX) {
 //          this.logger.log('Ignore: ' + exchanger_type);
 //          continue;
 //        }
