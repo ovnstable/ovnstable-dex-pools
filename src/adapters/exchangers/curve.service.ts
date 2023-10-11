@@ -47,7 +47,7 @@ export class CurveService {
                         poolData.address = item.address;
                         poolData.name = item.coins[0].symbol + '/' + item.coins[1].symbol
                         poolData.tvl = (item.usdTotal).toString();
-                        poolData.apr = item.gaugeCrvApy && item.gaugeCrvApy.length > 0 ? item.gaugeCrvApy[0] : 0;
+                        poolData.apr = item.gaugeCrvApy && item.gaugeCrvApy.length > 0 ? item.gaugeCrvApy[1] : 0;
                         poolData.chain = chainType;
                         pools.push(poolData);
                         this.logger.log(`========= ${ExchangerType.CURVE} =========`);
