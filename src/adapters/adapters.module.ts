@@ -25,6 +25,7 @@ import { BalancerService } from "./exchangers/balancer.service";
 import { ConvexService } from "./exchangers/convex.service";
 import { AerodromeService } from "./exchangers/aerodrome.service";
 import { BeefylService } from "./exchangers/beefy.service";
+import { BaseswapdefiedgeService } from "./exchangers/baseswapdefiedge.service";
 
 //
 @Module({
@@ -55,7 +56,8 @@ import { BeefylService } from "./exchangers/beefy.service";
     BalancerService,
     ConvexService,
     AerodromeService,
-    BeefylService
+    BeefylService,
+    BaseswapdefiedgeService
   ],
   exports: [AdaptersService],
 })

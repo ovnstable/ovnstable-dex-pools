@@ -25,12 +25,13 @@ import { BalancerService } from './exchangers/balancer.service';
 import { ConvexService } from "./exchangers/convex.service";
 import { AerodromeService } from './exchangers/aerodrome.service';
 import { BeefylService } from "./exchangers/beefy.service";
+import {BaseswapdefiedgeService} from "./exchangers/baseswapdefiedge.service";
 
 @Injectable()
 export class AdaptersService {
   private readonly logger = new Logger(AdaptersService.name);
 
-  static OVN_POOLS_NAMES: string[] = ['usd+', 'dai+', 'usdt+'];
+  static OVN_POOLS_NAMES: string[] = ['usd+', 'dai+', 'usdt+', 'eth+', 'ovn'];
 
   constructor(
     private beethovenService: BeethovenService,
@@ -57,6 +58,7 @@ export class AdaptersService {
     private convexService: ConvexService,
     private aerodromeService: AerodromeService,
     private beefylService: BeefylService,
+    private baseswapdefiedgeService: BaseswapdefiedgeService,
 
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
@@ -131,6 +133,9 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.BEEFY) {
       return await this.beefylService.getPoolsData();
+    }
+    if (exchanger_type === ExchangerType.BASESWAPDEFIEDGE) {
+      return await this.baseswapdefiedgeService.getPoolsData();
     }
 
     this.logger.error(

@@ -23,6 +23,7 @@ export enum ExchangerType {
   ALIENBASE = 'Alienbase',
   BALANCER = 'Balancer',
   CONVEX = 'Convex',
+  BASESWAPDEFIEDGE = 'Baseswapdefiedge'
 }
 
 export const DEX_SUPPORT_SKIM: ExchangerType[] = [
