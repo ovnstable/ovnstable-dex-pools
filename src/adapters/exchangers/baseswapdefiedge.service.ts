@@ -12,9 +12,8 @@ export class BaseswapdefiedgeService {
 
     POOLS_CONFIGURATION_LIST = [
         {
-            name: 'USDC/USD+',
+            name: 'USDC/OVN',
             poolAddress: '0xdc5c6b2145b8c37676142a6264fdd55f8f20b10c',
-            pool: '0x4f993ca764e9a4ae76d27eb488cfd252ac909f8d',
             chainType: ChainType.BASE,
             tokens: [
                 '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
@@ -22,9 +21,8 @@ export class BaseswapdefiedgeService {
             ]
         },
         {
-            name: 'OVN/USDC',
+            name: 'USDC/USD+',
             poolAddress: '0x075c2d4f7404727f48c5d617ef0a195e0b4623a0',
-            pool: '0x02c05fbfc162d28174c3b2d06a9433f05fdab96a',
             chainType: ChainType.BASE,
             tokens: [
                 '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
@@ -58,7 +56,7 @@ export class BaseswapdefiedgeService {
                 const poolName = `${data1.data.symbol}/${data2.data.symbol}`;
 
                 const poolData: PoolData = new PoolData();
-                poolData.address = poolConfiguration.pool;
+                poolData.address = poolConfiguration.poolAddress;
                 poolData.name = poolName;
                 poolData.decimals = null;
                 poolData.apr = await this.getApr(poolConfiguration.poolAddress);
