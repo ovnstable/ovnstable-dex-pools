@@ -60,7 +60,7 @@ export class BaseswapdefiedgeService {
                 const poolData: PoolData = new PoolData();
                 poolData.address = poolConfiguration.pool;
                 poolData.name = poolName;
-                poolData.decimals = data1.data.decimals;
+                poolData.decimals = null;
                 poolData.apr = await this.getApr(poolConfiguration.poolAddress);
                 poolData.tvl = await this.getTvl(poolConfiguration.poolAddress);
                 poolData.chain = poolConfiguration.chainType;
@@ -83,7 +83,7 @@ export class BaseswapdefiedgeService {
         console.log("Get tvl by url: ", url);
         try {
             const response = await axios.get(url);
-            return response.data.aum; // todo get tvl
+            return response.data.aum;
         } catch (error) {
             console.log("Error when get tvl.", error);
         }
@@ -94,7 +94,7 @@ export class BaseswapdefiedgeService {
         console.log("Get apr by url: ", url);
         try {
             const response = await axios.get(url);
-            return response.data.totalApy; // todo get apr
+            return response.data.totalApy;
         } catch (error) {
             console.log("Error when get apr.", error);
         }
