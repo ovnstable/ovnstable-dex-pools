@@ -4,62 +4,150 @@ import fetch from 'node-fetch';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
+import {AdaptersService} from "../adapters.service";
+const puppeteer = require('puppeteer');
+
+const TIME_FOR_TRY = 10_000; // 10 sec.
 
 @Injectable()
 export class BeethovenService {
   private readonly logger = new Logger(BeethovenService.name);
 
-  BASE_GRAPHQL_URL = 'https://backend-optimism-v2.beets-ftm-node.com/graphql';
-
-  async getPoolsData(): Promise<PoolData[]> {
-    const query =
-      'query GetPool($id: String!) {\n  pool: poolGetPool(id: $id) {\n    id\n    address\n    name\n    owner\n    decimals\n    factory\n    symbol\n    createTime\n    dynamicData {\n      poolId\n      swapEnabled\n      totalLiquidity\n      totalLiquidity24hAgo\n      totalShares\n      totalShares24hAgo\n      fees24h\n      swapFee\n      volume24h\n      fees48h\n      volume48h\n      lifetimeVolume\n      lifetimeSwapFees\n      holdersCount\n      swapsCount\n      sharePriceAth\n      sharePriceAthTimestamp\n      sharePriceAtl\n      sharePriceAtlTimestamp\n      totalLiquidityAth\n      totalLiquidityAthTimestamp\n      totalLiquidityAtl\n      totalLiquidityAtlTimestamp\n      volume24hAth\n      volume24hAthTimestamp\n      volume24hAtl\n      volume24hAtlTimestamp\n      fees24hAth\n      fees24hAthTimestamp\n      fees24hAtl\n      fees24hAtlTimestamp\n      apr {\n        hasRewardApr\n        thirdPartyApr\n        nativeRewardApr\n        swapApr\n        total\n        items {\n          id\n          title\n          apr\n          subItems {\n            id\n            title\n            apr\n            __typename\n          }\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    allTokens {\n      id\n      address\n      name\n      symbol\n      decimals\n      isNested\n      isPhantomBpt\n      __typename\n    }\n    displayTokens {\n      id\n      address\n      name\n      weight\n      symbol\n      nestedTokens {\n        id\n        address\n        name\n        weight\n        symbol\n        __typename\n      }\n      __typename\n    }\n    staking {\n      id\n      type\n      address\n      farm {\n        id\n        beetsPerBlock\n        rewarders {\n          id\n          address\n          tokenAddress\n          rewardPerSecond\n          __typename\n        }\n        __typename\n      }\n      gauge {\n        id\n        gaugeAddress\n        rewards {\n          id\n          rewardPerSecond\n          tokenAddress\n          __typename\n        }\n        __typename\n      }\n      reliquary {\n        levels {\n          level\n          balance\n          apr\n          allocationPoints\n          __typename\n        }\n        beetsPerSecond\n        totalBalance\n        __typename\n      }\n      __typename\n    }\n    investConfig {\n      singleAssetEnabled\n      proportionalEnabled\n      options {\n        poolTokenIndex\n        poolTokenAddress\n        tokenOptions {\n          ... on GqlPoolToken {\n            ...GqlPoolToken\n            __typename\n          }\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    withdrawConfig {\n      singleAssetEnabled\n      proportionalEnabled\n      options {\n        poolTokenIndex\n        poolTokenAddress\n        tokenOptions {\n          ... on GqlPoolToken {\n            ...GqlPoolToken\n            __typename\n          }\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    ... on GqlPoolWeighted {\n      nestingType\n      tokens {\n        ... on GqlPoolToken {\n          ...GqlPoolToken\n          __typename\n        }\n        ... on GqlPoolTokenLinear {\n          ...GqlPoolTokenLinear\n          __typename\n        }\n        ... on GqlPoolTokenPhantomStable {\n          ...GqlPoolTokenPhantomStable\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    ... on GqlPoolStable {\n      amp\n      tokens {\n        ... on GqlPoolToken {\n          ...GqlPoolToken\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    ... on GqlPoolMetaStable {\n      amp\n      tokens {\n        ... on GqlPoolToken {\n          ...GqlPoolToken\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    ... on GqlPoolElement {\n      unitSeconds\n      principalToken\n      baseToken\n      tokens {\n        ... on GqlPoolToken {\n          ...GqlPoolToken\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    ... on GqlPoolPhantomStable {\n      amp\n      nestingType\n      tokens {\n        ... on GqlPoolToken {\n          ...GqlPoolToken\n          __typename\n        }\n        ... on GqlPoolTokenLinear {\n          ...GqlPoolTokenLinear\n          __typename\n        }\n        ... on GqlPoolTokenPhantomStable {\n          ...GqlPoolTokenPhantomStable\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    ... on GqlPoolLinear {\n      mainIndex\n      wrappedIndex\n      lowerTarget\n      upperTarget\n      tokens {\n        ... on GqlPoolToken {\n          ...GqlPoolToken\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    ... on GqlPoolLiquidityBootstrapping {\n      name\n      nestingType\n      tokens {\n        ... on GqlPoolToken {\n          ...GqlPoolToken\n          __typename\n        }\n        ... on GqlPoolTokenLinear {\n          ...GqlPoolTokenLinear\n          __typename\n        }\n        ... on GqlPoolTokenPhantomStable {\n          ...GqlPoolTokenPhantomStable\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment GqlPoolToken on GqlPoolToken {\n  id\n  index\n  name\n  symbol\n  balance\n  address\n  priceRate\n  decimals\n  weight\n  totalBalance\n  __typename\n}\n\nfragment GqlPoolTokenLinear on GqlPoolTokenLinear {\n  id\n  index\n  name\n  symbol\n  balance\n  address\n  priceRate\n  decimals\n  weight\n  mainTokenBalance\n  wrappedTokenBalance\n  totalMainTokenBalance\n  totalBalance\n  pool {\n    id\n    name\n    symbol\n    address\n    owner\n    factory\n    createTime\n    wrappedIndex\n    mainIndex\n    upperTarget\n    lowerTarget\n    totalShares\n    totalLiquidity\n    bptPriceRate\n    tokens {\n      ... on GqlPoolToken {\n        ...GqlPoolToken\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n  __typename\n}\n\nfragment GqlPoolTokenPhantomStable on GqlPoolTokenPhantomStable {\n  id\n  index\n  name\n  symbol\n  balance\n  address\n  weight\n  priceRate\n  decimals\n  totalBalance\n  pool {\n    id\n    name\n    symbol\n    address\n    owner\n    factory\n    createTime\n    totalShares\n    totalLiquidity\n    nestingType\n    swapFee\n    amp\n    tokens {\n      ... on GqlPoolToken {\n        ...GqlPoolToken\n        __typename\n      }\n      ... on GqlPoolTokenLinear {\n        ...GqlPoolTokenLinear\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n  __typename\n}';
-    const response = fetch(this.BASE_GRAPHQL_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({
-        query,
-        variables: {
-          id: '0x43da214fab3315aa6c02e0b8f2bfb7ef2e3c60a50000000000000000000000ae',
+    POOLS_CONFIGURATION_LIST = [
+        {
+            name: 'OVN/wUSD+',
+            poolAddress: '0x00b82bc5edea6e5e6c77635e31a1a25aad99f881',
+            chainType: ChainType.OPTIMISM,
         },
-      }),
-    })
-      .then(async (data): Promise<PoolData[]> => {
-        const pools: PoolData[] = [];
-        const [responseBody] = await Promise.all([data.json()]);
-        //        console.log(responseBody);
-        let itemCount = 0;
-        const pool = responseBody.data.pool;
-        const token1 = pool.tokens[0];
-        const token2 = pool.tokens[1];
+    ]
 
-        const poolData: PoolData = new PoolData();
-        poolData.address = pool.address;
-        poolData.name = token1.symbol + '/' + token2.symbol;
-        poolData.decimals = pool.decimals;
-        poolData.tvl = (
-          parseInt(token1.totalBalance) + parseInt(token2.totalBalance)
-        ).toString();
-        poolData.apr = (pool.dynamicData.apr.total * 100).toString();
-        poolData.chain = ChainType.OPTIMISM;
-        pools.push(poolData);
-        this.logger.log(`=========${ExchangerType.BEETHOVEN}=========`);
-        itemCount++;
-        this.logger.log('Found ovn pool #: ', itemCount);
-        this.logger.log('Found ovn pool: ', poolData);
-        this.logger.log('==================');
+  BASE_API_URL = 'https://op.beets.fi/pool/0x00b82bc5edea6e5e6c77635e31a1a25aad99f881000200000000000000000105'
 
-        return pools;
-      })
-      .catch((e) => {
-        const errorMessage = `Error when load ${ExchangerType.BEETHOVEN} pairs.`;
-        this.logger.error(errorMessage, e);
-        throw new ExchangerRequestError(errorMessage);
-      });
+    async getPoolsData(): Promise<PoolData[]> {
+        const mappedPoolConfigurations = this.POOLS_CONFIGURATION_LIST.map((config) => {
+            return {
+                name: config.name,
+                poolAddress: config.poolAddress,
+                chainType: config.chainType,
+            };
+        });
 
-    return await response;
-  }
+        const url = `${this.BASE_API_URL}`;
+
+        // Launch a headless browser
+        const browser = await puppeteer.launch(
+            {
+                headless: true,
+                ignoreHTTPSErrors :true,
+                executablePath: '/usr/bin/google-chrome',
+                args: ['--no-sandbox']
+            }
+        );
+
+        this.logger.debug("Browser is start. " + ExchangerType.BEETHOVEN);
+
+        try {
+            // Create a new page
+            const page = await browser.newPage();
+            await page.setViewport({ width: 1280, height: 800 });
+            await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36');
+
+            // Set a default timeout of 60 seconds
+            await page.setDefaultTimeout(60_000);
+
+            // Navigate to the SPA
+            await page.goto(url);
+            this.logger.log("GOTO: ", url);
+
+            await new Promise(resolve => setTimeout(resolve, TIME_FOR_TRY));
+
+            // Wait for the desired content to load
+            const elements = await page.$$('.css-x09s84');
+            this.logger.log("Amount of elements: ", elements.length);
+
+            this.logger.log("The data successfully loaded");
+
+            // Extract the data from the page
+            const data = await page.evaluate(() => {
+                const markerListOfData = '.css-x09s84';
+
+                // This function runs in the context of the browser page
+                // You can use DOM manipulation and JavaScript to extract the data
+                const elements = document.querySelectorAll(markerListOfData);
+                const extractedData = [];
+
+                elements.forEach(element => {
+                    extractedData.push(element.textContent);
+                });
+
+                return extractedData;
+            });
+
+            // Display the extracted data
+            console.log("Elements: ", data);
+
+            const pools: PoolData[] = [];
+            let tvl = null;
+            let apr = null;
+
+            const tvlRegex = /TVL\$([\d.,]+[kKmM]?)\s*(\d+\.\d+%)?/;
+            const aprRegex = /Pool APR(\d+\.\d+)%Total APR(\d+\.\d+%)?/;
+
+            // Iterate through the data
+            for (let i = 0; i < data.length; i++) {
+                const element = data[i];
+                let tvlValue = null;
+                let aprValue = null;
+
+                // Extract TVL value
+                const tvlMatch = tvlRegex.exec(element);
+                if (tvlMatch) {
+                    tvlValue = tvlMatch[1];
+                    if (tvlValue) {
+                        if (tvlValue.endsWith('k')) {
+                            tvl = parseFloat(tvlValue) * 1000;
+                        } else if (tvlValue.endsWith('m')) {
+                            tvl = parseFloat(tvlValue) * 1000000;
+                        } else {
+                            tvl = parseFloat(tvlValue);
+                        }
+                    }
+                }
+
+                // Extract APR value
+                const aprMatch = aprRegex.exec(element);
+                if (aprMatch) {
+                    aprValue = aprMatch[1];
+                    if (aprValue) {
+                        apr = parseFloat(aprValue);
+                    }
+                }
+            }
+
+            const poolData: PoolData = new PoolData();
+            poolData.address = mappedPoolConfigurations[0].poolAddress;
+            poolData.name = mappedPoolConfigurations[0].name;
+            poolData.decimals = null;
+            poolData.tvl = tvl ? tvl.toString() : null;
+            poolData.apr = apr ? apr.toString() : null;
+            poolData.chain = mappedPoolConfigurations[0].chainType;
+
+            pools.push(poolData);
+
+            console.log(`=========${ExchangerType.BEETHOVEN}=========`);
+            console.log('Found ovn pool #: 1');
+            console.log('Found ovn pool: ', poolData);
+            console.log('==================');
+
+            return pools;
+        } catch (e) {
+            const errorMessage = `Error when loading ${ExchangerType.BEETHOVEN} pairs. URL: ${url}`;
+            this.logger.error(errorMessage, e);
+            throw new ExchangerRequestError(errorMessage);
+        } finally {
+            this.logger.debug("Browser is close. " + ExchangerType.BEETHOVEN);
+            await browser.close();
+        }
+    }
 }
+
