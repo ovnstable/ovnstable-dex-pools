@@ -91,7 +91,7 @@ export class BeethovenService {
             let apr = null;
 
             const tvlRegex = /TVL\$([\d.,]+[kKmM]?)\s*(\d+\.\d+%)?/;
-            const aprRegex = /Pool APR(\d+\.\d+)%Total APR(\d+\.\d+%)?/;
+            const aprRegex = /Pool APR\d+\.\d+% - (\d+\.\d+)%/;
 
             // Iterate through the data
             for (let i = 0; i < data.length; i++) {
