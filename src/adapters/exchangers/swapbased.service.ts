@@ -74,9 +74,8 @@ export class SwapbasedService {
                     pools = await this.initAprs(pools);
                     return pools;
                 } catch (e) {
-                    console.log(e, 'e')
-                    // this.logger.error("Error when load apr for " + ExchangerType.SWAPBASED);
-                    // return pools;
+                    this.logger.error("Error when load apr for " + ExchangerType.SWAPBASED);
+                    return pools;
                 }
             })
             .catch((e) => {

@@ -23,7 +23,7 @@ export class ExchangerService {
   async updateAllPools(): Promise<void> {
     console.log('updateAllPools from exchanger');
 
-    const exchanger_types = [ExchangerType.SHEKEL];
+    const exchanger_types = Object.values(ExchangerType);
     console.log('exchangers: ', exchanger_types);
 
     for (const exchanger_type of exchanger_types) {
@@ -68,7 +68,7 @@ export class ExchangerService {
           newPool.update_date = nowTime;
           newPool.platform = exchanger_type;
           newPool.chain = poolData.chain;
-          // await this.poolService.create(newPool);
+          await this.poolService.create(newPool);
         }
       } catch (e) {
         this.logger.error(
