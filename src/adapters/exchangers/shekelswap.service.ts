@@ -6,8 +6,31 @@ import { ExchangerRequestError } from "../../exceptions/exchanger.request.error"
 import { ChainType } from "../../exchanger/models/inner/chain.type";
 import { AdaptersService } from "../adapters.service";
 import puppeteer from "puppeteer";
+import BigNumber from "bignumber.js";
 
 const TIME_FOR_TRY = 2_000; // 5 sec.
+
+const rates = [
+    {
+        "tokens":[
+            "0xe80772Eaf6e2E18B651F160Bc9158b2A5caFCA65",
+            "0xeb8E93A0c7504Bffd8A8fFa56CD754c63aAeBFe8"
+        ],
+        "stakingRewardAddress":"0xf45e5485fb5C222617641f46CD7518111b55e43c",
+        "ended":false,
+        "lp":"",
+        "name":"",
+        "baseToken":"0xe80772Eaf6e2E18B651F160Bc9158b2A5caFCA65",
+        "rate": 100,
+        "rewardsRatio1": 0,
+        "rewardsRatio2": 1,
+        "voteable": false,
+        "poolPid": 9,
+        "lpName": "USD+-DAI+",
+        "rewardToken":"0xEe32ED3AC2A431A0F0e1DBba46ba27AE8d072902",
+        "pair":"0x77cA2ddfd61D1D5E5d709cF07549FEC3E2d80315"
+    }
+]
 
 @Injectable()
 export class ShekelswapService {
@@ -38,7 +61,14 @@ export class ShekelswapService {
     METHOD_GET_PAIRS = "#/farm";
 
     async getPoolsData(): Promise<PoolData[]> {
-        console.log('ShekelswapService')
+        const rateData = await fetch("https://raw.githubusercontent.com/chimpydev/shekelswap-lists/main/shekelswap.farmslist.json", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json"
+            }
+        })
+        const rates = await rateData.json()
         const query =
             "fragment PairFields on Pair {  id  trackedReserveETH  reserve0  reserve1  volumeUSD  reserveUSD  totalSupply  token0 {   symbol    id   decimals    derivedETH    __typename  }  token1 {   symbol   id    decimals   derivedETH    __typename  }  __typename} query pairs { pairs(    first: 1000   orderBy: trackedReserveETH    orderDirection: desc  ) {    ...PairFields    __typename  }}";
         const response = fetch(this.BASE_GRAPHQL_URL, {
@@ -56,9 +86,21 @@ export class ShekelswapService {
             .then(async (data): Promise<PoolData[]> => {
                 let pools: PoolData[] = [];
                 const [responseBody] = await Promise.all([data.json()]);
-//        console.log(responseBody);
                 let itemCount = 0;
                 const pairs = responseBody.data.pairs;
+                let gShekelUsdPrice = "0"
+
+                const gShekelPair = pairs.find((_) => {
+                    if (_.token0?.symbol === "gSHEKEL" || _.token1?.symbol === "gSHEKEL") return _
+                    return false
+                })
+
+                if (gShekelPair) {
+                    gShekelUsdPrice = new BigNumber(gShekelPair?.reserveUSD)
+                        .div(2)
+                        .div(gShekelPair?.reserve1)
+                        .toFixed(2)
+                }
 
                 pairs.forEach((item) => {
                     if (
@@ -70,13 +112,19 @@ export class ShekelswapService {
                         AdaptersService.OVN_POOLS_NAMES.some((str) =>
                             (item.token0.symbol + "/" + item.token1.symbol).toLowerCase().includes(str))
                     ) {
+                        const itemRateData = rates?.active?.find((_) => _.pair.toLowerCase() === item.id)
                         const poolData: PoolData = new PoolData();
                         poolData.address = item.id;
                         poolData.name = (item.token0.symbol + "/" + item.token1.symbol);
                         poolData.decimals = 18;
                         poolData.tvl = (item.reserve0 * 1 + item.reserve1 * 1).toString();
 
-                        poolData.apr = null; // load from html
+                        poolData.apr = new BigNumber(itemRateData?.rate ?? 0)
+                            .times(gShekelUsdPrice)
+                            .times(365)
+                            .div(item.reserveUSD)
+                            .times(100)
+                            .toFixed(2); // load from html
                         poolData.chain = ChainType.ARBITRUM;
                         pools.push(poolData);
                         this.logger.log(`=========${ExchangerType.SHEKEL}=========`);
@@ -87,14 +135,7 @@ export class ShekelswapService {
                     }
                 });
 
-                try {
-                    pools = await this.initAprs(pools);
-                    console.log(pools, 'pools')
-                    return pools;
-                } catch (e) {
-                    this.logger.error("Error when load apr for " + ExchangerType.SHEKEL);
-                    return pools;
-                }
+                return pools
             })
             .catch((e) => {
                 const errorMessage = `Error when load ${ExchangerType.SHEKEL} pairs.`;
@@ -104,105 +145,4 @@ export class ShekelswapService {
 
         return await response;
     }
-
-    private async initAprs(ovnPools: PoolData[]): Promise<PoolData[]> {
-        const url = `${this.BASE_URL}/${this.METHOD_GET_PAIRS}`;
-        const IS_MAC = process.env.IS_MAC
-
-        // Launch a headless browser
-        const browser = await puppeteer.launch(
-            {
-                headless: "new",
-                ignoreHTTPSErrors: true,
-                executablePath: IS_MAC ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : '/usr/bin/google-chrome',
-                args: ["--no-sandbox"]
-            }
-        );
-
-        this.logger.debug("Browser is start. " + ExchangerType.SHEKEL);
-
-        try {
-
-            // Create a new page
-            const page = await browser.newPage();
-            await page.setViewport({ width: 1280, height: 800 });
-            await page.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36");
-
-            // Set a default timeout of 60 seconds
-            await page.setDefaultTimeout(60_000);
-
-            // Navigate to the SPA
-            await page.goto(url);
-            const markerOfLoadingIsFinish = ".farmLPCardUp";
-
-
-            // Wait for the desired content to load
-            await page.waitForSelector(markerOfLoadingIsFinish);
-            console.log(`Wait ${TIME_FOR_TRY / 1000} seconds`);
-            await new Promise(resolve => setTimeout(resolve, TIME_FOR_TRY));
-
-
-            // Extract the data from the page
-            const data = await page.evaluate(() => {
-                const markerListOfData = ".farmLPCardUp";
-
-                // This function runs in the context of the browser page
-                // You can use DOM manipulation and JavaScript to extract the data
-                const elements = document.querySelectorAll(markerListOfData);
-                const extractedData = [];
-
-                console.log("Elements: ", elements);
-                elements.forEach(element => {
-                    extractedData.push(element.textContent);
-                });
-
-                return extractedData;
-            });
-
-            console.log("Data from browser: ", data);
-            for (let i = 0; i < data.length; i++) {
-                const element = data[i];
-                const str: string = element;
-                this.logger.log("String: " + str);
-                if (!str) {
-                    continue;
-                }
-
-                const nameMatch = str.match(/^(\S+ \/ \S+)/);
-
-                const strForApr = str.replace(/\//g, "").replace(/,/g, "");
-                const aprMatch = strForApr.match(/day([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?%-/);
-
-                let name = nameMatch ? nameMatch[1].replace(/ /g, "") : null;
-                this.logger.log("Name: " + name);
-                if (!name) {
-                    continue;
-                }
-
-                // revert name
-                const splitName = name.split("/");
-                name = splitName[1] + "/" + splitName[0];
-
-                const apr = aprMatch ? parseFloat(aprMatch[1].replace(/,/g, ".")) : null;
-
-                ovnPools.forEach(pool => {
-                    if (pool.name.toLowerCase() === name.toLowerCase()) {
-                        this.logger.log("Find pool for apr update: " + pool.address + " | " + pool.name);
-                        pool.apr = apr ? apr.toString() : null;
-                    }
-                });
-            }
-
-            return ovnPools;
-        } catch (e) {
-            const errorMessage = `Error when load ${ExchangerType.SHEKEL} pairs. url: ${url}`;
-            this.logger.error(errorMessage, e);
-            throw new ExchangerRequestError(errorMessage);
-        } finally {
-            this.logger.debug("Browser is close. " + ExchangerType.SHEKEL);
-            await browser.close();
-        }
-
-    }
-
 }
