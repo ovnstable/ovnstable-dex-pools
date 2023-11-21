@@ -20,6 +20,7 @@ import { CurveService } from "./exchangers/curve.service";
 import { VelocimeterService } from "./exchangers/velocimeter.service";
 import { BaseswapService } from "./exchangers/baseswap.service";
 import { SwapbasedService } from "./exchangers/swapbased.service";
+import { ShekelswapService } from "./exchangers/shekelswap.service";
 import { AlienbaseService } from "./exchangers/alienbase.service";
 import { BalancerService } from "./exchangers/balancer.service";
 import { ConvexService } from "./exchangers/convex.service";
@@ -56,14 +57,13 @@ import { BaseswapdefiedgeService } from "./exchangers/baseswapdefiedge.service";
     BalancerService,
     ConvexService,
     AerodromeService,
+    ShekelswapService,
     BeefylService,
     BaseswapdefiedgeService
   ],
   exports: [AdaptersService],
 })
 export class AdaptersModule implements OnModuleInit {
-
-
   constructor(private cronosService: CronosService) {
   }
 
