@@ -89,13 +89,14 @@ export class SwapbasedService {
 
     private async initAprs(ovnPools: PoolData[]): Promise<PoolData[]> {
         const url = `${this.BASE_URL}/${this.METHOD_GET_PAIRS}`;
+        const IS_MAC = process.env.IS_MAC
 
         // Launch a headless browser
         const browser = await puppeteer.launch(
             {
                 headless: true,
                 ignoreHTTPSErrors: true,
-                executablePath: '/usr/bin/google-chrome',
+                executablePath: IS_MAC ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : '/usr/bin/google-chrome',
                 args: ["--no-sandbox"]
             }
         );
