@@ -40,7 +40,7 @@ export class ShekelswapService {
             })
         })
             .then(async (data): Promise<PoolData[]> => {
-                let pools: PoolData[] = [];
+                const pools: PoolData[] = [];
                 const [responseBody] = await Promise.all([data.json()]);
                 let itemCount = 0;
                 const pairs = responseBody.data.pairs;
