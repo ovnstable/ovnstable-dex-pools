@@ -10,7 +10,7 @@ tag=1
 if [ "$stand" = "prod" ]
 then
   nameDapp="dex-aggregator"
-  dockerComposePath="/home/ubuntu/docker-compose.yaml"
+  dockerComposePath="/home/ubuntu/front/docker-compose.yaml"
 else
   exit
 fi
