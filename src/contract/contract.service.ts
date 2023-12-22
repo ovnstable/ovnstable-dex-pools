@@ -10,6 +10,7 @@ export class ContractService {
         @InjectRepository(Contract)
         private contractRepository: Repository<Contract>,
     ) {
+        this.getAllPayoutListeners()
     }
 
 
@@ -17,10 +18,13 @@ export class ContractService {
         const queryBuilder = this.contractRepository.createQueryBuilder('contracts');
 
         queryBuilder.where('contracts.id = :id', {id: 'PayoutListener'});
+        const data = await queryBuilder.getMany()
+        console.log(data, 'data')
         return await queryBuilder.getMany();
     }
 
     public async getUsdPlusByChain(chain: string, token: string): Promise<Contract> {
+        console.log(chain, token, 'getUsdPlusByChain')
 
         // For only DAI+|USDT+ tokens
         if (token !== 'usd+'){

@@ -1,11 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PoolData } from './dto/pool.data.dto';
-import axios from 'axios';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
-import { AdaptersService } from '../adapters.service';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
-const puppeteer = require('puppeteer');
+import { getAgent } from '../../utils/consts';
+import puppeteer from 'puppeteer';
 
 const POOLS_MAP = { // pool name: pool address
   "sAMMV2-USD+/DAI+": "0x667002F9DC61ebcBA8Ee1Cbeb2ad04060388f223",
@@ -21,9 +20,10 @@ const POOLS_MAP = { // pool name: pool address
 export class VelodromeService {
   private readonly logger = new Logger(VelodromeService.name);
 
-  BASE_API_URL = 'https://app.velodrome.finance/liquidity';
+  BASE_API_URL = 'https://velodrome.finance/liquidity';
   METHOD_GET_PAIRS = '?query=usd%2B&filter=all';
   async getPoolsData(): Promise<PoolData[]> {
+    console.log(getAgent(process.env.IS_MAC), "-----------getPoolsData")
     const url = `${this.BASE_API_URL}/${this.METHOD_GET_PAIRS}`;
 
     // Launch a headless browser
@@ -31,7 +31,7 @@ export class VelodromeService {
       {
         headless: true,
         ignoreHTTPSErrors :true,
-        executablePath: '/usr/bin/google-chrome',
+        executablePath: getAgent(process.env.IS_MAC),
         args: ['--no-sandbox']
       }
     );
@@ -126,6 +126,8 @@ export class VelodromeService {
         this.logger.log('Found ovn pool: ', poolData);
         this.logger.log('==================');
       }
+
+      console.log(pools, 'EXTRACTED---')
 
       return pools;
     } catch (e) {

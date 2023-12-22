@@ -51,7 +51,7 @@ export class ConvexService {
                         const poolData: PoolData = new PoolData();
 
                         poolData.address = item.address;
-                        poolData.name = item.coins[0].symbol + '/' + item.coins[1].symbol.replace('BP-f', '');
+                        poolData.name = item.coins[0].symbol + '/' + item.coins[1].symbol;
                         poolData.decimals = item.decimals[0];
                         poolData.tvl = tvl;
 
