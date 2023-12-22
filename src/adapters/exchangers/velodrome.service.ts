@@ -23,7 +23,6 @@ export class VelodromeService {
   BASE_API_URL = 'https://velodrome.finance/liquidity';
   METHOD_GET_PAIRS = '?query=usd%2B&filter=all';
   async getPoolsData(): Promise<PoolData[]> {
-    console.log(getAgent(process.env.IS_MAC), "-----------getPoolsData")
     const url = `${this.BASE_API_URL}/${this.METHOD_GET_PAIRS}`;
 
     // Launch a headless browser
