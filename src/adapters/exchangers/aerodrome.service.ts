@@ -1,11 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PoolData } from './dto/pool.data.dto';
-import axios from 'axios';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
-import { AdaptersService } from '../adapters.service';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
-const puppeteer = require('puppeteer');
+import puppeteer from 'puppeteer';
+import { getAgent } from '../../utils/consts';
 
 const POOLS_MAP = { // pool name: pool address
   "sAMM-DAI+/USD+": "0x1b05e4e814b3431a48b8164c41eac834d9ce2da6",
@@ -33,7 +32,7 @@ export class AerodromeService {
       {
         headless: true,
         ignoreHTTPSErrors :true,
-        executablePath: '/usr/bin/google-chrome',
+        executablePath: getAgent(process.env.IS_MAC),
         args: ['--no-sandbox']
       }
     );

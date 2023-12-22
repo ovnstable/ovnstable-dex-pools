@@ -9,7 +9,7 @@ import { ChainType } from "../../exchanger/models/inner/chain.type";
 @Injectable()
 export class VelocimeterService {
     private readonly logger = new Logger(VelocimeterService.name);
-    BASE_API_URL = 'https://base.velocimeter.xyz/api/';
+    BASE_API_URL = 'https://base.velocimeter.xyz/api';
     METHOD = 'pairs';
 
     async getPoolsData(): Promise<PoolData[]> {

@@ -21,7 +21,6 @@ export class ContractService {
     }
 
     public async getUsdPlusByChain(chain: string, token: string): Promise<Contract> {
-
         // For only DAI+|USDT+ tokens
         if (token !== 'usd+'){
           // Convert dai+ -> DAI

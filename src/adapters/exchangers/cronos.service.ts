@@ -112,7 +112,7 @@ export class CronosService {
     const contractsData = this.GAUGE_CONTRACTS_MAP.get(item.id);
     if (!contractsData || !this.gaugeContractMap.has(contractsData.address)) {
         this.logger.log('Calculation apr not availible on this pool: ' + ExchangerType.CHRONOS + ' ' + item.id);
-        return (0).toString();
+        return "0";
     }
 
     const gaugeContract = this.gaugeContractMap.get(contractsData.address);

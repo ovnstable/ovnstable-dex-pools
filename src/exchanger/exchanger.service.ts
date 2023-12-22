@@ -12,7 +12,8 @@ export class ExchangerService {
   constructor(
     private poolService: PoolService,
     private adaptersService: AdaptersService,
-  ) {}
+  ) {
+  }
 
   @Cron(CronExpression.EVERY_30_MINUTES)
   async runScheduler(): Promise<void> {
