@@ -127,8 +127,6 @@ export class VelodromeService {
         this.logger.log('==================');
       }
 
-      console.log(pools, 'EXTRACTED---')
-
       return pools;
     } catch (e) {
       const errorMessage = `Error when load ${ExchangerType.VELODROME} pairs. url: ${url}`;
