@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PoolModule } from './pool/pool.module';
 import { ExchangerModule } from './exchanger/exchanger.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { SkimModule } from './skim/skim.module';
 import { ExternalModule } from './external/external.module';
 
 @Module({
@@ -12,7 +11,6 @@ import { ExternalModule } from './external/external.module';
     TypeOrmModule.forRoot(),
     ScheduleModule.forRoot(),
     PoolModule,
-    SkimModule,
     ExchangerModule,
     ExternalModule,
   ],
