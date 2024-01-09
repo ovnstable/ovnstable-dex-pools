@@ -6,9 +6,6 @@ import { PoolDto } from './models/dto/pool.dto';
 import { PlDashboard } from './models/entities/pldashboard.entity';
 
 import {
-  TransactionService,
-} from "@overnight-contracts/eth-utils/dist/module/transaction/transactionService"
-import {
     TelegramService,
     TelegramServiceConfig
 } from "@overnight-contracts/eth-utils/dist/module/telegram/telegramService";
