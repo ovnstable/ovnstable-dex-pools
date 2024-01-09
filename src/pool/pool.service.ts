@@ -1,20 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable, Logger} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Pool } from './models/entities/pool.entity';
 import { PoolDto } from './models/dto/pool.dto';
 import { PlDashboard } from './models/entities/pldashboard.entity';
 
+import {
+  TransactionService,
+} from "@overnight-contracts/eth-utils/dist/module/transaction/transactionService"
+import {
+    TelegramService,
+    TelegramServiceConfig
+} from "@overnight-contracts/eth-utils/dist/module/telegram/telegramService";
+
 @Injectable()
 export class PoolService {
   POOLS_DAPP_TVL_LIMIT = 10_000;
+  private readonly logger = new Logger(PoolService.name);
+  telegramService: TelegramService;
 
   constructor(
     @InjectRepository(Pool)
     private poolRepository: Repository<Pool>,
     @InjectRepository(PlDashboard)
     private plDashboardRepository: Repository<PlDashboard>,
-  ) {}
+  ) {
+
+    const privateKey = process.env['PRIVATE_KEY'];
+
+    if (privateKey){
+        const config = new TelegramServiceConfig();
+        config.name = 'Dex-Pool Service';
+        config.polling = false;
+        this.telegramService = new TelegramService(config);
+
+        this.telegramService.sendMessage('DexPool service is running');
+    } else {
+        this.logger.error('PRIVATE_KEY is not defined -> skim service cannot send transaction');
+    }
+  }
 
   async findAll(): Promise<Pool[]> {
     return await this.poolRepository.find();
