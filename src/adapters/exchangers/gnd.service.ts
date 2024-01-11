@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
+import puppeteer from "puppeteer";
 import { PoolData } from './dto/pool.data.dto';
-import axios from 'axios';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { AdaptersService } from '../adapters.service';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
-const puppeteer = require('puppeteer');
+import { getAgent } from '../../utils/consts';
 
 const POOLS_MAP = { // pool name: pool address
     "DAI/DAI+": "0xd8769d8826149B137AF488b1e9Ac0e3AFdbC058a_dai-dai+",
@@ -28,7 +28,7 @@ export class GndService {
             {
                 headless: true,
                 ignoreHTTPSErrors :true,
-                executablePath: '/usr/bin/google-chrome',
+                executablePath: getAgent(process.env.IS_MAC),
                 args: ['--no-sandbox']
             }
             );

@@ -1,11 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
+import puppeteer from "puppeteer";
 import { PoolData } from './dto/pool.data.dto';
 import axios from 'axios';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { AdaptersService } from '../adapters.service';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
-const puppeteer = require('puppeteer');
+import { getAgent } from '../../utils/consts';
 
 const POOLS_MAP = { // pool name: pool address
     "USD+/USDC": "0x696b4d181Eb58cD4B54a59d2Ce834184Cf7Ac31A",
@@ -28,7 +29,7 @@ export class BaseswapService {
             {
                 headless: true,
                 ignoreHTTPSErrors :true,
-                executablePath: '/usr/bin/google-chrome',
+                executablePath: getAgent(process.env.IS_MAC),
                 args: ['--no-sandbox']
             }
         );

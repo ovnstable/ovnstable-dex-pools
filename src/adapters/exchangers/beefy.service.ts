@@ -1,11 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
+import puppeteer from "puppeteer";
 import { PoolData } from './dto/pool.data.dto';
 import axios from 'axios';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { AdaptersService } from '../adapters.service';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
-import puppeteer from "puppeteer";
+import { getAgent } from '../../utils/consts';
 
 const POOLS_MAP = {
   "velodrome-v2-ovn-usd+": {
@@ -123,7 +124,7 @@ export class BeefylService {
         {
           headless: true,
           ignoreHTTPSErrors :true,
-          executablePath: '/usr/bin/google-chrome',
+          executablePath: getAgent(process.env.IS_MAC),
           args: ['--no-sandbox']
         }
       );

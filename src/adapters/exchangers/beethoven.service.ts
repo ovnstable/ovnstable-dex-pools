@@ -1,11 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
+import puppeteer from "puppeteer";
 import { PoolData } from './dto/pool.data.dto';
-import fetch from 'node-fetch';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
-import {AdaptersService} from "../adapters.service";
-const puppeteer = require('puppeteer');
+import { getAgent } from '../../utils/consts';
 
 const TIME_FOR_TRY = 10_000; // 10 sec.
 
@@ -39,7 +38,7 @@ export class BeethovenService {
             {
                 headless: true,
                 ignoreHTTPSErrors :true,
-                executablePath: '/usr/bin/google-chrome',
+                executablePath: getAgent(process.env.IS_MAC),
                 args: ['--no-sandbox']
             }
         );

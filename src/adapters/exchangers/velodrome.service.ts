@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
+import puppeteer from 'puppeteer';
 import { PoolData } from './dto/pool.data.dto';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
 import { getAgent } from '../../utils/consts';
-import puppeteer from 'puppeteer';
 
 const POOLS_MAP = { // pool name: pool address
   "sAMMV2-USD+/DAI+": "0x667002F9DC61ebcBA8Ee1Cbeb2ad04060388f223",

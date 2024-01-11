@@ -1,11 +1,12 @@
 import { Injectable, Logger } from "@nestjs/common";
+import puppeteer from "puppeteer";
 import { PoolData } from "./dto/pool.data.dto";
 import fetch from "node-fetch";
 import { ExchangerType } from "../../exchanger/models/inner/exchanger.type";
 import { ExchangerRequestError } from "../../exceptions/exchanger.request.error";
 import { ChainType } from "../../exchanger/models/inner/chain.type";
 import { AdaptersService } from "../adapters.service";
-import puppeteer from "puppeteer";
+import { getAgent } from "src/utils/consts";
 
 const TIME_FOR_TRY = 2_000; // 5 sec.
 
@@ -96,7 +97,7 @@ export class SwapbasedService {
             {
                 headless: true,
                 ignoreHTTPSErrors: true,
-                executablePath: IS_MAC ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : '/usr/bin/google-chrome',
+                executablePath: getAgent(process.env.IS_MAC),
                 args: ["--no-sandbox"]
             }
         );
