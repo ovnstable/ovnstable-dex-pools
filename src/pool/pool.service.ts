@@ -25,6 +25,8 @@ export class PoolService {
 
     const privateKey = process.env['PRIVATE_KEY'];
 
+    if (!process.env.TELEGRAM_BOT_ENABLED) return
+
     if (privateKey){
         const config = new TelegramServiceConfig();
         config.name = 'Dex-Pool Service';

@@ -75,6 +75,7 @@ export class ShekelswapService {
                         poolData.decimals = 18;
                         poolData.tvl = (item.reserve0 * 1 + item.reserve1 * 1).toString();
 
+
                         poolData.apr = new BigNumber(itemRateData?.rate ?? 0)
                             .times(gShekelUsdPrice)
                             .times(365)
