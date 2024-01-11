@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ExchangerType } from 'src/exchanger/models/inner/exchanger.type';
 import { BeethovenService } from './exchangers/beethoven.service';
-import { RamsesService } from './exchangers/ramses.service';
 import { ThenaService } from './exchangers/thena.service';
 import { VelocoreService } from './exchangers/velocore.service';
 import { VelodromeService } from './exchangers/velodrome.service';
@@ -37,7 +36,6 @@ export class AdaptersService {
 
   constructor(
     private beethovenService: BeethovenService,
-    private ramsesService: RamsesService,
     private thenaService: ThenaService,
     private velocoreService: VelocoreService,
     private velodromService: VelodromeService,
@@ -67,9 +65,6 @@ export class AdaptersService {
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
     if (exchanger_type === ExchangerType.BEETHOVEN) {
       return await this.beethovenService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.RAMSES) {
-      return this.ramsesService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.THENA) {
       return await this.thenaService.getPoolsData();

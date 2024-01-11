@@ -4,7 +4,6 @@ import fetch from "node-fetch";
 import { ExchangerType } from "../../exchanger/models/inner/exchanger.type";
 import { ExchangerRequestError } from "../../exceptions/exchanger.request.error";
 import { ChainType } from "../../exchanger/models/inner/chain.type";
-import { AdaptersService } from "../adapters.service";
 import BigNumber from "bignumber.js";
 
 @Injectable()
