@@ -45,7 +45,7 @@ export class HorizaSwapService {
                     poolData.address = item.id;
                     poolData.name = (item.token0.symbol + "/" + item.token1.symbol);
                     poolData.decimals = 18;
-                    poolData.tvl = (item.reserve0 * 1 + item.reserve1 * 1).toString();
+                    poolData.tvl = item.totalValueLockedUSD;
 
                     // todo token lp price
                     const fees = new BigNumber(0.1)
