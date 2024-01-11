@@ -6,7 +6,7 @@ import { ExchangerType } from "../../exchanger/models/inner/exchanger.type";
 import { ExchangerRequestError } from "../../exceptions/exchanger.request.error";
 import { ChainType } from "../../exchanger/models/inner/chain.type";
 import { AdaptersService } from "../adapters.service";
-import { getAgent } from "src/utils/consts";
+import { getAgent } from "../../utils/consts";
 
 const TIME_FOR_TRY = 2_000; // 5 sec.
 
@@ -90,7 +90,6 @@ export class SwapbasedService {
 
     private async initAprs(ovnPools: PoolData[]): Promise<PoolData[]> {
         const url = `${this.BASE_URL}/${this.METHOD_GET_PAIRS}`;
-        const IS_MAC = process.env.IS_MAC
 
         // Launch a headless browser
         const browser = await puppeteer.launch(

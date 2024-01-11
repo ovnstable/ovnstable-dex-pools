@@ -1,10 +1,14 @@
 import { Injectable, Logger } from "@nestjs/common";
+import puppeteer from "puppeteer";
 import { PoolData } from "./dto/pool.data.dto";
 import fetch from "node-fetch";
 import { ExchangerType } from "../../exchanger/models/inner/exchanger.type";
 import { ExchangerRequestError } from "../../exceptions/exchanger.request.error";
 import { ChainType } from "../../exchanger/models/inner/chain.type";
+import { getAgent } from "../../utils/consts";
 import BigNumber from "bignumber.js";
+
+const TIME_FOR_TRY = 2_000; // 5 sec.
 
 @Injectable()
 export class HorizaSwapService {
@@ -40,23 +44,14 @@ export class HorizaSwapService {
                     return false
                 })
 
-                const pools: PoolData[] = filteredPools.map((item) => {
+                let pools: PoolData[] = filteredPools.map((item) => {
                     const poolData: PoolData = new PoolData();
                     poolData.address = item.id;
                     poolData.name = (item.token0.symbol + "/" + item.token1.symbol);
                     poolData.decimals = 18;
                     poolData.tvl = item.totalValueLockedUSD;
 
-                    // todo token lp price
-                    const fees = new BigNumber(0.1)
-                        .times(item.poolDayData[0].volumeToken0)
-                        .div(100)
-                        .times(365);
-
-                    poolData.apr = new BigNumber(item.totalValueLockedUSD)
-                        .div(fees)
-                        .times(100)
-                        .toFixed(2)
+                    poolData.apr = "0"
                     poolData.chain = ChainType.ARBITRUM;
                     this.logger.log(`=========${ExchangerType.HORIZA}=========`);
                     this.logger.log("Found ovn pool: ", poolData);
@@ -65,7 +60,14 @@ export class HorizaSwapService {
                     return poolData
                 });
 
-                return pools
+
+                try {
+                    pools = await this.initAprs(pools);
+                    return pools;
+                } catch (e) {
+                    this.logger.error("Error when load apr for " + ExchangerType.HORIZA);
+                    return pools;
+                }
             })
             .catch((e) => {
                 const errorMessage = `Error when load ${ExchangerType.HORIZA} pairs.`;
@@ -75,4 +77,103 @@ export class HorizaSwapService {
 
         return await response;
     }
+
+    private async initAprs(ovnPools: PoolData[]): Promise<PoolData[]> {
+        const url = `${this.BASE_URL}`;
+
+        // Launch a headless browser
+        const browser = await puppeteer.launch(
+            {
+                headless: true,
+                ignoreHTTPSErrors: true,
+                executablePath: getAgent(process.env.IS_MAC),
+                args: ["--no-sandbox"]
+            }
+        );
+
+        this.logger.debug("Browser is start. " + ExchangerType.HORIZA);
+
+        try {
+
+            // Create a new page
+            const page = await browser.newPage();
+            await page.setViewport({ width: 1280, height: 800 });
+            await page.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36");
+            // Set a default timeout of 20 seconds
+            await page.setDefaultTimeout(60000);
+
+            // Navigate to the SPA
+            await page.goto(url);
+            const markerOfLoadingIsFinish = ".customTable__row";
+
+
+            // Wait for the desired content to load
+            await page.waitForSelector(markerOfLoadingIsFinish);
+            console.log(`Wait ${TIME_FOR_TRY / 1000} seconds`);
+            await new Promise(resolve => setTimeout(resolve, TIME_FOR_TRY));
+
+
+            // Extract the data from the page
+            const data = await page.evaluate(() => {
+                const markerListOfData = ".customTable__row.customTable__row_back";
+
+                // This function runs in the context of the browser page
+                // You can use DOM manipulation and JavaScript to extract the data
+                const elements = document.querySelectorAll(markerListOfData);
+                const extractedData = [];
+
+                console.log("Elements: ", elements);
+                elements.forEach(element => {
+                    extractedData.push(element.textContent);
+                });
+
+                return extractedData;
+            });
+
+            console.log("Data from browser: HORIZA ", data);
+            for (let i = 0; i < data.length; i++) {
+                const element = data[i];
+                const str: string = element;
+                this.logger.log("String: " + str);
+                if (!str) {
+                    continue;
+                }
+
+                const nameMatch = str.match(/^(\S+ \/ \S+)/);
+                const name = nameMatch ? nameMatch[1].replace(/ /g, "") : null;
+
+                const regex =/((USD[TC+]+)\/USD\+Stable.*)0.01%(\d+\.\d+)%/;
+
+                // USDT+ / USD+ percentage values
+                const match = name.match(regex);
+                const poolParsedApr = match ? parseFloat(match[3]) : null;
+                
+                this.logger.log("Name: " + name);
+                if (!match) {
+                    continue;
+                }
+
+                // revert name
+                const pairSymbols = `${match[2]}/USD+`
+
+                ovnPools.forEach(pool => {
+                    if (pool.name === pairSymbols) {
+                        this.logger.log("Find pool for apr update: " + pool.address + " | " + pool.name);
+                        pool.apr = poolParsedApr ? poolParsedApr.toString() : null;
+                    }
+                });
+            }
+
+            return ovnPools;
+        } catch (e) {
+            const errorMessage = `Error when load ${ExchangerType.HORIZA} pairs. url: ${url}`;
+            this.logger.error(errorMessage, e);
+            throw new ExchangerRequestError(errorMessage);
+        } finally {
+            this.logger.debug("Browser is close. " + ExchangerType.HORIZA);
+            await browser.close();
+        }
+
+    }
+
 }

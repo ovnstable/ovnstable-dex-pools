@@ -8,7 +8,7 @@ import { WombatService } from './exchangers/wombat.service';
 import { SoluneaService } from './exchangers/solunea.service';
 import { CronosService } from './exchangers/cronos.service';
 import { VesyncService } from "./exchangers/vesync.service";
-import { ExternalModule } from "src/external/external.module";
+import { ExternalModule } from "../external/external.module";
 import { PearlService } from "./exchangers/pearl.service";
 import { VeplusService } from "./exchangers/veplus.service";
 import { GndService } from "./exchangers/gnd.service";
