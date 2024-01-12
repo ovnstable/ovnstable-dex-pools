@@ -142,7 +142,7 @@ export class HorizaSwapService {
                 const nameMatch = str.match(/^(\S+ \/ \S+)/);
                 const name = nameMatch ? nameMatch[1].replace(/ /g, "") : null;
 
-                const regex =/((USD[TC+]+)\/USD\+Stable.*)0.01%(\d+\.\d+)%/;
+                const regex =/((USD[TC+]+)\/USD\+Stable.*)0.01%(\d+.\d+)%/;
 
                 // USDT+ / USD+ percentage values
                 const match = name.match(regex);
@@ -150,7 +150,8 @@ export class HorizaSwapService {
                 
                 this.logger.log("Name: " + name);
                 console.log(match, 'match horiza')
-                if (!match) {
+                
+                if (!match || !poolParsedApr) {
                     continue;
                 }
 
@@ -162,7 +163,7 @@ export class HorizaSwapService {
                 ovnPools.forEach(pool => {
                     if (pool.name === pairSymbols) {
                         this.logger.log("Find pool for apr update: " + pool.address + " | " + pool.name);
-                        pool.apr = poolParsedApr ? poolParsedApr.toString() : null;
+                        pool.apr = poolParsedApr ? poolParsedApr.toFixed(2) : null;
                     }
                 });
             }
