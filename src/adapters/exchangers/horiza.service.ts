@@ -149,6 +149,7 @@ export class HorizaSwapService {
                 const poolParsedApr = match ? parseFloat(match[3]) : null;
                 
                 this.logger.log("Name: " + name);
+                console.log(match, 'match horiza')
                 if (!match) {
                     continue;
                 }
@@ -156,6 +157,8 @@ export class HorizaSwapService {
                 // revert name
                 const pairSymbols = `${match[2]}/USD+`
 
+                console.log(poolParsedApr, 'poolParsedApr horiza')
+                console.log(pairSymbols, 'pairSymbols horiza')
                 ovnPools.forEach(pool => {
                     if (pool.name === pairSymbols) {
                         this.logger.log("Find pool for apr update: " + pool.address + " | " + pool.name);
