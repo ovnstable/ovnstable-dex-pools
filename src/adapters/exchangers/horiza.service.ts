@@ -49,7 +49,7 @@ export class HorizaSwapService {
                     poolData.address = item.id;
                     poolData.name = (item.token0.symbol + "/" + item.token1.symbol);
                     poolData.decimals = 18;
-                    poolData.tvl = item.totalValueLockedUSD;
+                    poolData.tvl = new BigNumber(item.totalValueLockedToken0).plus(item.totalValueLockedToken1).toFixed(2);
 
                     poolData.apr = "0"
                     poolData.chain = ChainType.ARBITRUM;
