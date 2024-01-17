@@ -21,7 +21,7 @@ export class HorizaSwapService {
     BASE_URL = "https://app.horiza.io/liquidity";
 
     async getPoolsData(): Promise<PoolData[]> {
-        const query = "query AllPositions {  pools(orderBy: totalValueLockedUSD, orderDirection: desc) {    totalValueLockedUSD    liquidity    feeTier    id    token0 {      id      symbol    }    token1 {      id      symbol    }    poolDayData(where: {date_gte: 1704929200}) {      date      volumeToken0      volumeToken1      feesUSD      volumeUSD    }    poolHourData(where: {periodStartUnix_gte: 1704955564}) {      feesUSD      periodStartUnix    }  }}";
+        const query = "query AllPositions {  pools(orderBy: totalValueLockedUSD, orderDirection: desc) {    totalValueLockedUSD  totalValueLockedToken0  totalValueLockedToken1 liquidity    feeTier    id    token0 {      id      symbol    }    token1 {      id      symbol    }    poolDayData(where: {date_gte: 1704929200}) {      date      volumeToken0      volumeToken1      feesUSD      volumeUSD    }    poolHourData(where: {periodStartUnix_gte: 1704955564}) {      feesUSD      periodStartUnix    }  }}";
         const response = fetch(this.BASE_GRAPHQL_URL, {
             method: "POST",
             headers: {
