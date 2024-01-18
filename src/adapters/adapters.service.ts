@@ -26,7 +26,6 @@ import { ConvexService } from "./exchangers/convex.service";
 import { AerodromeService } from './exchangers/aerodrome.service';
 import { BeefylService } from "./exchangers/beefy.service";
 import {BaseswapdefiedgeService} from "./exchangers/baseswapdefiedge.service";
-import { HorizaSwapService } from './exchangers/horiza.service';
 
 @Injectable()
 export class AdaptersService {
@@ -60,7 +59,6 @@ export class AdaptersService {
     private beefylService: BeefylService,
     private baseswapdefiedgeService: BaseswapdefiedgeService,
     private shekelswapService: ShekelswapService,
-    private horizaSwapService: HorizaSwapService,
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
     if (exchanger_type === ExchangerType.BEETHOVEN) {
@@ -137,9 +135,6 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.SHEKEL) {
       return await this.shekelswapService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.HORIZA) {
-      return await this.horizaSwapService.getPoolsData();
     }
 
     this.logger.error(
