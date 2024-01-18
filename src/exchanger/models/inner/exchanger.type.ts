@@ -5,7 +5,6 @@ export enum ExchangerType {
   PEARL = 'Pearl',
   BEEFY = 'Beefy',
   SHEKEL = 'Shekelswap',
-  HORIZA = 'HorizaSwap',
   VEPLUS = 'Veplus',
   BEETHOVEN = 'Beethoven',
   DEFIEDGE = 'Defiedge',
@@ -25,6 +24,7 @@ export enum ExchangerType {
   ALIENBASE = 'Alienbase',
   BALANCER = 'Balancer',
   CONVEX = 'Convex',
+  PANCAKE = 'Pancake',
   BASESWAPDEFIEDGE = 'Baseswapdefiedge'
 }
 

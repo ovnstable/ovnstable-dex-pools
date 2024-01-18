@@ -20,6 +20,7 @@ import { VelocimeterService } from "./exchangers/velocimeter.service";
 import { BaseswapService } from './exchangers/baseswap.service';
 import { SwapbasedService } from './exchangers/swapbased.service';
 import { ShekelswapService } from './exchangers/shekelswap.service';
+import { PancakeService } from './exchangers/pancake.service';
 import { AlienbaseService } from "./exchangers/alienbase.service";
 import { BalancerService } from './exchangers/balancer.service';
 import { ConvexService } from "./exchangers/convex.service";
@@ -59,6 +60,7 @@ export class AdaptersService {
     private beefylService: BeefylService,
     private baseswapdefiedgeService: BaseswapdefiedgeService,
     private shekelswapService: ShekelswapService,
+    private pancakeService: PancakeService,
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
     if (exchanger_type === ExchangerType.BEETHOVEN) {
@@ -135,6 +137,9 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.SHEKEL) {
       return await this.shekelswapService.getPoolsData();
+    }
+    if (exchanger_type === ExchangerType.PANCAKE) {
+      return await this.pancakeService.getPoolsData();
     }
 
     this.logger.error(
