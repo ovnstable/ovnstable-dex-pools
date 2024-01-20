@@ -185,8 +185,7 @@ export class PancakeService {
                 }
 
                 // case for 2 pools on pancake
-                const USDC = match[1] === "USDC.e" ? "USDC" : match[1]
-                const pairSymbols = USDC === "USDC" ? `USD+/${USDC}` : `${match[1]}/USD+`;
+                const pairSymbols = match[1] === "USDC.e" ? `USD+/USDC` : `${match[1]}/USD+`;
 
                 ovnPools.forEach(pool => {
                     if (pool.name === pairSymbols) {
