@@ -71,7 +71,7 @@ export class PancakeService {
             })
         })
             .then(async (data): Promise<PoolData[]> => {
-                let pools: PoolData[] = [];
+                const pools: PoolData[] = [];
                 const [responseBody] = await Promise.all([data.json()]);
                 const apiPoolsData = responseBody.data.pools;
 
@@ -93,13 +93,16 @@ export class PancakeService {
 
 
                 try {
-                    pools = await this.initAprs(pools);
-                    return pools
+                    const newPools = await this.initAprs(pools);
+
+                    if (newPools.some((_) => BigNumber(_.apr).eq(0))) {
+                        throw Error(`Some Pancake pool apr === 0, ${newPools} data`)
+                    }
+
+                    return newPools
                 } catch (e) {
                     this.logger.error("Error when load apr for " + ExchangerType.PANCAKE);
                 }
-
-                return pools
             })
             .catch((e) => {
                 const errorMessage = `Error when load ${ExchangerType.PANCAKE} pairs.`;
