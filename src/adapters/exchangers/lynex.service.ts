@@ -27,7 +27,7 @@ export class LynexService {
                 token1: 'USD+'
             },
         ]
-        console.log("FETCHINGLYNEX")
+        
         const response = fetch(this.BASE_URL, {
             method: "GET",
             headers: {
@@ -51,7 +51,7 @@ export class LynexService {
                     poolData.tvl = new BigNumber(item.token0.reserve).plus(item.token1.reserve).toFixed(2);
 
 
-                    poolData.apr = "0";
+                    poolData.apr = `${item?.gauge?.apr}` ?? "0";
                     poolData.chain = ChainType.LINEA;
                     pools.push(poolData);
                     this.logger.log(`=========${ExchangerType.LYNEX}=========`);

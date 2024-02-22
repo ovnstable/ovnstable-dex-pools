@@ -27,6 +27,7 @@ import { AerodromeService } from "./exchangers/aerodrome.service";
 import { BeefylService } from "./exchangers/beefy.service";
 import { BaseswapdefiedgeService } from "./exchangers/baseswapdefiedge.service";
 import { LynexService } from "./exchangers/lynex.service";
+import { FraxService } from "./exchangers/frax.service";
 
 //
 @Module({
@@ -60,6 +61,7 @@ import { LynexService } from "./exchangers/lynex.service";
     BaseswapdefiedgeService,
     PancakeService,
     LynexService,
+    FraxService,
   ],
   exports: [AdaptersService],
 })
