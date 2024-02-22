@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ExchangerType } from 'src/exchanger/models/inner/exchanger.type';
 import { BeethovenService } from './exchangers/beethoven.service';
-import { ThenaService } from './exchangers/thena.service';
 import { VelocoreService } from './exchangers/velocore.service';
 import { VelodromeService } from './exchangers/velodrome.service';
 import { WombatService } from './exchangers/wombat.service';
@@ -27,6 +26,7 @@ import { ConvexService } from "./exchangers/convex.service";
 import { AerodromeService } from './exchangers/aerodrome.service';
 import { BeefylService } from "./exchangers/beefy.service";
 import {BaseswapdefiedgeService} from "./exchangers/baseswapdefiedge.service";
+import { LynexService } from './exchangers/lynex.service';
 
 @Injectable()
 export class AdaptersService {
@@ -36,7 +36,6 @@ export class AdaptersService {
 
   constructor(
     private beethovenService: BeethovenService,
-    private thenaService: ThenaService,
     private velocoreService: VelocoreService,
     private velodromService: VelodromeService,
     private wombatService: WombatService,
@@ -61,13 +60,11 @@ export class AdaptersService {
     private baseswapdefiedgeService: BaseswapdefiedgeService,
     private shekelswapService: ShekelswapService,
     private pancakeService: PancakeService,
+    private lynexService: LynexService,
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
     if (exchanger_type === ExchangerType.BEETHOVEN) {
       return await this.beethovenService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.THENA) {
-      return await this.thenaService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.VELOCORE) {
       return await this.velocoreService.getPoolsData();
@@ -140,6 +137,9 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.PANCAKE) {
       return await this.pancakeService.getPoolsData();
+    }
+    if (exchanger_type === ExchangerType.LYNEX) {
+      return await this.lynexService.getPoolsData();
     }
 
     this.logger.error(

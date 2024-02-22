@@ -25,7 +25,8 @@ export enum ExchangerType {
   BALANCER = 'Balancer',
   CONVEX = 'Convex',
   PANCAKE = 'Pancake',
-  BASESWAPDEFIEDGE = 'Baseswapdefiedge'
+  BASESWAPDEFIEDGE = 'Baseswapdefiedge',
+  LYNEX = 'Lynex'
 }
 
 export const DEX_SUPPORT_SKIM: ExchangerType[] = [

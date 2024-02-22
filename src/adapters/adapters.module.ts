@@ -1,7 +1,6 @@
 import { Module, OnModuleInit } from "@nestjs/common";
 import { AdaptersService } from './adapters.service';
 import { BeethovenService } from './exchangers/beethoven.service';
-import { ThenaService } from './exchangers/thena.service';
 import { VelocoreService } from './exchangers/velocore.service';
 import { VelodromeService } from './exchangers/velodrome.service';
 import { WombatService } from './exchangers/wombat.service';
@@ -27,6 +26,7 @@ import { ConvexService } from "./exchangers/convex.service";
 import { AerodromeService } from "./exchangers/aerodrome.service";
 import { BeefylService } from "./exchangers/beefy.service";
 import { BaseswapdefiedgeService } from "./exchangers/baseswapdefiedge.service";
+import { LynexService } from "./exchangers/lynex.service";
 
 //
 @Module({
@@ -35,7 +35,6 @@ import { BaseswapdefiedgeService } from "./exchangers/baseswapdefiedge.service";
     AdaptersService,
     // Exchangers:
     BeethovenService,
-    ThenaService,
     VelocoreService,
     VelodromeService,
     WombatService,
@@ -60,6 +59,7 @@ import { BaseswapdefiedgeService } from "./exchangers/baseswapdefiedge.service";
     BeefylService,
     BaseswapdefiedgeService,
     PancakeService,
+    LynexService,
   ],
   exports: [AdaptersService],
 })
