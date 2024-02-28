@@ -64,91 +64,92 @@ export class AdaptersService {
     private lynexService: LynexService,
     private fraxService: FraxService,
   ) {}
-  async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
-    if (exchanger_type === ExchangerType.BEETHOVEN) {
-      return await this.beethovenService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.VELOCORE) {
-      return await this.velocoreService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.VELODROME) {
-      return await this.velodromService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.WOMBAT) {
-      return await this.wombatService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.SOLUNEA) {
-      return await this.soluneaService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.CHRONOS) {
-      return await this.cronosService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.VESYNC) {
-      return await this.vesyncService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.PEARL) {
-      return await this.pearlService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.VEPLUS) {
-      return await this.veplusService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.GND) {
-      return await this.gndService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.DRACULA) {
-      return await this.draculaService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.DEFIEDGE) {
-      return await this.defiedgeService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.MAVERICK) {
-      return await this.maverickService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.CURVE) {
-      return await this.curveService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.VELOCIMETER) {
-      return await this.velocimeterService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.BASESWAP) {
-      return await this.baseswapService.getPoolsData();
-    }
-   if (exchanger_type === ExchangerType.SWAPBASED) {
-     return await this.swapbasedService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.ALIENBASE) {
-      return await this.alienbaseService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.BALANCER) {
-      return await this.balancerService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.CONVEX) {
-      return await this.convexService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.AERODROME) {
-      return await this.aerodromeService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.BEEFY) {
-      return await this.beefylService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.BASESWAPDEFIEDGE) {
-      return await this.baseswapdefiedgeService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.SHEKEL) {
-      return await this.shekelswapService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.PANCAKE) {
-      return await this.pancakeService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.LYNEX) {
-      return await this.lynexService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.FRAX) {
-      return await this.fraxService.getPoolsData();
-    }
+  async getPools(exchanger_type: ExchangerType) {
+  //   if (exchanger_type === ExchangerType.BEETHOVEN) {
+  //     return await this.beethovenService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.VELOCORE) {
+  //     return await this.velocoreService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.VELODROME) {
+  //     return await this.velodromService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.WOMBAT) {
+  //     return await this.wombatService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.SOLUNEA) {
+  //     return await this.soluneaService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.CHRONOS) {
+  //     return await this.cronosService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.VESYNC) {
+  //     return await this.vesyncService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.PEARL) {
+  //     return await this.pearlService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.VEPLUS) {
+  //     return await this.veplusService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.GND) {
+  //     return await this.gndService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.DRACULA) {
+  //     return await this.draculaService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.DEFIEDGE) {
+  //     return await this.defiedgeService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.MAVERICK) {
+  //     return await this.maverickService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.CURVE) {
+  //     return await this.curveService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.VELOCIMETER) {
+  //     return await this.velocimeterService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.BASESWAP) {
+  //     return await this.baseswapService.getPoolsData();
+  //   }
+  //  if (exchanger_type === ExchangerType.SWAPBASED) {
+  //    return await this.swapbasedService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.ALIENBASE) {
+  //     return await this.alienbaseService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.BALANCER) {
+  //     return await this.balancerService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.CONVEX) {
+  //     return await this.convexService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.AERODROME) {
+  //     return await this.aerodromeService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.BEEFY) {
+  //     return await this.beefylService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.BASESWAPDEFIEDGE) {
+  //     return await this.baseswapdefiedgeService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.SHEKEL) {
+  //     return await this.shekelswapService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.PANCAKE) {
+  //     return await this.pancakeService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.LYNEX) {
+  //     return await this.lynexService.getPoolsData();
+  //   }
+  //   if (exchanger_type === ExchangerType.FRAX) {
+  //     return await this.fraxService.getPoolsData();
+  //   }
 
     this.logger.error(
       `Error when get pools data. Exchange type not found: ${exchanger_type}`,
     );
+    return []
   }
 }

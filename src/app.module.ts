@@ -5,6 +5,7 @@ import { PoolModule } from './pool/pool.module';
 import { ExchangerModule } from './exchanger/exchanger.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ExternalModule } from './external/external.module';
+import { ClaimModule } from './claim/claim.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ExternalModule } from './external/external.module';
     PoolModule,
     ExchangerModule,
     ExternalModule,
+    ClaimModule,
   ],
   controllers: [],
   providers: [],
