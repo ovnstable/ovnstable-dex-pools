@@ -12,11 +12,12 @@ export class ClaimService {
     }
 
     public async checkUser(address: string, time: number): Promise<{ eligble: boolean }> {
+        if (!address || !time) return { eligble: false };
         const timeUnixPerWeek = 60 * 60 * 24 * 7;
         const nowUnix = Math.floor(Date.now() / 1000)
         const item = await this.claimRepository.findOne({ address });
 
-        if (!item && address && time) {
+        if (!item) {
             await this.claimRepository.save({
                 id: `${address}_${time}`,
                 address,
