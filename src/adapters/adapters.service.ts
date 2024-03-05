@@ -3,7 +3,6 @@ import { ExchangerType } from 'src/exchanger/models/inner/exchanger.type';
 import { BeethovenService } from './exchangers/beethoven.service';
 import { VelocoreService } from './exchangers/velocore.service';
 import { VelodromeService } from './exchangers/velodrome.service';
-import { WombatService } from './exchangers/wombat.service';
 import { PoolData } from './exchangers/dto/pool.data.dto';
 import { SoluneaService } from './exchangers/solunea.service';
 import { CronosService } from './exchangers/cronos.service';
@@ -15,10 +14,8 @@ import { DraculaService } from "./exchangers/dracula.service";
 import { DefiedgeService } from "./exchangers/defiedge.service";
 import { MaverickService } from "./exchangers/maverick.service";
 import { CurveService } from './exchangers/curve.service';
-import { VelocimeterService } from "./exchangers/velocimeter.service";
 import { BaseswapService } from './exchangers/baseswap.service';
 import { SwapbasedService } from './exchangers/swapbased.service';
-import { ShekelswapService } from './exchangers/shekelswap.service';
 import { PancakeService } from './exchangers/pancake.service';
 import { AlienbaseService } from "./exchangers/alienbase.service";
 import { BalancerService } from './exchangers/balancer.service';
@@ -39,7 +36,6 @@ export class AdaptersService {
     private beethovenService: BeethovenService,
     private velocoreService: VelocoreService,
     private velodromService: VelodromeService,
-    private wombatService: WombatService,
     private soluneaService: SoluneaService,
     private cronosService: CronosService,
     private vesyncService: VesyncService,
@@ -50,7 +46,6 @@ export class AdaptersService {
     private defiedgeService: DefiedgeService,
     private maverickService: MaverickService,
     private curveService: CurveService,
-    private velocimeterService: VelocimeterService,
     private baseswapService: BaseswapService,
     private swapbasedService: SwapbasedService,
     private alienbaseService: AlienbaseService,
@@ -59,7 +54,6 @@ export class AdaptersService {
     private aerodromeService: AerodromeService,
     private beefylService: BeefylService,
     private baseswapdefiedgeService: BaseswapdefiedgeService,
-    private shekelswapService: ShekelswapService,
     private pancakeService: PancakeService,
     private lynexService: LynexService,
     private fraxService: FraxService,
@@ -73,9 +67,6 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.VELODROME) {
       return await this.velodromService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.WOMBAT) {
-      return await this.wombatService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.SOLUNEA) {
       return await this.soluneaService.getPoolsData();
@@ -107,9 +98,6 @@ export class AdaptersService {
     if (exchanger_type === ExchangerType.CURVE) {
       return await this.curveService.getPoolsData();
     }
-    if (exchanger_type === ExchangerType.VELOCIMETER) {
-      return await this.velocimeterService.getPoolsData();
-    }
     if (exchanger_type === ExchangerType.BASESWAP) {
       return await this.baseswapService.getPoolsData();
     }
@@ -133,9 +121,6 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.BASESWAPDEFIEDGE) {
       return await this.baseswapdefiedgeService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.SHEKEL) {
-      return await this.shekelswapService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.PANCAKE) {
       return await this.pancakeService.getPoolsData();

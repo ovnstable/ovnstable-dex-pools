@@ -9,7 +9,6 @@ import { getAgent } from '../../utils/consts';
 const POOLS_MAP = { // pool name: pool address
   "sAMM-DAI+/USD+": "0x1b05e4e814b3431a48b8164c41eac834d9ce2da6",
   "sAMM-USD+/USDbC": "0x4a3636608d7bc5776cb19eb72caa36ebb9ea683b",
-  "sAMM-DOLA/USD+": "0x8E9154AC849e839d60299E85156bcb589De2693A",
   "vAMM-USD+/stERN": "0x607363389331f4b2d1b955d009506a67c565d75e",
   "vAMM-USD+/USDbC": "0xdc0f1f6ecd03ec1c9ffc2a17bababd313477b20e",
   "vAMM-OVN/USD+": "0x61366A4e6b1DB1b85DD701f2f4BFa275EF271197",

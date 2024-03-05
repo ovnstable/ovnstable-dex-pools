@@ -3,7 +3,6 @@ import { AdaptersService } from './adapters.service';
 import { BeethovenService } from './exchangers/beethoven.service';
 import { VelocoreService } from './exchangers/velocore.service';
 import { VelodromeService } from './exchangers/velodrome.service';
-import { WombatService } from './exchangers/wombat.service';
 import { SoluneaService } from './exchangers/solunea.service';
 import { CronosService } from './exchangers/cronos.service';
 import { VesyncService } from "./exchangers/vesync.service";
@@ -15,10 +14,8 @@ import { DraculaService } from "./exchangers/dracula.service";
 import { DefiedgeService } from "./exchangers/defiedge.service";
 import { MaverickService } from "./exchangers/maverick.service";
 import { CurveService } from "./exchangers/curve.service";
-import { VelocimeterService } from "./exchangers/velocimeter.service";
 import { BaseswapService } from "./exchangers/baseswap.service";
 import { SwapbasedService } from "./exchangers/swapbased.service";
-import { ShekelswapService } from "./exchangers/shekelswap.service";
 import { PancakeService } from "./exchangers/pancake.service";
 import { AlienbaseService } from "./exchangers/alienbase.service";
 import { BalancerService } from "./exchangers/balancer.service";
@@ -38,7 +35,6 @@ import { FraxService } from "./exchangers/frax.service";
     BeethovenService,
     VelocoreService,
     VelodromeService,
-    WombatService,
     SoluneaService,
     CronosService,
     VesyncService,
@@ -49,14 +45,12 @@ import { FraxService } from "./exchangers/frax.service";
     DefiedgeService,
     MaverickService,
     CurveService,
-    VelocimeterService,
     BaseswapService,
     SwapbasedService,
     AlienbaseService,
     BalancerService,
     ConvexService,
     AerodromeService,
-    ShekelswapService,
     BeefylService,
     BaseswapdefiedgeService,
     PancakeService,

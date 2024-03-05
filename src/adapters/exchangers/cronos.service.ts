@@ -7,7 +7,6 @@ import { AdaptersService } from '../adapters.service';
 import { ChainType } from 'src/exchanger/models/inner/chain.type';
 import CronosGauge from "./abi/CronosGauge.json";
 import { ethers } from "ethers";
-import axios from "axios";
 import { CoingekoService } from "../../external/coingeko.service";
 
 export class GuageContractData {
