@@ -18,8 +18,9 @@ export class PancakeService {
     BASE_GRAPHQL_URL = "https://api.thegraph.com/subgraphs/name/pancakeswap/exchange-v3-arb";
     BASE_URL = "https://pancakeswap.finance/farms?chain=arb";
 
+    // lowerCase important
     async getPoolsData(): Promise<PoolData[]> {
-        const poolsToLoad = `[\"0x8a06339Abd7499Af755DF585738ebf43D5D62B94\", \"0x721F37495cD70383B0A77Bf1eB8f97eef29498Bb\"]`
+        const poolsToLoad = `[\"0x8a06339abd7499af755df585738ebf43d5d62b94\", \"0x721f37495cd70383b0a77bf1eb8f97eef29498bb\"]`
         const queryFirstPool =
             `query pools {
                     pools(where: {id_in: ${poolsToLoad}},
@@ -45,15 +46,9 @@ export class PancakeService {
                         }
                         token0Price
                         token1Price
-                        volumeUSD
-                        volumeToken0
-                        volumeToken1
-                        txCount
                         totalValueLockedToken0
                         totalValueLockedToken1
                         totalValueLockedUSD
-                        feesUSD
-                        protocolFeesUSD
                     }
                 }
               `;
@@ -174,26 +169,30 @@ export class PancakeService {
                 if (!str) {
                     continue;
                 }
-                const regex =/((US[DCTe+.]+))-USD+\D*(\d+\.\d+)\D*(\d+)APR(\d+)/;
 
+                const regex =/(USDT\+-USD\+|USD\+-USDC).*?APR(\d+\.?\d*)%.*?Staked Liquidity\$(\d+,\d+)/;
+
+                
                 // USDT+ / USD+ percentage values
                 const match = str.match(regex);
                 console.log(match, 'match PANCAKE')
-                const apr = match ? match[5] : null;
+                const apr = match ? match[2] : null;
+                const tvlNum = match ? match[3] : null;
                 const poolParsedApr = match ? parseFloat(apr) : null;
-                
+                const parsedTvl = parseFloat((tvlNum ?? "0").replace(/"|\,|\./g, ''));
                 
                 if (!match || !poolParsedApr) {
                     continue;
                 }
 
                 // case for 2 pools on pancake
-                const pairSymbols = match[1] === "USDC.e" ? `USD+/USDC` : `${match[1]}/USD+`;
+                const pairSymbols = match[1] === "USD+-USDC" ? `USDC/USD+` : 'USDT+/USD+';
 
                 ovnPools.forEach(pool => {
                     if (pool.name === pairSymbols) {
                         this.logger.log("Find pool for apr update: " + pool.address + " | " + pool.name);
                         pool.apr = poolParsedApr ? poolParsedApr.toFixed(2) : null;
+                        pool.tvl = parsedTvl ? parsedTvl.toString() : null;
                     }
                 });
             }
