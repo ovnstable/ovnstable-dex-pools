@@ -49,6 +49,7 @@ export class PancakeService {
                         totalValueLockedToken0
                         totalValueLockedToken1
                         totalValueLockedUSD
+                        protocolFeesUSD
                     }
                 }
               `;
@@ -170,16 +171,15 @@ export class PancakeService {
                     continue;
                 }
 
-                const regex =/(USDT\+-USD\+|USD\+-USDC).*?APR(\d+\.?\d*)%.*?Staked Liquidity\$(\d+,\d+)/;
+                const regex =/(USDT\+-USD\+|USD\+-USDC).*?APR(\d+\.?\d*)%/;
 
                 
                 // USDT+ / USD+ percentage values
                 const match = str.match(regex);
                 console.log(match, 'match PANCAKE')
                 const apr = match ? match[2] : null;
-                const tvlNum = match ? match[3] : null;
                 const poolParsedApr = match ? parseFloat(apr) : null;
-                const parsedTvl = parseFloat((tvlNum ?? "0").replace(/"|\,|\./g, ''));
+                
                 
                 if (!match || !poolParsedApr) {
                     continue;
@@ -188,11 +188,11 @@ export class PancakeService {
                 // case for 2 pools on pancake
                 const pairSymbols = match[1] === "USD+-USDC" ? `USDC/USD+` : 'USDT+/USD+';
 
+                console.log(ovnPools, 'POOLS')
                 ovnPools.forEach(pool => {
                     if (pool.name === pairSymbols) {
                         this.logger.log("Find pool for apr update: " + pool.address + " | " + pool.name);
                         pool.apr = poolParsedApr ? poolParsedApr.toFixed(2) : null;
-                        pool.tvl = parsedTvl ? parsedTvl.toString() : null;
                     }
                 });
             }
