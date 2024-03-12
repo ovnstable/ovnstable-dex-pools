@@ -19,7 +19,7 @@ export class PancakeService {
     BASE_URL = "https://pancakeswap.finance/farms?chain=arb";
 
     async getPoolsData(): Promise<PoolData[]> {
-        const poolsToLoad = `[\"0xd01075f7314a6436e8b74fc18069848229d0c555\", \"0xb9c2d906f94b27bc403ab76b611d2c4490c2ae3f\"]`
+        const poolsToLoad = `[\"0x8a06339Abd7499Af755DF585738ebf43D5D62B94\", \"0x721F37495cD70383B0A77Bf1eB8f97eef29498Bb\"]`
         const queryFirstPool =
             `query pools {
                     pools(where: {id_in: ${poolsToLoad}},
