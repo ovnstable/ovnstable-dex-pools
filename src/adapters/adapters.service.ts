@@ -23,6 +23,7 @@ import { BeefylService } from "./exchangers/beefy.service";
 import {BaseswapdefiedgeService} from "./exchangers/baseswapdefiedge.service";
 import { LynexService } from './exchangers/lynex.service';
 import { FraxService } from './exchangers/frax.service';
+import { SyncswapService } from './exchangers/syncswap.service';
 
 @Injectable()
 export class AdaptersService {
@@ -53,8 +54,12 @@ export class AdaptersService {
     private pancakeService: PancakeService,
     private lynexService: LynexService,
     private fraxService: FraxService,
+    private syncswapService: SyncswapService,
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
+    if (exchanger_type === ExchangerType.SYNCSWAP) {
+      return await this.syncswapService.getPoolsData();
+    }
     if (exchanger_type === ExchangerType.BEETHOVEN) {
       return await this.beethovenService.getPoolsData();
     }

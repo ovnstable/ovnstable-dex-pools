@@ -20,6 +20,7 @@ export enum ExchangerType {
   ALIENBASE = 'Alienbase',
   BALANCER = 'Balancer',
   PANCAKE = 'Pancake',
+  SYNCSWAP = 'Syncswap',
   BASESWAPDEFIEDGE = 'Baseswapdefiedge',
   LYNEX = 'Lynex',
   FRAX = 'Frax Finance'

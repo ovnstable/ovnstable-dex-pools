@@ -23,6 +23,7 @@ import { BeefylService } from "./exchangers/beefy.service";
 import { BaseswapdefiedgeService } from "./exchangers/baseswapdefiedge.service";
 import { LynexService } from "./exchangers/lynex.service";
 import { FraxService } from "./exchangers/frax.service";
+import { SyncswapService } from "./exchangers/syncswap.service";
 
 //
 @Module({
@@ -52,6 +53,7 @@ import { FraxService } from "./exchangers/frax.service";
     PancakeService,
     LynexService,
     FraxService,
+    SyncswapService,
   ],
   exports: [AdaptersService],
 })

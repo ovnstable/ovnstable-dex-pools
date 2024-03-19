@@ -10,51 +10,116 @@ import { getAgent } from "../../utils/consts";
 
 const TIME_FOR_TRY = 30_000; // 5 sec.
 
+// lowerCase important
+const ZK_POOLS = `[\"0x6a8fc7e8186ddc572e149dfaa49cfae1e571108b\"]`;
+const ARB_POOLS = `[\"0x8a06339abd7499af755df585738ebf43d5d62b94\", \"0x721f37495cd70383b0a77bf1eb8f97eef29498bb\"]`
+
+const buildQuery = (pools: string) => {
+    return `query pools {
+        pools(where: {id_in: ${pools}},
+            orderBy: totalValueLockedUSD, orderDirection: desc) {
+                id
+                feeTier
+                liquidity
+                sqrtPrice
+                tick
+                token0 {
+                    id
+                    symbol
+                    name
+                    decimals
+                    derivedETH
+            }
+            token1 {
+                    id
+                    symbol
+                    name
+                    decimals
+                    derivedETH
+            }
+            token0Price
+            token1Price
+            totalValueLockedToken0
+            totalValueLockedToken1
+            totalValueLockedUSD
+            protocolFeesUSD
+        }
+    }
+  `;
+}
 @Injectable()
 export class PancakeService {
     private readonly logger = new Logger(PancakeService.name);
 
     // get all api info / api data
-    BASE_GRAPHQL_URL = "https://api.thegraph.com/subgraphs/name/pancakeswap/exchange-v3-arb";
-    BASE_URL = "https://pancakeswap.finance/farms?chain=arb";
+    BASE_GRAPHQL_ARB = "https://api.thegraph.com/subgraphs/name/pancakeswap/exchange-v3-arb";
+    BASE_GRAPHQL_ZK = "https://api.studio.thegraph.com/query/45376/exchange-v3-zksync/version/latest"
+    BASE_URL_ARB = "https://pancakeswap.finance/farms?chain=arb";
+    BASE_URL_ZK = "https://pancakeswap.finance/farms?chain=zkSync";
 
-    // lowerCase important
-    async getPoolsData(): Promise<PoolData[]> {
-        const poolsToLoad = `[\"0x8a06339abd7499af755df585738ebf43d5d62b94\", \"0x721f37495cd70383b0a77bf1eb8f97eef29498bb\"]`
-        const queryFirstPool =
-            `query pools {
-                    pools(where: {id_in: ${poolsToLoad}},
-                        orderBy: totalValueLockedUSD, orderDirection: desc) {
-                            id
-                            feeTier
-                            liquidity
-                            sqrtPrice
-                            tick
-                            token0 {
-                                id
-                                symbol
-                                name
-                                decimals
-                                derivedETH
-                        }
-                        token1 {
-                                id
-                                symbol
-                                name
-                                decimals
-                                derivedETH
-                        }
-                        token0Price
-                        token1Price
-                        totalValueLockedToken0
-                        totalValueLockedToken1
-                        totalValueLockedUSD
-                        protocolFeesUSD
-                    }
-                }
-              `;
+    async getZkPools(): Promise<PoolData[]> {
+        const queryFirstPool = buildQuery(ZK_POOLS)
        
-        const response = fetch(this.BASE_GRAPHQL_URL, {
+        const response = fetch(this.BASE_GRAPHQL_ZK, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json"
+            },
+            body: JSON.stringify({
+                operationName: "pools",
+                query: queryFirstPool,
+                variables: {}
+            })
+        })
+            .then(async (data): Promise<PoolData[]> => {
+                console.log(data, '-data11')
+                const pools: PoolData[] = [];
+                const [responseBody] = await Promise.all([data.json()]);
+                const apiPoolsData = responseBody.data.pools;
+
+                apiPoolsData.forEach((item) => {
+                    const poolData: PoolData = new PoolData();
+                    poolData.address = item.id;
+                    poolData.name = (item.token0.symbol + "/" + item.token1.symbol);
+                    poolData.decimals = 18;
+                    poolData.tvl = new BigNumber(item.totalValueLockedToken0).plus(item.totalValueLockedToken1).toFixed(2);
+
+
+                    poolData.apr = "0";
+                    poolData.chain = ChainType.ZKSYNC;
+                    pools.push(poolData);
+                    this.logger.log(`=========${ExchangerType.PANCAKE}=========`);
+                    this.logger.log("Found ovn pool: ", poolData);
+                    this.logger.log("==================");
+                });
+
+
+                try {
+                    const newPools = await this.initAprs(pools, ChainType.ZKSYNC);
+
+                    if (newPools.some((_) => BigNumber(_.apr).eq(0))) {
+                        throw Error(`Some Pancake pool apr === 0, ${newPools} data`)
+                    }
+
+                    return newPools
+                } catch (e) {
+                    this.logger.error("Error when load apr for " + ExchangerType.PANCAKE);
+                }
+            })
+            .catch((e) => {
+                const errorMessage = `Error when load ${ExchangerType.PANCAKE} pairs.`;
+                this.logger.error(errorMessage, e);
+                throw new ExchangerRequestError(errorMessage);
+            });
+
+        return await response;
+    }
+
+    async getArbitrumPools(): Promise<PoolData[]> {
+        const queryFirstPool = buildQuery(ARB_POOLS)
+       
+        const response = fetch(this.BASE_GRAPHQL_ARB, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -89,7 +154,7 @@ export class PancakeService {
 
 
                 try {
-                    const newPools = await this.initAprs(pools);
+                    const newPools = await this.initAprs(pools, ChainType.ARBITRUM);
 
                     if (newPools.some((_) => BigNumber(_.apr).eq(0))) {
                         throw Error(`Some Pancake pool apr === 0, ${newPools} data`)
@@ -109,9 +174,18 @@ export class PancakeService {
         return await response;
     }
 
+    async getPoolsData(): Promise<PoolData[]> {
+        // const arbPools = await this.getArbitrumPools()
+        const zkPools = await this.getZkPools()
 
-    private async initAprs(ovnPools: PoolData[]): Promise<PoolData[]> {
-        const url = `${this.BASE_URL}`;
+        console.log([], '---arbPools')
+        console.log(zkPools, '---zkPools')
+        return [...[], ...zkPools];
+    }
+
+
+    private async initAprs(ovnPools: PoolData[], chain: ChainType): Promise<PoolData[]> {
+        const url = chain === ChainType.ARBITRUM ? this.BASE_URL_ARB : this.BASE_URL_ZK;
 
         // Launch a headless browser
         const browser = await puppeteer.launch(
@@ -171,8 +245,11 @@ export class PancakeService {
                     continue;
                 }
 
-                const regex =/(USDT\+-USD\+|USD\+-USDC).*?APR(\d+\.?\d*)%/;
+                let regex = /(USDT\+-USD\+|USD\+-USDC).*?APR(\d+\.?\d*)%/;
 
+                if (chain === ChainType.ZKSYNC) {
+                    regex = /(USD\+-USDC).*?APR(\d+\.?\d*)%/;
+                }
                 
                 // USDT+ / USD+ percentage values
                 const match = str.match(regex);
