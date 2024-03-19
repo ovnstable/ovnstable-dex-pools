@@ -11,7 +11,6 @@ import { PearlService } from "./exchangers/pearl.service";
 import { VeplusService } from "./exchangers/veplus.service";
 import { GndService } from "./exchangers/gnd.service";
 import { DraculaService } from "./exchangers/dracula.service";
-import { DefiedgeService } from "./exchangers/defiedge.service";
 import { MaverickService } from "./exchangers/maverick.service";
 import { CurveService } from "./exchangers/curve.service";
 import { BaseswapService } from "./exchangers/baseswap.service";
@@ -19,7 +18,6 @@ import { SwapbasedService } from "./exchangers/swapbased.service";
 import { PancakeService } from "./exchangers/pancake.service";
 import { AlienbaseService } from "./exchangers/alienbase.service";
 import { BalancerService } from "./exchangers/balancer.service";
-import { ConvexService } from "./exchangers/convex.service";
 import { AerodromeService } from "./exchangers/aerodrome.service";
 import { BeefylService } from "./exchangers/beefy.service";
 import { BaseswapdefiedgeService } from "./exchangers/baseswapdefiedge.service";
@@ -42,14 +40,12 @@ import { FraxService } from "./exchangers/frax.service";
     VeplusService,
     GndService,
     DraculaService,
-    DefiedgeService,
     MaverickService,
     CurveService,
     BaseswapService,
     SwapbasedService,
     AlienbaseService,
     BalancerService,
-    ConvexService,
     AerodromeService,
     BeefylService,
     BaseswapdefiedgeService,

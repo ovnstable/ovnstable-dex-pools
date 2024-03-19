@@ -11,7 +11,6 @@ import { PearlService } from "./exchangers/pearl.service";
 import { VeplusService } from "./exchangers/veplus.service";
 import { GndService } from "./exchangers/gnd.service";
 import { DraculaService } from "./exchangers/dracula.service";
-import { DefiedgeService } from "./exchangers/defiedge.service";
 import { MaverickService } from "./exchangers/maverick.service";
 import { CurveService } from './exchangers/curve.service';
 import { BaseswapService } from './exchangers/baseswap.service';
@@ -19,7 +18,6 @@ import { SwapbasedService } from './exchangers/swapbased.service';
 import { PancakeService } from './exchangers/pancake.service';
 import { AlienbaseService } from "./exchangers/alienbase.service";
 import { BalancerService } from './exchangers/balancer.service';
-import { ConvexService } from "./exchangers/convex.service";
 import { AerodromeService } from './exchangers/aerodrome.service';
 import { BeefylService } from "./exchangers/beefy.service";
 import {BaseswapdefiedgeService} from "./exchangers/baseswapdefiedge.service";
@@ -43,14 +41,12 @@ export class AdaptersService {
     private veplusService: VeplusService,
     private gndService: GndService,
     private draculaService: DraculaService,
-    private defiedgeService: DefiedgeService,
     private maverickService: MaverickService,
     private curveService: CurveService,
     private baseswapService: BaseswapService,
     private swapbasedService: SwapbasedService,
     private alienbaseService: AlienbaseService,
     private balancerService: BalancerService,
-    private convexService: ConvexService,
     private aerodromeService: AerodromeService,
     private beefylService: BeefylService,
     private baseswapdefiedgeService: BaseswapdefiedgeService,
@@ -89,9 +85,6 @@ export class AdaptersService {
     if (exchanger_type === ExchangerType.DRACULA) {
       return await this.draculaService.getPoolsData();
     }
-    if (exchanger_type === ExchangerType.DEFIEDGE) {
-      return await this.defiedgeService.getPoolsData();
-    }
     if (exchanger_type === ExchangerType.MAVERICK) {
       return await this.maverickService.getPoolsData();
     }
@@ -109,9 +102,6 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.BALANCER) {
       return await this.balancerService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.CONVEX) {
-      return await this.convexService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.AERODROME) {
       return await this.aerodromeService.getPoolsData();
