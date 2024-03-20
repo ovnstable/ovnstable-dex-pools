@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ExchangerType } from 'src/exchanger/models/inner/exchanger.type';
-import { BeethovenService } from './exchangers/beethoven.service';
 import { VelocoreService } from './exchangers/velocore.service';
 import { VelodromeService } from './exchangers/velodrome.service';
 import { PoolData } from './exchangers/dto/pool.data.dto';
@@ -17,10 +16,8 @@ import { BaseswapService } from './exchangers/baseswap.service';
 import { SwapbasedService } from './exchangers/swapbased.service';
 import { PancakeService } from './exchangers/pancake.service';
 import { AlienbaseService } from "./exchangers/alienbase.service";
-import { BalancerService } from './exchangers/balancer.service';
 import { AerodromeService } from './exchangers/aerodrome.service';
 import { BeefylService } from "./exchangers/beefy.service";
-import {BaseswapdefiedgeService} from "./exchangers/baseswapdefiedge.service";
 import { LynexService } from './exchangers/lynex.service';
 import { FraxService } from './exchangers/frax.service';
 import { SyncswapService } from './exchangers/syncswap.service';
@@ -32,7 +29,6 @@ export class AdaptersService {
   static OVN_POOLS_NAMES: string[] = ['usd+', 'dai+', 'usdt+', 'eth+', 'ovn'];
 
   constructor(
-    private beethovenService: BeethovenService,
     private velocoreService: VelocoreService,
     private velodromService: VelodromeService,
     private soluneaService: SoluneaService,
@@ -47,10 +43,8 @@ export class AdaptersService {
     private baseswapService: BaseswapService,
     private swapbasedService: SwapbasedService,
     private alienbaseService: AlienbaseService,
-    private balancerService: BalancerService,
     private aerodromeService: AerodromeService,
     private beefylService: BeefylService,
-    private baseswapdefiedgeService: BaseswapdefiedgeService,
     private pancakeService: PancakeService,
     private lynexService: LynexService,
     private fraxService: FraxService,
@@ -59,9 +53,6 @@ export class AdaptersService {
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
     if (exchanger_type === ExchangerType.SYNCSWAP) {
       return await this.syncswapService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.BEETHOVEN) {
-      return await this.beethovenService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.VELOCORE) {
       return await this.velocoreService.getPoolsData();
@@ -105,17 +96,14 @@ export class AdaptersService {
     if (exchanger_type === ExchangerType.ALIENBASE) {
       return await this.alienbaseService.getPoolsData();
     }
-    if (exchanger_type === ExchangerType.BALANCER) {
-      return await this.balancerService.getPoolsData();
-    }
+    // if (exchanger_type === ExchangerType.BALANCER) {
+    //   return await this.balancerService.getPoolsData();
+    // }
     if (exchanger_type === ExchangerType.AERODROME) {
       return await this.aerodromeService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.BEEFY) {
       return await this.beefylService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.BASESWAPDEFIEDGE) {
-      return await this.baseswapdefiedgeService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.PANCAKE) {
       return await this.pancakeService.getPoolsData();

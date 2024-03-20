@@ -1,6 +1,5 @@
 import { Module, OnModuleInit } from "@nestjs/common";
 import { AdaptersService } from './adapters.service';
-import { BeethovenService } from './exchangers/beethoven.service';
 import { VelocoreService } from './exchangers/velocore.service';
 import { VelodromeService } from './exchangers/velodrome.service';
 import { SoluneaService } from './exchangers/solunea.service';
@@ -17,10 +16,8 @@ import { BaseswapService } from "./exchangers/baseswap.service";
 import { SwapbasedService } from "./exchangers/swapbased.service";
 import { PancakeService } from "./exchangers/pancake.service";
 import { AlienbaseService } from "./exchangers/alienbase.service";
-import { BalancerService } from "./exchangers/balancer.service";
 import { AerodromeService } from "./exchangers/aerodrome.service";
 import { BeefylService } from "./exchangers/beefy.service";
-import { BaseswapdefiedgeService } from "./exchangers/baseswapdefiedge.service";
 import { LynexService } from "./exchangers/lynex.service";
 import { FraxService } from "./exchangers/frax.service";
 import { SyncswapService } from "./exchangers/syncswap.service";
@@ -31,7 +28,6 @@ import { SyncswapService } from "./exchangers/syncswap.service";
   providers: [
     AdaptersService,
     // Exchangers:
-    BeethovenService,
     VelocoreService,
     VelodromeService,
     SoluneaService,
@@ -46,10 +42,8 @@ import { SyncswapService } from "./exchangers/syncswap.service";
     BaseswapService,
     SwapbasedService,
     AlienbaseService,
-    BalancerService,
     AerodromeService,
     BeefylService,
-    BaseswapdefiedgeService,
     PancakeService,
     LynexService,
     FraxService,
