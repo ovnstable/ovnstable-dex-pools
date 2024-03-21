@@ -31,7 +31,7 @@ ssh pools_ovn
 ```bash
 # config
 Host pools_ovn
-HostName 3.120.26.25
+HostName <host_name>
 User ubuntu
 Port 22
 IdentityFile ~/.ssh/id_rsa
