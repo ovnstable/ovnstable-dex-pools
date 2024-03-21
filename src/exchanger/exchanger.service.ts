@@ -29,12 +29,6 @@ export class ExchangerService {
 
     for (const exchanger_type of exchanger_types) {
 
-    //  for (const exchanger_type of exchanger_types) {
-    //    if (exchanger_type != ExchangerType.CURVE) {
-    //      this.logger.log('Ignore: ' + exchanger_type);
-    //      continue;
-    //    }
-
       try {
         this.logger.log('Process with: ' + exchanger_type);
         const pools = await this.adaptersService.getPools(exchanger_type);
