@@ -96,9 +96,6 @@ export class AdaptersService {
     if (exchanger_type === ExchangerType.ALIENBASE) {
       return await this.alienbaseService.getPoolsData();
     }
-    // if (exchanger_type === ExchangerType.BALANCER) {
-    //   return await this.balancerService.getPoolsData();
-    // }
     if (exchanger_type === ExchangerType.AERODROME) {
       return await this.aerodromeService.getPoolsData();
     }

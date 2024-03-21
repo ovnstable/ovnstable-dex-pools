@@ -14,7 +14,10 @@ export class FraxService {
 
     async getPoolsData(): Promise<PoolData[]> {
         const url = this.BASE_API_URL;
-        const addressIds = ['0x56390acF12bce9675ab3922060D8d955149BE286']
+        // const addressIds = ['0x56390acF12bce9675ab3922060D8d955149BE286'];
+        // currently deprecated from 20.03.2024, remove later possibly
+        const addressIds = [];
+
         console.log("Load data by url:", url);
 
         const response = axios
