@@ -15,7 +15,6 @@ import { CurveService } from './exchangers/curve.service';
 import { BaseswapService } from './exchangers/baseswap.service';
 import { SwapbasedService } from './exchangers/swapbased.service';
 import { PancakeService } from './exchangers/pancake.service';
-import { AlienbaseService } from "./exchangers/alienbase.service";
 import { AerodromeService } from './exchangers/aerodrome.service';
 import { BeefylService } from "./exchangers/beefy.service";
 import { LynexService } from './exchangers/lynex.service';
@@ -42,7 +41,6 @@ export class AdaptersService {
     private curveService: CurveService,
     private baseswapService: BaseswapService,
     private swapbasedService: SwapbasedService,
-    private alienbaseService: AlienbaseService,
     private aerodromeService: AerodromeService,
     private beefylService: BeefylService,
     private pancakeService: PancakeService,
@@ -92,9 +90,6 @@ export class AdaptersService {
     }
    if (exchanger_type === ExchangerType.SWAPBASED) {
      return await this.swapbasedService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.ALIENBASE) {
-      return await this.alienbaseService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.AERODROME) {
       return await this.aerodromeService.getPoolsData();
