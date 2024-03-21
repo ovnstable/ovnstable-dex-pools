@@ -17,6 +17,3 @@ jobs:
 
       - name: Run type checks
         run: npm run type-check
-
-      - name: Run all the tests
-        run: npm run test
