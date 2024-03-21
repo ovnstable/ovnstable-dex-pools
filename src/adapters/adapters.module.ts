@@ -15,7 +15,6 @@ import { CurveService } from "./exchangers/curve.service";
 import { BaseswapService } from "./exchangers/baseswap.service";
 import { SwapbasedService } from "./exchangers/swapbased.service";
 import { PancakeService } from "./exchangers/pancake.service";
-import { AlienbaseService } from "./exchangers/alienbase.service";
 import { AerodromeService } from "./exchangers/aerodrome.service";
 import { BeefylService } from "./exchangers/beefy.service";
 import { LynexService } from "./exchangers/lynex.service";
@@ -41,7 +40,6 @@ import { SyncswapService } from "./exchangers/syncswap.service";
     CurveService,
     BaseswapService,
     SwapbasedService,
-    AlienbaseService,
     AerodromeService,
     BeefylService,
     PancakeService,

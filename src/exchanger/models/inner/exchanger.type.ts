@@ -17,7 +17,6 @@ export enum ExchangerType {
   CURVE = 'Curve',
   BASESWAP = 'Baseswap',
   SWAPBASED = 'Swapbased',
-  ALIENBASE = 'Alienbase',
   BALANCER = 'Balancer',
   PANCAKE = 'Pancake',
   SYNCSWAP = 'Syncswap',
