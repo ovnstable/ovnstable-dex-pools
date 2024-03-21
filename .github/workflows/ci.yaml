@@ -1,0 +1,22 @@
+name: CI
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install modules
+        run: npm ci
+
+      - name: Run linters
+        run: npm run lint
+
+      - name: Run type checks
+        run: npm run type-check
+
+      - name: Run all the tests
+        run: npm run test
