@@ -29,12 +29,6 @@ export class ExchangerService {
 
     for (const exchanger_type of exchanger_types) {
 
-//      for target test
-//        if (exchanger_type != ExchangerType.DEFIEDGE) {
-//          this.logger.log('Ignore: ' + exchanger_type);
-//          continue;
-//        }
-
       try {
         this.logger.log('Process with: ' + exchanger_type);
         const pools = await this.adaptersService.getPools(exchanger_type);
@@ -69,6 +63,7 @@ export class ExchangerService {
           newPool.update_date = nowTime;
           newPool.platform = exchanger_type;
           newPool.chain = poolData.chain;
+
           await this.poolService.create(newPool);
         }
       } catch (e) {
