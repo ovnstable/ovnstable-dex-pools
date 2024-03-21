@@ -5,6 +5,7 @@ import {ExchangerRequestError} from "../../exceptions/exchanger.request.error";
 import {ExchangerType} from "../../exchanger/models/inner/exchanger.type";
 import {AdaptersService} from "../adapters.service";
 import {ChainType} from "../../exchanger/models/inner/chain.type";
+import BigNumber from "bignumber.js";
 
 const STABLE_POOLS = [
     "0x1446999b0b0e4f7ada6ee73f2ae12a2cfdc5d9e7"
@@ -51,19 +52,19 @@ export class CurveService {
                             item.symbol.toLowerCase().includes('OVERNIGHT'.toLowerCase()))
                     ) {
                         const poolData: PoolData = new PoolData();
-                        let total_apr = 0;
+                        let total_apr = new BigNumber(0);
 
                         if (item.gaugeRewards && item.gaugeRewards.length > 0){
-                            total_apr += item.gaugeRewards[0].apy
+                            total_apr = total_apr.plus(item.gaugeRewards[0].apy ?? 0)
                         }
                         if (item.gaugeCrvApy && item.gaugeCrvApy.length > 0){
-                            total_apr += item.gaugeCrvApy[0]
+                            total_apr = total_apr.plus(item.gaugeCrvApy[0] ?? 0)
                         }
 
                         poolData.address = item.address;
                         poolData.name = item.coins[0].symbol + '/' + item.coins[1].symbol
                         poolData.tvl = (item.usdTotal).toString();
-                        poolData.apr = total_apr.toString();
+                        poolData.apr = total_apr.toFixed(2);
                         poolData.chain = chainType;
                         pools.push(poolData);
                         this.logger.log(`========= ${ExchangerType.CURVE} =========`);
@@ -107,11 +108,16 @@ export class CurveService {
                             item.symbol.toLowerCase().includes('OVERNIGHT'.toLowerCase()))
                     ) {
                         const poolData: PoolData = new PoolData();
+                        let total_apr = new BigNumber(0);
+
+                        if (item.gaugeRewards && item.gaugeRewards.length > 0){
+                            total_apr = total_apr.plus(item.gaugeRewards[2].apy ?? 0)
+                        }
 
                         poolData.address = item.address;
                         poolData.name = item.coins[0].symbol + '/' + item.coins[1].symbol
                         poolData.tvl = (item.usdTotal).toString();
-                        poolData.apr = item.gaugeRewards[2].apy;
+                        poolData.apr = total_apr.toFixed(2);
                         poolData.chain = ChainType.BASE;
                         pools.push(poolData);
                         this.logger.log(`========= ${ExchangerType.CURVE} =========`);
@@ -148,13 +154,23 @@ export class CurveService {
 
                 pairs.forEach((item) => {
                     if (STABLE_POOLS.includes(item.address?.toLowerCase())) {
-                        // const aprPool  = responsePoolsApr.data.data.pools.find((_) => _.address === item.address);
+                        const aprPool  = responsePoolsApr.data.data.pools.find((_) => _.address === item.address);
                         const poolData: PoolData = new PoolData();
+                        let total_apr = new BigNumber(0);
+
+                        console.log(item)
+
+                        if (aprPool?.latestWeeklyApyPcent){
+                            total_apr = total_apr.plus(aprPool?.latestWeeklyApyPcent)
+                        }
+                        if(item.gaugeRewards && item.gaugeRewards.length > 0){
+                            total_apr = total_apr.plus(item.gaugeRewards[0].apy ?? 0)
+                        }
 
                         poolData.address = item.address;
                         poolData.name = item.coins[0].symbol + '/' + item.coins[1].symbol
                         poolData.tvl = (item.usdTotal).toString();
-                        poolData.apr = item.gaugeRewards[0].apy ?? "0";
+                        poolData.apr = total_apr.toFixed(2);
                         poolData.chain = ChainType.ARBITRUM;
                         pools.push(poolData);
                         this.logger.log(`========= ${ExchangerType.CURVE} =========`);
