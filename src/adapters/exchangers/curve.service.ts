@@ -34,7 +34,6 @@ export class CurveService {
     
     async loadPoolsData(chainType: ChainType): Promise<PoolData[]> {
         const url = `${this.BASE_API_URL}/${this.GET_POOLS}/${chainType.toLocaleLowerCase()}/${this.FACTORY}`;
-        console.log("Load data by url:", url);
 
         const response = axios
             .get(url, {
@@ -90,9 +89,6 @@ export class CurveService {
     async loadStablePoolsData(chainType: ChainType): Promise<PoolData[]> {
         const url = `${this.BASE_API_URL}/${this.GET_POOLS}/${chainType.toLocaleLowerCase()}/${this.STABLE_FACTORY}`;
         const apr_url = `${this.BASE_API_URL}/${this.GET_VOLUMES}/${chainType.toLocaleLowerCase()}`;
-
-        console.log("Load pools data by url:", url);
-        console.log("Load stable apr by url:", apr_url);
 
         const responsePoolsApr = await axios.get(apr_url, {
             timeout: 80_000, // 80 sec
