@@ -13,6 +13,7 @@ const POOLS_MAP = { // pool name: pool address
   "vAMM-USD+/USDbC": "0xdc0f1f6ecd03ec1c9ffc2a17bababd313477b20e",
   "vAMM-OVN/USD+": "0x61366A4e6b1DB1b85DD701f2f4BFa275EF271197",
   "sAMM-USDC+/USD+": "0xe96c788e66a97cf455f46c5b27786191fd3bc50b",
+  "vAMM-WETH/USD+": "0x08B935148AB10d3699Cb8d944519e8213abE6f1D"
 }
 
 
