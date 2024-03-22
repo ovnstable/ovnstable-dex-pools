@@ -9,7 +9,6 @@ import BigNumber from "bignumber.js";
 
 const STABLE_POOLS = [
     "0x1446999b0b0e4f7ada6ee73f2ae12a2cfdc5d9e7", //ARB USD+/USDT+
-    "0xda3de145054ed30ee937865d31b500505c4bdfe7" //BASE USD+/crvUSD
 ]
 
 @Injectable()
