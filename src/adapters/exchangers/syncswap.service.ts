@@ -25,8 +25,8 @@ export class SyncswapService {
           poolData.name = item.pair;
           poolData.decimals = 18;
           // todo tvl + apr
-          poolData.tvl = "53157";
-          poolData.apr = "289";
+          poolData.tvl = "68765";
+          poolData.apr = "43";
 
           poolData.chain = ChainType.ZKSYNC;
           pools.push(poolData);
