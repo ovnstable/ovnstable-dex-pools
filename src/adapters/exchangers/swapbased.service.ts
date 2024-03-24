@@ -6,7 +6,7 @@ import { ExchangerType } from "../../exchanger/models/inner/exchanger.type";
 import { ExchangerRequestError } from "../../exceptions/exchanger.request.error";
 import { ChainType } from "../../exchanger/models/inner/chain.type";
 import { AdaptersService } from "../adapters.service";
-import { getAgent } from "../../utils/consts";
+import { getAgent } from "../../config/consts";
 
 const TIME_FOR_TRY = 2_000; // 5 sec.
 

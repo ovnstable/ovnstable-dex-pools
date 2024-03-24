@@ -4,7 +4,7 @@ import { ExchangerRequestError } from '../../exceptions/exchanger.request.error'
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
 import puppeteer from 'puppeteer';
-import { getAgent } from '../../utils/consts';
+import { getAgent } from '../../config/consts';
 
 const POOLS_MAP = { // pool name: pool address
   "sAMM-DAI+/USD+": "0x1b05e4e814b3431a48b8164c41eac834d9ce2da6",

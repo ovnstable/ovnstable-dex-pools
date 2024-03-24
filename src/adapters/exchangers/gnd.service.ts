@@ -5,7 +5,7 @@ import { ExchangerRequestError } from '../../exceptions/exchanger.request.error'
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { AdaptersService } from '../adapters.service';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
-import { getAgent } from '../../utils/consts';
+import { getAgent } from '../../config/consts';
 
 const POOLS_MAP = { // pool name: pool address
     "DAI/DAI+": "0xd8769d8826149B137AF488b1e9Ac0e3AFdbC058a_dai-dai+",
