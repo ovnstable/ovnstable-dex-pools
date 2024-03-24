@@ -6,14 +6,12 @@ import { PoolData } from './exchangers/dto/pool.data.dto';
 import { SoluneaService } from './exchangers/solunea.service';
 import { CronosService } from './exchangers/cronos.service';
 import { VesyncService } from "./exchangers/vesync.service";
-import { PearlService } from "./exchangers/pearl.service";
 import { VeplusService } from "./exchangers/veplus.service";
 import { GndService } from "./exchangers/gnd.service";
 import { DraculaService } from "./exchangers/dracula.service";
 import { MaverickService } from "./exchangers/maverick.service";
 import { CurveService } from './exchangers/curve.service';
 import { BaseswapService } from './exchangers/baseswap.service';
-import { SwapbasedService } from './exchangers/swapbased.service';
 import { PancakeService } from './exchangers/pancake.service';
 import { AerodromeService } from './exchangers/aerodrome.service';
 import { BeefylService } from "./exchangers/beefy.service";
@@ -33,14 +31,12 @@ export class AdaptersService {
     private soluneaService: SoluneaService,
     private cronosService: CronosService,
     private vesyncService: VesyncService,
-    private pearlService: PearlService,
     private veplusService: VeplusService,
     private gndService: GndService,
     private draculaService: DraculaService,
     private maverickService: MaverickService,
     private curveService: CurveService,
     private baseswapService: BaseswapService,
-    private swapbasedService: SwapbasedService,
     private aerodromeService: AerodromeService,
     private beefylService: BeefylService,
     private pancakeService: PancakeService,
@@ -67,9 +63,6 @@ export class AdaptersService {
     if (exchanger_type === ExchangerType.VESYNC) {
       return await this.vesyncService.getPoolsData();
     }
-    if (exchanger_type === ExchangerType.PEARL) {
-      return await this.pearlService.getPoolsData();
-    }
     if (exchanger_type === ExchangerType.VEPLUS) {
       return await this.veplusService.getPoolsData();
     }
@@ -87,9 +80,6 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.BASESWAP) {
       return await this.baseswapService.getPoolsData();
-    }
-   if (exchanger_type === ExchangerType.SWAPBASED) {
-     return await this.swapbasedService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.AERODROME) {
       return await this.aerodromeService.getPoolsData();

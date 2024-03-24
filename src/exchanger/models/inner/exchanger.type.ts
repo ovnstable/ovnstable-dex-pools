@@ -1,12 +1,8 @@
 export enum ExchangerType {
   VELODROME = 'Velodrome',
   AERODROME = 'Aerodrome',
-  THENA = 'Thena',
-  PEARL = 'Pearl',
   BEEFY = 'Beefy',
   VEPLUS = 'Veplus',
-  BEETHOVEN = 'Beethoven',
-  RAMSES = 'Ramses',
   VELOCORE = 'Velocore',
   SOLUNEA = 'Solunea',
   CHRONOS = 'Chronos',
@@ -16,11 +12,9 @@ export enum ExchangerType {
   MAVERICK = 'Maverick',
   CURVE = 'Curve',
   BASESWAP = 'Baseswap',
-  SWAPBASED = 'Swapbased',
   BALANCER = 'Balancer',
   PANCAKE = 'Pancake',
   SYNCSWAP = 'Syncswap',
-  BASESWAPDEFIEDGE = 'Baseswapdefiedge',
   LYNEX = 'Lynex',
   FRAX = 'Frax Finance'
 }
@@ -28,8 +22,6 @@ export enum ExchangerType {
 export const DEX_SUPPORT_SKIM: ExchangerType[] = [
     ExchangerType.VELODROME,
     ExchangerType.AERODROME,
-    ExchangerType.THENA,
-    ExchangerType.RAMSES,
     ExchangerType.VELOCORE,
     ExchangerType.SOLUNEA
 ]
