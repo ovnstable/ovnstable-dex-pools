@@ -27,7 +27,7 @@ export class VelodromeService {
     // Launch a headless browser
     const browser = await puppeteer.launch(
       {
-        headless: true,
+        headless: "new",
         ignoreHTTPSErrors :true,
         executablePath: getAgent(process.env.IS_MAC),
         args: ['--no-sandbox']
