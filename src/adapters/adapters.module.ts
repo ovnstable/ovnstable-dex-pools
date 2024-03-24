@@ -6,14 +6,12 @@ import { SoluneaService } from './exchangers/solunea.service';
 import { CronosService } from './exchangers/cronos.service';
 import { VesyncService } from "./exchangers/vesync.service";
 import { ExternalModule } from "../external/external.module";
-import { PearlService } from "./exchangers/pearl.service";
 import { VeplusService } from "./exchangers/veplus.service";
 import { GndService } from "./exchangers/gnd.service";
 import { DraculaService } from "./exchangers/dracula.service";
 import { MaverickService } from "./exchangers/maverick.service";
 import { CurveService } from "./exchangers/curve.service";
 import { BaseswapService } from "./exchangers/baseswap.service";
-import { SwapbasedService } from "./exchangers/swapbased.service";
 import { PancakeService } from "./exchangers/pancake.service";
 import { AerodromeService } from "./exchangers/aerodrome.service";
 import { BeefylService } from "./exchangers/beefy.service";
@@ -32,14 +30,12 @@ import { SyncswapService } from "./exchangers/syncswap.service";
     SoluneaService,
     CronosService,
     VesyncService,
-    PearlService,
     VeplusService,
     GndService,
     DraculaService,
     MaverickService,
     CurveService,
     BaseswapService,
-    SwapbasedService,
     AerodromeService,
     BeefylService,
     PancakeService,
