@@ -2,7 +2,7 @@ import { PoolData } from './dto/pool.data.dto';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
 import puppeteer from 'puppeteer';
-import { getAgent } from 'src/utils/consts';
+import { getAgent } from 'src/config/consts';
 import { ExchangerRequestError } from 'src/exceptions/exchanger.request.error';
 import { Injectable, Logger } from '@nestjs/common';
 
