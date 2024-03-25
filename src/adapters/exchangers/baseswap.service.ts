@@ -6,7 +6,7 @@ import { ExchangerRequestError } from '../../exceptions/exchanger.request.error'
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { AdaptersService } from '../adapters.service';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
-import { getAgent } from '../../utils/consts';
+import { getAgent } from '../../config/consts';
 
 const POOLS_MAP = { // pool name: pool address
     "USD+/USDC": "0x696b4d181Eb58cD4B54a59d2Ce834184Cf7Ac31A",

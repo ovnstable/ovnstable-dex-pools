@@ -6,7 +6,7 @@ import { ExchangerRequestError } from "../../exceptions/exchanger.request.error"
 import { ChainType } from "../../exchanger/models/inner/chain.type";
 import BigNumber from "bignumber.js";
 import puppeteer from "puppeteer";
-import { getAgent } from "../../utils/consts";
+import { getAgent } from "../../config/consts";
 
 const TIME_FOR_TRY = 30_000; // 5 sec.
 

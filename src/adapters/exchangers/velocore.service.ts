@@ -4,7 +4,7 @@ import { PoolData } from './dto/pool.data.dto';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
-import { getAgent } from '../../utils/consts';
+import { getAgent } from '../../config/consts';
 
     const poolsLineaArray = [
         {
