@@ -11,7 +11,6 @@ import { GndService } from "./exchangers/gnd.service";
 import { DraculaService } from "./exchangers/dracula.service";
 import { MaverickService } from "./exchangers/maverick.service";
 import { CurveService } from './exchangers/curve.service';
-import { BaseswapService } from './exchangers/baseswap.service';
 import { PancakeService } from './exchangers/pancake.service';
 import { AerodromeService } from './exchangers/aerodrome.service';
 import { BeefylService } from "./exchangers/beefy.service";
@@ -36,7 +35,6 @@ export class AdaptersService {
     private draculaService: DraculaService,
     private maverickService: MaverickService,
     private curveService: CurveService,
-    private baseswapService: BaseswapService,
     private aerodromeService: AerodromeService,
     private beefylService: BeefylService,
     private pancakeService: PancakeService,
@@ -77,9 +75,6 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.CURVE) {
       return await this.curveService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.BASESWAP) {
-      return await this.baseswapService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.AERODROME) {
       return await this.aerodromeService.getPoolsData();
