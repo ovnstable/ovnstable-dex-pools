@@ -16,7 +16,7 @@ export class ExchangerService {
     private configService: ConfigService,
   ) {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   async runScheduler(): Promise<void> {
     if (this.configService.get('NODE_ENV') === 'prod') {
       console.log('Running scheduler...');
