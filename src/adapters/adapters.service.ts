@@ -18,6 +18,7 @@ import { LynexService } from './exchangers/lynex.service';
 import { FraxService } from './exchangers/frax.service';
 import { SyncswapService } from './exchangers/syncswap.service';
 import { SwapBlastService } from './exchangers/swapblast.service';
+import { ConvexService } from './exchangers/convex.service';
 
 @Injectable()
 export class AdaptersService {
@@ -43,6 +44,7 @@ export class AdaptersService {
     private fraxService: FraxService,
     private syncswapService: SyncswapService,
     private swapblastServuce: SwapBlastService,
+    private convexService: ConvexService,
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
     if (exchanger_type === ExchangerType.SYNCSWAP) {
@@ -95,6 +97,9 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.SWAPBLAST) {
       return await this.swapblastServuce.getPoolsData();
+    }
+    if (exchanger_type === ExchangerType.CONVEX) {
+      return await this.convexService.getPoolsData();
     }
 
     this.logger.error(

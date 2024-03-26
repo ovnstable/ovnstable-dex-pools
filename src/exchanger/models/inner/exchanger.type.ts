@@ -2,6 +2,7 @@ export enum ExchangerType {
   VELODROME = 'Velodrome',
   AERODROME = 'Aerodrome',
   BEEFY = 'Beefy',
+  CONVEX = 'Convex',
   VEPLUS = 'Veplus',
   VELOCORE = 'Velocore',
   SOLUNEA = 'Solunea',
