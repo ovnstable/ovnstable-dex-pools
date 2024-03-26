@@ -7,11 +7,9 @@ import { ChainType } from '../../exchanger/models/inner/chain.type';
 import { getAgent } from '../../config/consts';
 
 const POOLS_MAP = { // pool name: pool address
-  "sAMMV2-USD+/DAI+": "0x667002F9DC61ebcBA8Ee1Cbeb2ad04060388f223",
-  "sAMMV2-USD+/USDC": "0xd95E98fc33670dC033424E7Aa0578D742D00f9C7",
-  "sAMMV2-FRAX/USD+": "0xD330841EF9527E3Bd0abc28a230C7cA8dec9423B",
-  "sAMMV2-USD+/LUSD": "0x37e7D30CC180A750C83D68ED0C2511dA10694d63",
-  "vAMMV2-OVN/USD+": "0x844D7d2fCa6786Be7De6721AabdfF6957ACE73a0",
+  "sAMM-FRAX/USD+": "0xD330841EF9527E3Bd0abc28a230C7cA8dec9423B",
+  "sAMM-USD+/DAI+": "0x667002F9DC61ebcBA8Ee1Cbeb2ad04060388f223",
+  "sAMM-USDC/USD+": "0x46e1B51e07851301f025ffeA506b140dB80a214A",
 }
 
 
@@ -28,7 +26,7 @@ export class VelodromeService {
     const browser = await puppeteer.launch(
       {
         headless: "new",
-        ignoreHTTPSErrors :true,
+        ignoreHTTPSErrors: true,
         executablePath: getAgent(process.env.IS_MAC),
         args: ['--no-sandbox']
       }
@@ -85,8 +83,9 @@ export class VelodromeService {
 
         // Extracting name: The name is at the beginning of the string and ends just before first –.
         this.logger.log("Start search NAME")
-        const nameRegex = /(sAMMV2-.+?Stable Pool|vAMMV2-.+?Volatile Pool)/;
-        const name = str.match(nameRegex)[0].replace("Stable Pool","").replace("Volatile Pool", "").replace(" ", "");
+        const nameRegex = /(sAMM-.+?Basic Stable|sAMMV2-.+?Basic Stable|vAMM-.+?Basic Volatile|vAMMV2-.+?Basic Volatile)/;
+        console.log(str, str.match(nameRegex))
+        const name = str.match(nameRegex)[0].replace("Basic Stable","").replace("Basic Volatile", "").replace(" ", "");
         this.logger.log("Name: " + name)
         const address = POOLS_MAP[name];
         if (!address) {

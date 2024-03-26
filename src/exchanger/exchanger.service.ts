@@ -4,6 +4,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { Pool } from '../pool/models/entities/pool.entity';
 import { PoolService } from '../pool/pool.service';
 import { ExchangerType } from './models/inner/exchanger.type';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ExchangerService {
@@ -12,13 +13,17 @@ export class ExchangerService {
   constructor(
     private poolService: PoolService,
     private adaptersService: AdaptersService,
-  ) {
-  }
+    private configService: ConfigService,
+  ) {}
 
   @Cron(CronExpression.EVERY_30_MINUTES)
   async runScheduler(): Promise<void> {
-    console.log('Running scheduler...');
-    await this.updateAllPools();
+    if (this.configService.get('NODE_ENV') === 'prod') {
+      console.log('Running scheduler...');
+      await this.updateAllPools();
+    } else {
+      console.log('Scheduler is disabled');
+    }
   }
 
   async updateAllPools(): Promise<void> {
@@ -28,7 +33,7 @@ export class ExchangerService {
     console.log('exchangers: ', exchanger_types);
 
     for (const exchanger_type of exchanger_types) {
-      await this.updateExchangerPool(exchanger_type)
+      await this.updateExchangerPool(exchanger_type);
     }
   }
 
@@ -79,13 +84,9 @@ export class ExchangerService {
         await this.poolService.create(newPool);
       }
     } catch (e) {
-      this.logger.error(
-        `Error when update pool. Exchange: ${exchanger_type}`,
-        e,
-      );
+      this.logger.error(`Error when update pool. Exchange: ${exchanger_type}`, e);
     }
   }
-
 
   private getCleanPoolName(poolName: string): string {
     return poolName.replace(/LP-|sAMM-|vAMM-|bb-|crAMM-|s-|sAMMV2-|vAMMV2-|BP-f|3CRV-f/g, '');
