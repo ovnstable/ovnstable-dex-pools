@@ -17,6 +17,7 @@ import { BeefylService } from "./exchangers/beefy.service";
 import { LynexService } from './exchangers/lynex.service';
 import { FraxService } from './exchangers/frax.service';
 import { SyncswapService } from './exchangers/syncswap.service';
+import { SwapBlastService } from './exchangers/swapblast.service';
 
 @Injectable()
 export class AdaptersService {
@@ -41,6 +42,7 @@ export class AdaptersService {
     private lynexService: LynexService,
     private fraxService: FraxService,
     private syncswapService: SyncswapService,
+    private swapblastServuce: SwapBlastService,
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
     if (exchanger_type === ExchangerType.SYNCSWAP) {
@@ -90,6 +92,9 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.FRAX) {
       return await this.fraxService.getPoolsData();
+    }
+    if (exchanger_type === ExchangerType.SWAPBLAST) {
+      return await this.swapblastServuce.getPoolsData();
     }
 
     this.logger.error(

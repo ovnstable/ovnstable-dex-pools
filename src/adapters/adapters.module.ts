@@ -17,6 +17,7 @@ import { BeefylService } from "./exchangers/beefy.service";
 import { LynexService } from "./exchangers/lynex.service";
 import { FraxService } from "./exchangers/frax.service";
 import { SyncswapService } from "./exchangers/syncswap.service";
+import { SwapBlastService } from "./exchangers/swapblast.service";
 
 //
 @Module({
@@ -40,6 +41,7 @@ import { SyncswapService } from "./exchangers/syncswap.service";
     LynexService,
     FraxService,
     SyncswapService,
+    SwapBlastService,
   ],
   exports: [AdaptersService],
 })
