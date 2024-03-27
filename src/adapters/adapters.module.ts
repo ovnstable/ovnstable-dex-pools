@@ -18,6 +18,7 @@ import { LynexService } from './exchangers/lynex.service';
 import { FraxService } from './exchangers/frax.service';
 import { SyncswapService } from './exchangers/syncswap.service';
 import { ConvexService } from './exchangers/convex.service';
+import { SwapBlastService } from './exchangers/swapblast.service';
 
 //
 @Module({
@@ -41,6 +42,7 @@ import { ConvexService } from './exchangers/convex.service';
     LynexService,
     FraxService,
     SyncswapService,
+    SwapBlastService,
     ConvexService,
   ],
   exports: [AdaptersService],
