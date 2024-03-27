@@ -1,4 +1,4 @@
-import {Injectable, Logger} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Pool } from './models/entities/pool.entity';
@@ -6,9 +6,9 @@ import { PoolDto } from './models/dto/pool.dto';
 import { PlDashboard } from './models/entities/pldashboard.entity';
 
 import {
-    TelegramService,
-    TelegramServiceConfig
-} from "@overnight-contracts/eth-utils/dist/module/telegram/telegramService";
+  TelegramService,
+  TelegramServiceConfig,
+} from '@overnight-contracts/eth-utils/dist/module/telegram/telegramService';
 
 @Injectable()
 export class PoolService {
@@ -22,20 +22,19 @@ export class PoolService {
     @InjectRepository(PlDashboard)
     private plDashboardRepository: Repository<PlDashboard>,
   ) {
-
     const privateKey = process.env['PRIVATE_KEY'];
 
-    if (!process.env.TELEGRAM_BOT_ENABLED) return
+    if (!process.env.TELEGRAM_BOT_ENABLED) return;
 
-    if (privateKey){
-        const config = new TelegramServiceConfig();
-        config.name = 'Dex-Pool Service';
-        config.polling = false;
-        this.telegramService = new TelegramService(config);
+    if (privateKey) {
+      const config = new TelegramServiceConfig();
+      config.name = 'Dex-Pool Service';
+      config.polling = false;
+      this.telegramService = new TelegramService(config);
 
-        this.telegramService.sendMessage('DexPool service is running');
+      this.telegramService.sendMessage('DexPool service is running');
     } else {
-        this.logger.error('PRIVATE_KEY is not defined -> skim service cannot send transaction');
+      this.logger.error('PRIVATE_KEY is not defined -> skim service cannot send transaction');
     }
   }
 
@@ -80,9 +79,7 @@ export class PoolService {
   }
 
   async getAll(): Promise<PoolDto[]> {
-    const pools: Pool[] = await this.getPoolsWithTvlLimit(
-      this.POOLS_DAPP_TVL_LIMIT,
-    );
+    const pools: Pool[] = await this.getPoolsWithTvlLimit(this.POOLS_DAPP_TVL_LIMIT);
     const poolDtos: PoolDto[] = [];
 
     for (let i = 0; i < pools.length; i++) {
@@ -115,8 +112,7 @@ export class PoolService {
   }
 
   async getSkims(chain: string): Promise<PlDashboard[]> {
-    const queryBuilder =
-      this.plDashboardRepository.createQueryBuilder('pl_dashboard');
+    const queryBuilder = this.plDashboardRepository.createQueryBuilder('pl_dashboard');
 
     queryBuilder.where('pl_dashboard.chain = :chain', { chain: chain });
     const skims = await queryBuilder.getMany();

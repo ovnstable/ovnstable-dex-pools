@@ -18,13 +18,12 @@ export enum ExchangerType {
   SYNCSWAP = 'Syncswap',
   LYNEX = 'Lynex',
   FRAX = 'Frax Finance',
-  SWAPBLAST = 'Swapblast'
+  SWAPBLAST = 'Swapblast',
 }
 
 export const DEX_SUPPORT_SKIM: ExchangerType[] = [
-    ExchangerType.VELODROME,
-    ExchangerType.AERODROME,
-    ExchangerType.VELOCORE,
-    ExchangerType.SOLUNEA
-]
-
+  ExchangerType.VELODROME,
+  ExchangerType.AERODROME,
+  ExchangerType.VELOCORE,
+  ExchangerType.SOLUNEA,
+];
