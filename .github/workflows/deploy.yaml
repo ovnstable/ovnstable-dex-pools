@@ -40,4 +40,5 @@ jobs:
           script: |
             docker login --username oauth --password ${{ secrets.CR_TOKEN }} cr.yandex && \
             docker pull cr.yandex/crp6lhbprjft0c8fhg61/overnight/dex-aggregator:1 && \
-            docker-compose -f /home/ubuntu/front/docker-compose.yaml up -d --no-deps dex-aggregator
+            docker-compose -f /home/ubuntu/front/docker-compose.yaml up -d --no-deps dex-aggregator \
+            docker image prune -f
