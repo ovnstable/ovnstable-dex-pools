@@ -3,6 +3,6 @@ import { CoingekoService } from './coingeko.service';
 
 @Module({
   providers: [CoingekoService],
-  exports: [CoingekoService]
+  exports: [CoingekoService],
 })
 export class ExternalModule {}
