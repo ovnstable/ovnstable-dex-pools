@@ -15,5 +15,4 @@ export class ExchangeController {
   async syncOne(@Param('exchanger') exchanger: string): Promise<any> {
     return await this.exchangeService.updateSinglePool(ExchangerType[exchanger.toUpperCase()]);
   }
-
 }

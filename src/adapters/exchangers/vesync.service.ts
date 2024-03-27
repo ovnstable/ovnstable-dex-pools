@@ -12,20 +12,14 @@ export class VesyncService {
 
   BASE_API_URL = 'https://api.vesync.finance';
   METHOD_GET_PAIRS = 'pairs';
-  
+
   async getPoolsData(): Promise<PoolData[]> {
-    const zkSyncPools = await this.getPools(
-      this.BASE_API_URL,
-      ChainType.ZKSYNC,
-    );
+    const zkSyncPools = await this.getPools(this.BASE_API_URL, ChainType.ZKSYNC);
 
     return [...zkSyncPools];
   }
 
-  async getPools(
-    baseApiUrl: string,
-    chainType: ChainType,
-  ): Promise<PoolData[]> {
+  async getPools(baseApiUrl: string, chainType: ChainType): Promise<PoolData[]> {
     const url = `${baseApiUrl}/${this.METHOD_GET_PAIRS}`;
 
     const response = axios
@@ -33,17 +27,15 @@ export class VesyncService {
         timeout: 80_000, // 80 sec
       })
       .then((data): PoolData[] => {
-//        console.log('Response data: ', data.data);
+        //        console.log('Response data: ', data.data);
         const pools: PoolData[] = [];
         const pairs = data.data;
         let itemCount = 0;
-        pairs.forEach((item) => {
+        pairs.forEach(item => {
           if (
             item &&
             item.symbol &&
-            AdaptersService.OVN_POOLS_NAMES.some((str) =>
-              item.symbol.toLowerCase().includes(str),
-            )
+            AdaptersService.OVN_POOLS_NAMES.some(str => item.symbol.toLowerCase().includes(str))
           ) {
             const poolData: PoolData = new PoolData();
             poolData.address = item.address;
@@ -53,9 +45,7 @@ export class VesyncService {
             poolData.apr = item.apr;
             poolData.chain = chainType;
             pools.push(poolData);
-            this.logger.log(
-              `========= ${ExchangerType.VESYNC} ${chainType} =========`,
-            );
+            this.logger.log(`========= ${ExchangerType.VESYNC} ${chainType} =========`);
             itemCount++;
             this.logger.log('Found ovn pool #: ', itemCount);
             this.logger.log('Found ovn pool: ', poolData);
@@ -65,7 +55,7 @@ export class VesyncService {
 
         return pools;
       })
-      .catch((e) => {
+      .catch(e => {
         const errorMessage = `Error when load ${ExchangerType.VESYNC} pairs.`;
         this.logger.error(errorMessage, e);
         throw new ExchangerRequestError(errorMessage);
