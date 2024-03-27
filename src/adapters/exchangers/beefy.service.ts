@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import puppeteer from "puppeteer";
+import puppeteer from 'puppeteer';
 import { PoolData } from './dto/pool.data.dto';
 import axios from 'axios';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
@@ -9,20 +9,20 @@ import { ChainType } from '../../exchanger/models/inner/chain.type';
 import { getAgent } from '../../config/consts';
 
 const POOLS_MAP = {
-  "velodrome-v2-ovn-usd+": {
-    address: "0x844D7d2fCa6786Be7De6721AabdfF6957ACE73a0",
-    symbol: "OVN/USD+",
+  'velodrome-v2-ovn-usd+': {
+    address: '0x844D7d2fCa6786Be7De6721AabdfF6957ACE73a0',
+    symbol: 'OVN/USD+',
     exchangerType: ExchangerType.VELODROME,
     chainType: ChainType.OPTIMISM,
   },
 
-  "aerodrome-ovn-usd+": {
-    address: "0x61366A4e6b1DB1b85DD701f2f4BFa275EF271197",
-    symbol: "OVN/USD+",
+  'aerodrome-ovn-usd+': {
+    address: '0x61366A4e6b1DB1b85DD701f2f4BFa275EF271197',
+    symbol: 'OVN/USD+',
     exchangerType: ExchangerType.AERODROME,
     chainType: ChainType.BASE,
-  }
-}
+  },
+};
 
 const TIME_FOR_TRY = 5_000; // 10 sec.
 
@@ -35,7 +35,7 @@ export class BeefylService {
 
   async getPoolsData(): Promise<PoolData[]> {
     const url = `${this.BASE_API_URL}/${this.METHOD_GET_PAIRS}`;
-    console.log("Load data by url:", url);
+    console.log('Load data by url:', url);
 
     const response = axios
       .get(url, {
@@ -49,23 +49,24 @@ export class BeefylService {
         let itemCount = 0;
         // pairs = key - pool name, value - pool data
         for (const [key, value] of Object.entries(pairs)) {
-          if (
-            key &&
-            AdaptersService.OVN_POOLS_NAMES.some((str) =>
-              key.toLowerCase().includes(str),
-            )
-          ) {
+          if (key && AdaptersService.OVN_POOLS_NAMES.some(str => key.toLowerCase().includes(str))) {
             this.logger.log('Found ovn pool: ', key);
 
             const poolElement = POOLS_MAP[key];
             if (!poolElement) {
-              this.logger.error(`Pool address not found in map. name: ${key} exType: ${ExchangerType.BEEFY}`)
-              continue
+              this.logger.error(`Pool address not found in map. name: ${key} exType: ${ExchangerType.BEEFY}`);
+              continue;
             }
 
-            this.logger.log('Found ovn pool: ', key, poolElement.address, poolElement.symbol, poolElement.exchangerType);
+            this.logger.log(
+              'Found ovn pool: ',
+              key,
+              poolElement.address,
+              poolElement.symbol,
+              poolElement.exchangerType,
+            );
             this.logger.log('==================');
-            this.logger.log("value:" , value);
+            this.logger.log('value:', value);
 
             const poolData: PoolData = new PoolData();
             poolData.address = poolElement.address + '_' + poolElement.exchangerType;
@@ -85,7 +86,7 @@ export class BeefylService {
 
         return pools;
       })
-      .catch((e) => {
+      .catch(e => {
         const errorMessage = `Error when load ${ExchangerType.BEEFY} pairs.`;
         this.logger.error(errorMessage, e);
         throw new ExchangerRequestError(errorMessage);
@@ -116,106 +117,101 @@ export class BeefylService {
       });
   }*/
 
-  async getApr(poolName):Promise<string> {
-      const url = `${this.BASE_URL}/vault/${poolName}`;
+  async getApr(poolName): Promise<string> {
+    const url = `${this.BASE_URL}/vault/${poolName}`;
 
-      // Launch a headless browser
-      const browser = await puppeteer.launch(
-        {
-          headless: "new",
-          ignoreHTTPSErrors :true,
-          executablePath: getAgent(process.env.IS_MAC),
-          args: ['--no-sandbox']
-        }
+    // Launch a headless browser
+    const browser = await puppeteer.launch({
+      headless: 'new',
+      ignoreHTTPSErrors: true,
+      executablePath: getAgent(process.env.IS_MAC),
+      args: ['--no-sandbox'],
+    });
+
+    this.logger.debug('Browser is start. ' + ExchangerType.AERODROME);
+
+    try {
+      // Create a new page
+      const page = await browser.newPage();
+      await page.setViewport({ width: 1280, height: 800 });
+      await page.setUserAgent(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36',
       );
+      // Set a default timeout of 20 seconds
+      await page.setDefaultTimeout(60000);
 
-      this.logger.debug("Browser is start. " + ExchangerType.AERODROME);
+      // Navigate to the SPA
+      await page.goto(url);
 
-      try {
+      console.log('GOTO: ', url);
+      // await new Promise(resolve => setTimeout(resolve, TIME_FOR_TRY));
 
-        // Create a new page
-        const page = await browser.newPage();
-        await page.setViewport({ width: 1280, height: 800 });
-        await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36');
-        // Set a default timeout of 20 seconds
-        await page.setDefaultTimeout(60000);
+      const textToWaitFor = 'APY breakdown';
+      // await page.waitForSelector(`:contains("${textToWaitFor}")`);
+      console.log('Wait for: ', textToWaitFor);
+      // const textToWaitFor = 'Text you want to wait for';
 
-        // Navigate to the SPA
-        await page.goto(url);
+      await page.waitForFunction(text => document.querySelector('body').textContent.includes(text), {}, textToWaitFor);
 
-        console.log("GOTO: ", url);
-        // await new Promise(resolve => setTimeout(resolve, TIME_FOR_TRY));
+      await new Promise(resolve => setTimeout(resolve, TIME_FOR_TRY));
 
-        const textToWaitFor = 'APY breakdown';
-        // await page.waitForSelector(`:contains("${textToWaitFor}")`);
-        console.log("Wait for: ", textToWaitFor);
-        // const textToWaitFor = 'Text you want to wait for';
+      console.log('Wait for: ', textToWaitFor, ' is finished');
 
-        await page.waitForFunction(
-          (text) => document.querySelector('body').textContent.includes(text),
-          {},
-          textToWaitFor
-        );
+      // Extract the data from the page
+      const data = await page.evaluate(() => {
+        const markerListOfData = '.MuiPaper-root.MuiPaper-elevation1.MuiPaper-rounded';
+        let aprData = null;
 
-        await new Promise(resolve => setTimeout(resolve, TIME_FOR_TRY));
-
-        console.log("Wait for: ", textToWaitFor, " is finished");
-
-        // Extract the data from the page
-        const data = await page.evaluate(() => {
-          const markerListOfData = '.MuiPaper-root.MuiPaper-elevation1.MuiPaper-rounded';
-          let aprData = null;
-
-          const blocks = document.querySelectorAll(markerListOfData);
-          for (let i = 0; i < blocks.length; i++) {
-            const block = blocks[i];
-            if (!block.textContent.includes('Strategy')) {
-              console.log("Block without apr data: ", block.textContent)
-              continue;
-            }
-
-            aprData = block.textContent;
-            break;
+        const blocks = document.querySelectorAll(markerListOfData);
+        for (let i = 0; i < blocks.length; i++) {
+          const block = blocks[i];
+          if (!block.textContent.includes('Strategy')) {
+            console.log('Block without apr data: ', block.textContent);
+            continue;
           }
 
-          console.log("Block with apr data: ", aprData);
-
-          return aprData;
-        });
-
-        // Display the extracted data
-        console.log(data);
-        let str: string = data;
-        this.logger.log("String: from browser", str);
-        if (!str) {
-          this.logger.error("String with apr is empty");
-          return null
+          aprData = block.textContent;
+          break;
         }
 
-        // Extracting name: The name is at the beginning of the string and ends just before first –.
-        this.logger.log("Start search APY")
-        this.logger.log(str)
+        console.log('Block with apr data: ', aprData);
 
-        // StrategyStrategy addressVault addressThe vault deposits the user's vAMM-OVN/USD+ in a Aerodrome farm, earning the platform's governance token. Earned token is swapped for more of the underlying assets in order to acquire more of the same liquidity token. To complete the compounding cycle, the new vAMM-OVN/USD+ is added to the farm, ready to go for the next earning event. The transaction cost required to do all this is socialized among the vault's users.APY breakdownTOTAL APY130,847%Vault APR718.92%AuditedCommunity Audit
-        // parse this string and get APY
-        str = str.replace(/,/g, "");
-        const aprRegex = /(?<=TOTAL APY)[0-9.]+(?=%)/;
-        const match = str.match(aprRegex);
-        if (!match || !match.length) {
-          this.logger.error(`APY not found. String: ${str}`);
-          return null;
-        }
+        return aprData;
+      });
 
-        const apr = parseFloat(match[0]);
-        this.logger.log("apr: " + apr)
-        return String(apr);
-      } catch (e) {
-        const errorMessage = `Error when load ${ExchangerType.AERODROME} pairs. url: ${url}`;
-        this.logger.error(errorMessage, e);
-        throw new ExchangerRequestError(errorMessage);
-      } finally {
-        this.logger.debug("Browser is close. " + ExchangerType.AERODROME);
-        await browser.close();
+      // Display the extracted data
+      console.log(data);
+      let str: string = data;
+      this.logger.log('String: from browser', str);
+      if (!str) {
+        this.logger.error('String with apr is empty');
+        return null;
       }
+
+      // Extracting name: The name is at the beginning of the string and ends just before first –.
+      this.logger.log('Start search APY');
+      this.logger.log(str);
+
+      // StrategyStrategy addressVault addressThe vault deposits the user's vAMM-OVN/USD+ in a Aerodrome farm, earning the platform's governance token. Earned token is swapped for more of the underlying assets in order to acquire more of the same liquidity token. To complete the compounding cycle, the new vAMM-OVN/USD+ is added to the farm, ready to go for the next earning event. The transaction cost required to do all this is socialized among the vault's users.APY breakdownTOTAL APY130,847%Vault APR718.92%AuditedCommunity Audit
+      // parse this string and get APY
+      str = str.replace(/,/g, '');
+      const aprRegex = /(?<=TOTAL APY)[0-9.]+(?=%)/;
+      const match = str.match(aprRegex);
+      if (!match || !match.length) {
+        this.logger.error(`APY not found. String: ${str}`);
+        return null;
+      }
+
+      const apr = parseFloat(match[0]);
+      this.logger.log('apr: ' + apr);
+      return String(apr);
+    } catch (e) {
+      const errorMessage = `Error when load ${ExchangerType.AERODROME} pairs. url: ${url}`;
+      this.logger.error(errorMessage, e);
+      throw new ExchangerRequestError(errorMessage);
+    } finally {
+      this.logger.debug('Browser is close. ' + ExchangerType.AERODROME);
+      await browser.close();
+    }
   }
 }
