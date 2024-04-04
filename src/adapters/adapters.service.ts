@@ -19,6 +19,7 @@ import { FraxService } from './exchangers/frax.service';
 import { SyncswapService } from './exchangers/syncswap.service';
 import { SwapBlastService } from './exchangers/swapblast.service';
 import { ConvexService } from './exchangers/convex.service';
+import { DysonService } from './exchangers/dyson.service';
 
 @Injectable()
 export class AdaptersService {
@@ -45,6 +46,7 @@ export class AdaptersService {
     private syncswapService: SyncswapService,
     private swapblastServuce: SwapBlastService,
     private convexService: ConvexService,
+    private dysonService: DysonService,
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
     if (exchanger_type === ExchangerType.SYNCSWAP) {
@@ -100,6 +102,9 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.CONVEX) {
       return await this.convexService.getPoolsData();
+    }
+    if (exchanger_type === ExchangerType.DYSON) {
+      return await this.dysonService.getPoolsData();
     }
 
     this.logger.error(`Error when get pools data. Exchange type not found: ${exchanger_type}`);
