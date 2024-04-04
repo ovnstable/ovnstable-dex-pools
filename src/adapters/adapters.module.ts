@@ -19,6 +19,7 @@ import { FraxService } from './exchangers/frax.service';
 import { SyncswapService } from './exchangers/syncswap.service';
 import { SwapBlastService } from './exchangers/swapblast.service';
 import { ConvexService } from './exchangers/convex.service';
+import { DysonService } from './exchangers/dyson.service';
 
 //
 @Module({
@@ -44,6 +45,7 @@ import { ConvexService } from './exchangers/convex.service';
     SyncswapService,
     SwapBlastService,
     ConvexService,
+    DysonService,
   ],
   exports: [AdaptersService],
 })
