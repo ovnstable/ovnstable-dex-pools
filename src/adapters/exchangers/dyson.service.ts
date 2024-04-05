@@ -36,7 +36,7 @@ export class DysonService {
           poolData.address = item.address;
           poolData.name = item.composition.map((c: any) => c.symbol).join('/');
           poolData.tvl = new BigNumber(item.metrics.tvl.vault.USDBalance ?? 0).toFixed(2);
-          poolData.apr = new BigNumber(item.metrics.rewardRate.rewardRate ?? 0).toFixed(2);
+          poolData.apr = new BigNumber(item.metrics.rewardRate.rewardRate * 100 ?? 0).toFixed(2);
           poolData.chain = chainType;
 
           pools.push(poolData);
