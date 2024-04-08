@@ -77,13 +77,14 @@ export class SwapBlastService {
             poolData.decimals = 18;
             poolData.tvl = (item.reserve0 * 1 + item.reserve1 * 1).toString();
 
-            // poolData.apr = new BN(itemRateData?.rate ?? 0)
-            //   .times(rewardTokenUsdPrice)
-            //   .times(365)
-            //   .div(item.reserveUSD)
-            //   .times(100)
-            //   .toFixed(2);
-            poolData.apr = poolData.name == 'USD+/USDC+' ? '406.53' : '420.38';
+            poolData.apr = new BN(itemRateData?.rate ?? 0)
+              .times(rewardTokenUsdPrice)
+              .times(365)
+              .div(item.reserveUSD)
+              .times(100)
+              .toFixed(2);
+
+            poolData.apr = poolData.name === 'USD+/USDC+' ? new BN(poolData.apr).div(2).toFixed(2) : poolData.apr;
 
             poolData.chain = ChainType.BLAST;
             pools.push(poolData);
