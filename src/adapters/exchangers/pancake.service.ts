@@ -16,12 +16,13 @@ const ZK_POOLS = {
 };
 const ARB_POOLS = {
   'USDT+-USD+': '0x8a06339abd7499af755df585738ebf43d5d62b94',
-  'USD+-USDC': '0x721f37495cd70383b0a77bf1eb8f97eef29498bb',
   'OVN-USD+': '0x714d48cb99b87f274b33a89fbb16ead191b40b6c',
+  'USDV-USD+': '0x35d85d531be7159cb6f92e8b9ceaf04ec28c6ad9',
 };
 
 const buildQuery = (pools: { [key: string]: string }) => {
   const formattedPools = JSON.stringify(Object.values(pools));
+  console.log(formattedPools);
   return `
         query pools {
         pools(where: { id_in: ${formattedPools} },
@@ -160,6 +161,11 @@ export class PancakeService {
       await page.waitForSelector(markerOfLoadingIsFinish);
       await new Promise(resolve => setTimeout(resolve, TIME_FOR_TRY));
 
+      await page.evaluate(() => {
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
+      await new Promise(resolve => setTimeout(resolve, TIME_FOR_TRY));
       // Extract the data from the page
       const data = await page.evaluate(() => {
         const markerListOfData = '#table-container tr';
