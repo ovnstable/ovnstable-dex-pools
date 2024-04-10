@@ -20,6 +20,7 @@ export enum ExchangerType {
   LYNEX = 'Lynex',
   FRAX = 'Frax Finance',
   SWAPBLAST = 'Swapblast',
+  SWAPBASED = 'Swapbased',
 }
 
 export const DEX_SUPPORT_SKIM: ExchangerType[] = [

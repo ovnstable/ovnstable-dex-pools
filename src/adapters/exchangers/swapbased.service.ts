@@ -8,17 +8,17 @@ import { AdaptersService } from '../adapters.service';
 import BN from 'bignumber.js';
 
 @Injectable()
-export class SwapBlastService {
-  private readonly logger = new Logger(SwapBlastService.name);
+export class SwapBasedService {
+  private readonly logger = new Logger(SwapBasedService.name);
 
   // get all api info / api data
-  BASE_GRAPHQL_URL = 'https://api.studio.thegraph.com/query/67101/swapblast/version/latest/';
-  BASE_URL = 'https://swapblast.finance/';
-  REWARD_TOKEN = 'SBF';
+  BASE_GRAPHQL_URL = 'https://api.thegraph.com/subgraphs/name/chimpydev/swapbase';
+  BASE_URL = 'https://swapbased.finance/#/farm';
+  REWARD_TOKEN = 'BASE';
 
   async getPoolsData(): Promise<PoolData[]> {
     const rateData = await fetch(
-      'https://raw.githubusercontent.com/SwapBlasted/swapblast-lists/main/swapblast.farmslist.json',
+      'https://raw.githubusercontent.com/chimpydev/swapbase-lists/main/swapbase.farmslist7.json',
       {
         method: 'GET',
         headers: {
@@ -67,7 +67,8 @@ export class SwapBlastService {
             item.token1.symbol &&
             AdaptersService.OVN_POOLS_NAMES.some(str =>
               (item.token0.symbol + '/' + item.token1.symbol).toLowerCase().includes(str),
-            )
+            ) &&
+            rates.active.some(pool => item.id.toLowerCase() === pool.pair.toLowerCase())
           ) {
             const itemRateData = rates?.active?.find(_ => _.pair.toLowerCase() === item.id);
             const poolData: PoolData = new PoolData();
@@ -83,7 +84,7 @@ export class SwapBlastService {
               .times(100)
               .toFixed(2);
 
-            poolData.chain = ChainType.BLAST;
+            poolData.chain = ChainType.BASE;
             pools.push(poolData);
             this.logger.log(`=========${ExchangerType.SWAPBLAST}=========`);
             itemCount++;
@@ -92,7 +93,6 @@ export class SwapBlastService {
             this.logger.log('==================');
           }
         });
-
         return pools;
       })
       .catch(e => {

@@ -20,6 +20,7 @@ import { SyncswapService } from './exchangers/syncswap.service';
 import { SwapBlastService } from './exchangers/swapblast.service';
 import { ConvexService } from './exchangers/convex.service';
 import { DysonService } from './exchangers/dyson.service';
+import { SwapBasedService } from './exchangers/swapbased.service';
 
 @Injectable()
 export class AdaptersService {
@@ -45,6 +46,7 @@ export class AdaptersService {
     private fraxService: FraxService,
     private syncswapService: SyncswapService,
     private swapblastServuce: SwapBlastService,
+    private swapBasedService: SwapBasedService,
     private convexService: ConvexService,
     private dysonService: DysonService,
   ) {}
@@ -99,6 +101,9 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.SWAPBLAST) {
       return await this.swapblastServuce.getPoolsData();
+    }
+    if (exchanger_type === ExchangerType.SWAPBASED) {
+      return await this.swapBasedService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.CONVEX) {
       return await this.convexService.getPoolsData();
