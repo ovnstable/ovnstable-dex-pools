@@ -21,6 +21,7 @@ export enum ExchangerType {
   FRAX = 'Frax Finance',
   SWAPBLAST = 'Swapblast',
   SWAPBASED = 'Swapbased',
+  THRUSTER = 'Thruster',
 }
 
 export const DEX_SUPPORT_SKIM: ExchangerType[] = [
