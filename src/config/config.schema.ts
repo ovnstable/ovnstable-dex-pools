@@ -30,6 +30,8 @@ export type ConfigSchema = {
   TELEGRAM_BOT_ERROR_CHAT: string;
   TELEGRAM_BOT_ENABLED: boolean;
 
+  DEFINED_API_KEY: string;
+
   PRIVATE_KEY: string;
 };
 
@@ -62,6 +64,8 @@ export const configValidationSchema = Joi.object<ConfigSchema>({
   TELEGRAM_BOT_API_KEY: Joi.string().required(),
   TELEGRAM_BOT_ERROR_CHAT: Joi.string().required(),
   TELEGRAM_BOT_ENABLED: Joi.boolean().required(),
+
+  DEFINED_API_KEY: Joi.string().required(),
 
   PRIVATE_KEY: Joi.string().required(),
 });
