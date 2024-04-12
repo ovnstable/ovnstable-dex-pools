@@ -18,6 +18,7 @@ const POOLS_MAP = {
   'sAMM-DOLA/USD+': '0x952388d73EA3E940eD6824DBd75ed6aD58e6B436',
   'vAMM-AERO/USD+': '0x267d950110D9ED57999c3451b89C35a9D278C074',
   'vAMM-USD+/sFRAX': '0xbB38EeBd670A9F3cafe6D3170862ccD930cB25f9',
+  'vAMM-AERO/OVN': '0x4704f9Cf735b58ea442E387ACca6717311597322',
 };
 
 @Injectable()
@@ -25,9 +26,16 @@ export class AerodromeService {
   private readonly logger = new Logger(AerodromeService.name);
 
   BASE_API_URL = 'https://aerodrome.finance/liquidity';
-  METHOD_GET_PAIRS = '?query=usd%2B&filter=all';
+
   async getPoolsData(): Promise<PoolData[]> {
-    const url = `${this.BASE_API_URL}/${this.METHOD_GET_PAIRS}`;
+    const usdPlusPools = await this.getPools('?query=usd%2B&filter=all');
+    const ovnPools = await this.getPools('?query=ovn&filter=all');
+
+    return [...usdPlusPools, ...ovnPools];
+  }
+
+  async getPools(queryString: string): Promise<PoolData[]> {
+    const url = `${this.BASE_API_URL}/${queryString}`;
 
     // Launch a headless browser
     const browser = await puppeteer.launch({
