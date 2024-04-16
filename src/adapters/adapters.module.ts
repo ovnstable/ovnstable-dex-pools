@@ -22,6 +22,7 @@ import { ConvexService } from './exchangers/convex.service';
 import { DysonService } from './exchangers/dyson.service';
 import { SwapBasedService } from './exchangers/swapbased.service';
 import { ThrusterService } from './exchangers/thruster.service';
+import { AmbientService } from './exchangers/ambient.service';
 
 //
 @Module({
@@ -50,6 +51,7 @@ import { ThrusterService } from './exchangers/thruster.service';
     ConvexService,
     DysonService,
     ThrusterService,
+    AmbientService,
   ],
   exports: [AdaptersService],
 })
