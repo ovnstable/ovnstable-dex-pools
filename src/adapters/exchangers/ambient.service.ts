@@ -15,6 +15,7 @@ const POOLS = [
     token1: '0x4fee793d435c6d2c10c135983bb9d6d4fc7b9bbd',
     poolId: '420',
     chainId: '0x13e31', // 81457
+    address: '0xaAaaaAAAFfe404EE9433EEf0094b6382D81fb958_usdb',
   },
   {
     name: 'ETH/USD+',
@@ -22,6 +23,7 @@ const POOLS = [
     token1: '0x4fee793d435c6d2c10c135983bb9d6d4fc7b9bbd',
     poolId: '420',
     chainId: '0x13e31', // 81457
+    address: '0xaAaaaAAAFfe404EE9433EEf0094b6382D81fb958_eth',
   },
 ];
 
@@ -65,7 +67,7 @@ export class AmbientService {
         n: '1',
       }),
     ]);
-    poolData.address = '0xaAaaaAAAFfe404EE9433EEf0094b6382D81fb958';
+    poolData.address = item.address;
     poolData.name = item.name;
     poolData.tvl = this.calculateTvl(poolStats.baseTvl, poolStats.quoteTvl, poolStats.lastPriceSwap);
     poolData.apr = new BigNumber(poolApr[0].aprEst).times(100).toFixed(2);
