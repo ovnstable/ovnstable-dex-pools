@@ -89,11 +89,11 @@ export class BladeSwapService {
 
       return pools;
     } catch (e) {
-      const errorMessage = `Error when load ${ExchangerType.AERODROME} pairs. url: ${url}`;
+      const errorMessage = `Error when load ${ExchangerType.BLADESWAP} pairs. url: ${url}`;
       this.logger.error(errorMessage, e);
       throw new ExchangerRequestError(errorMessage);
     } finally {
-      this.logger.debug('Browser is close. ' + ExchangerType.AERODROME);
+      this.logger.debug('Browser is close. ' + ExchangerType.BLADESWAP);
       await browser.close();
     }
   }
