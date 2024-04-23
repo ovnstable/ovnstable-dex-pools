@@ -5,7 +5,6 @@ import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
 import puppeteer from 'puppeteer';
 import { getAgent } from '../../config/consts';
-import BigNumber from 'bignumber.js';
 
 const POOLS_MAP = {
   // pool name: pool address
@@ -44,26 +43,20 @@ export class BladeSwapService {
 
       // Navigate to the SPA
       await page.goto(url);
-      await page.waitForSelector(
-        '#root > div > div.css-1vlo2az > div > div.mantine-hr6aor.mantine-AppShell-body > main > div.mantine-1fr50if > div > div > div.css-b2gwxu > div > div > div.mantine-1m3tpc2 > table > tbody > tr:nth-child(1) > td.mantine-1uv9mpc > div > div.mantine-1fr50if',
-      );
-      console.log('sdcndslkcdslkncdlk');
+      await page.waitForSelector('table > tbody > tr:nth-child(1) > td > div > div > span');
 
-      const poolRow = await page.$$eval(
-        '#root > div > div.css-1vlo2az > div > div.mantine-hr6aor.mantine-AppShell-body > main > div.mantine-1fr50if > div > div > div.css-b2gwxu > div > div > div.mantine-1m3tpc2 > table > tbody > tr',
-        elements => {
-          return elements.map(tr => {
-            const name = tr.querySelector('td:nth-child(1)').textContent.replace('VOLATILE', '').replace('STABLE', '');
-            const apr = tr.querySelector('td:nth-child(4)').textContent.replace('%', '');
-            const tvl = tr.querySelector('td:nth-child(5)').textContent.replace('$', '').replace(',', '');
-            return {
-              name,
-              apr,
-              tvl,
-            };
-          });
-        },
-      );
+      const poolRow = await page.$$eval('table > tbody > tr', elements => {
+        return elements.map(tr => {
+          const name = tr.querySelector('td:nth-child(1)').textContent.replace('VOLATILE', '').replace('STABLE', '');
+          const apr = tr.querySelector('td:nth-child(4)').textContent.replace('%', '');
+          const tvl = tr.querySelector('td:nth-child(5)').textContent.replace('$', '').replace(',', '');
+          return {
+            name,
+            apr,
+            tvl,
+          };
+        });
+      });
 
       // Display the extracted data
       const pools: PoolData[] = [];
