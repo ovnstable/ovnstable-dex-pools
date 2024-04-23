@@ -23,6 +23,7 @@ import { DysonService } from './exchangers/dyson.service';
 import { SwapBasedService } from './exchangers/swapbased.service';
 import { ThrusterService } from './exchangers/thruster.service';
 import { AmbientService } from './exchangers/ambient.service';
+import { BladeSwapService } from './exchangers/bladeswap.service';
 
 //
 @Module({
@@ -52,6 +53,7 @@ import { AmbientService } from './exchangers/ambient.service';
     DysonService,
     ThrusterService,
     AmbientService,
+    BladeSwapService,
   ],
   exports: [AdaptersService],
 })
