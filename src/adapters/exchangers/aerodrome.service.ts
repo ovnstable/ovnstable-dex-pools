@@ -20,6 +20,7 @@ const POOLS_MAP = {
   'vAMM-USD+/sFRAX': '0xbB38EeBd670A9F3cafe6D3170862ccD930cB25f9',
   'vAMM-AERO/OVN': '0x4704f9Cf735b58ea442E387ACca6717311597322',
   'sAMM-USD+/eUSD': '0x8041e2A135D2da7A8E21E4B14113D8245EC532e1',
+  'vAMM-USD+/wstETH': '0xf15B30a0a823f588B523fD794A43939F0B1dC582',
 };
 
 @Injectable()
@@ -86,7 +87,6 @@ export class AerodromeService {
       const pools: PoolData[] = [];
       let itemCount = 0;
 
-      console.log(data);
       for (let i = 0; i < data.length; i++) {
         const element = data[i];
         const str: string = element;
@@ -97,8 +97,8 @@ export class AerodromeService {
 
         // Extracting name: The name is at the beginning of the string and ends just before first –.
         this.logger.log('Start search NAME');
-        const nameRegex = /(sAMM-.+?Stable Pool|vAMM-.+?Volatile Pool)/;
-        const name = str.match(nameRegex)[0].replace('Stable Pool', '').replace('Volatile Pool', '').replace(' ', '');
+        const nameRegex = /(sAMM-.+?Basic Stable|vAMM-.+?Basic Volatile)/;
+        const name = str.match(nameRegex)[0].replace('Basic Stable', '').replace('Basic Volatile', '').replace(' ', '');
         this.logger.log('Name: ' + name);
         const address = POOLS_MAP[name];
         if (!address) {
