@@ -17,7 +17,6 @@ const ZK_POOLS = {
 const ARB_POOLS = {
   'USDT+-USD+': '0x8a06339abd7499af755df585738ebf43d5d62b94',
   'OVN-USD+': '0x714d48cb99b87f274b33a89fbb16ead191b40b6c',
-  'USDV-USD+': '0x35d85d531be7159cb6f92e8b9ceaf04ec28c6ad9',
 };
 
 const buildQuery = (pools: { [key: string]: string }) => {
