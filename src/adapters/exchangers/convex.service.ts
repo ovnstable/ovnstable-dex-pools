@@ -7,6 +7,7 @@ import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { AdaptersService } from '../adapters.service';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
 import { getAgent } from '../../config/consts';
+import BigNumber from 'bignumber.js';
 
 const TIME_FOR_TRY = 5_000;
 
@@ -99,8 +100,12 @@ export class ConvexService {
           const chainName = pool.chain.toLowerCase();
           const pairKey = chainName + '-' + pool.address.toLocaleLowerCase() + '-' + pool.metaData;
           console.log('Pair key for apys: ', pairKey);
-          const apr = (pairs.apys[pairKey].baseApy + pairs.apys[pairKey].crvApy) * 100;
-          pool.apr = apr ? apr.toString() : null;
+          const apr =
+            pairs.apys[pairKey].baseApy +
+            pairs.apys[pairKey].crvApy +
+            pairs.apys[pairKey].cvxApy +
+            pairs.apys[pairKey].extraRewards.reduce((acc, val) => acc + val.apy, 0);
+          pool.apr = new BigNumber(apr ?? 0).toFixed(2);
         });
         return ovnPool;
       })
