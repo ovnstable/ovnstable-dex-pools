@@ -139,6 +139,7 @@ export class GndService {
           poolData.tvl = tvl.toString();
           poolData.apr = apr.toString();
           poolData.chain = ChainType.ARBITRUM;
+          poolData.pool_version = 'v2';
           pools.push(poolData);
           this.logger.log(`=========${ExchangerType.GND}=========`);
           itemCount++;

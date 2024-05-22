@@ -75,6 +75,7 @@ export class BeefylService {
             poolData.tvl = (value['totalSupply'] * value['price']).toString();
             poolData.apr = await this.getApr(key);
             poolData.chain = poolElement.chainType;
+            poolData.pool_version = 'v2';
             pools.push(poolData);
             this.logger.log(`========= ${ExchangerType.BEEFY} =========`);
             itemCount++;

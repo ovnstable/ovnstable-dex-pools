@@ -52,6 +52,7 @@ export class LynexService {
 
           poolData.apr = `${item?.gauge?.apr}` ?? '0';
           poolData.chain = ChainType.LINEA;
+          poolData.pool_version = 'v2';
           pools.push(poolData);
           this.logger.log(`=========${ExchangerType.LYNEX}=========`);
           this.logger.log('Found ovn pool: ', poolData);

@@ -71,6 +71,7 @@ export class CurveService {
             poolData.tvl = item.usdTotal.toString();
             poolData.apr = total_apr.toFixed(2);
             poolData.chain = chainType;
+            poolData.pool_version = 'v2';
             pools.push(poolData);
             this.logger.log(`========= ${ExchangerType.CURVE} =========`);
             itemCount++;
@@ -128,6 +129,7 @@ export class CurveService {
             poolData.tvl = item.usdTotal.toString();
             poolData.apr = total_apr.toFixed(2);
             poolData.chain = chainType;
+            poolData.pool_version = 'v2';
             pools.push(poolData);
             this.logger.log(`========= ${ExchangerType.CURVE} =========`);
             this.logger.log('Found ovn pool: ', poolData);

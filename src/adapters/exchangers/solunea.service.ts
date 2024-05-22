@@ -45,6 +45,7 @@ export class SoluneaService {
             poolData.tvl = item.tvl;
             poolData.apr = item.gauge ? item.gauge.stakeAprMin : item.apr;
             poolData.chain = chainType;
+            poolData.pool_version = 'v2';
             pools.push(poolData);
             this.logger.log(`========= ${ExchangerType.SOLUNEA} ${chainType} =========`);
             itemCount++;

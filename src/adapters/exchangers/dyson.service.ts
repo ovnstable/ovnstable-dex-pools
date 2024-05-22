@@ -38,6 +38,7 @@ export class DysonService {
           poolData.tvl = new BigNumber(item.metrics.tvl.vault.USDBalance ?? 0).toFixed(2);
           poolData.apr = new BigNumber(item.metrics.rewardRate.rewardRate * 100 ?? 0).toFixed(2);
           poolData.chain = chainType;
+          poolData.pool_version = 'v2';
 
           pools.push(poolData);
 

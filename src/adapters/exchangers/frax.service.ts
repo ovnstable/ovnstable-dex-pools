@@ -41,6 +41,7 @@ export class FraxService {
 
           poolData.apr = item.apy;
           poolData.chain = ChainType.ARBITRUM;
+          poolData.pool_version = 'v2';
           pools.push(poolData);
           this.logger.log(`========= ${ExchangerType.FRAX} =========`);
           itemCount++;

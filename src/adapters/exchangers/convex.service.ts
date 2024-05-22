@@ -59,6 +59,7 @@ export class ConvexService {
             poolData.chain = ChainType.ARBITRUM;
             poolData.metaData =
               item.convexPoolData && item.convexPoolData.id ? item.convexPoolData.id.toString() : null;
+            poolData.pool_version = 'v2';
             pools.push(poolData);
             this.logger.log(`========= ${ExchangerType.CONVEX} =========`);
             itemCount++;

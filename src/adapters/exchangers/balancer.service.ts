@@ -80,6 +80,7 @@ export class BalancerService {
           poolData.tvl = item.totalLiquidity.toString();
           poolData.apr = (item.apr.max / 100).toString();
           poolData.chain = poolConfiguration.chainType;
+          poolData.pool_version = 'v2';
 
           pools.push(poolData);
 

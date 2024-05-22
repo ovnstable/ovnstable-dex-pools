@@ -93,6 +93,7 @@ export class SyncswapService {
         poolData.apr = aprStr;
 
         poolData.chain = ChainType.ZKSYNC;
+        poolData.pool_version = 'v2';
         pools.push(poolData);
         this.logger.log(`=========${ExchangerType.SYNCSWAP}=========`);
         this.logger.log('Found ovn pool: ', poolData);

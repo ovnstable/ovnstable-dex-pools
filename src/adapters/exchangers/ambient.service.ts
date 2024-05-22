@@ -72,6 +72,7 @@ export class AmbientService {
     poolData.tvl = this.calculateTvl(poolStats.baseTvl, poolStats.quoteTvl, poolStats.lastPriceSwap);
     poolData.apr = new BigNumber(poolApr[0].aprEst).times(100).toFixed(2);
     poolData.chain = ChainType.BLAST;
+    poolData.pool_version = 'v2';
     return poolData;
   }
 

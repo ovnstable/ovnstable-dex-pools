@@ -37,6 +37,10 @@ export class PoolData {
   @IsNotEmpty()
   metaData: string; // some additional data
 
+  @IsString()
+  @IsNotEmpty()
+  pool_version: string;
+
   toString() {
     return JSON.stringify(this);
   }

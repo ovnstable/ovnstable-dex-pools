@@ -20,6 +20,9 @@ export class Pool {
   @Column({ type: 'real' })
   apr: string;
 
+  @Column()
+  pool_version: string;
+
   @Column({ default: true, nullable: false })
   add_to_sync: boolean;
 
