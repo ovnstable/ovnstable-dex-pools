@@ -84,6 +84,7 @@ export class SwapBlastService {
               .toFixed(2);
 
             poolData.chain = ChainType.BLAST;
+            poolData.pool_version = 'v2';
             pools.push(poolData);
             this.logger.log(`=========${ExchangerType.SWAPBLAST}=========`);
             itemCount++;

@@ -48,7 +48,7 @@ export class BladeSwapService {
       const poolRow = await page.$$eval('table > tbody > tr', elements => {
         return elements.map(tr => {
           const name = tr.querySelector('td:nth-child(1)').textContent.replace('VOLATILE', '').replace('STABLE', '');
-          const apr = tr.querySelector('td:nth-child(4)').textContent.replace('%', '');
+          const apr = tr.querySelector('td:nth-child(4)').textContent.replace('%', '').replace('+', '');
           const tvl = tr.querySelector('td:nth-child(5)').textContent.replace('$', '').replace(',', '');
           return {
             name,
@@ -72,6 +72,7 @@ export class BladeSwapService {
           poolData.tvl = pool.tvl;
           poolData.apr = pool.apr;
           poolData.chain = ChainType.BLAST;
+          poolData.pool_version = 'v2';
           pools.push(poolData);
           this.logger.log(`=========${ExchangerType.BLADESWAP}=========`);
           itemCount++;

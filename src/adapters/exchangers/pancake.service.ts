@@ -96,6 +96,7 @@ export class PancakeService {
 
           poolData.apr = '0';
           poolData.chain = chain;
+          poolData.pool_version = 'v2';
           pools.push(poolData);
           this.logger.log(`=========${ExchangerType.PANCAKE}=========`);
           this.logger.log('Found ovn pool: ', poolData);

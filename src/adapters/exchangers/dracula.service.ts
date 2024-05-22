@@ -57,6 +57,7 @@ export class DraculaService {
           }
           poolData.apr = null;
           poolData.chain = ChainType.ZKSYNC;
+          poolData.pool_version = 'v2';
 
           pools.push(poolData);
 

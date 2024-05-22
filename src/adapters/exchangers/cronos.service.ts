@@ -77,6 +77,7 @@ export class CronosService {
             poolData.tvl = (item.reserve0 * 1 + item.reserve1 * 1).toString();
             poolData.apr = await this.getCalculatedApr(item);
             poolData.chain = ChainType.ARBITRUM;
+            poolData.pool_version = 'v2';
             pools.push(poolData);
             this.logger.log(`========= ${ExchangerType.CHRONOS} =========`);
             itemCount++;

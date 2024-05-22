@@ -332,6 +332,7 @@ export class VelocoreService {
         poolData.tvl = totalTvlValue ? totalTvlValue.toString() : null;
         poolData.apr = mostApr ? mostApr.toString() : null;
         poolData.chain = ChainType.ZKSYNC;
+        poolData.pool_version = 'v2';
         pools.push(poolData);
         this.logger.log(`=========${ExchangerType.VELOCORE}=========`);
         itemCount++;

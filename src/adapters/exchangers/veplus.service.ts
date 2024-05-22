@@ -41,6 +41,7 @@ export class VeplusService {
             poolData.tvl = item.tvl.toString();
             poolData.apr = item.apr;
             poolData.chain = ChainType.BSC;
+            poolData.pool_version = 'v2';
             pools.push(poolData);
             this.logger.log(`========= ${ExchangerType.VEPLUS} =========`);
             itemCount++;

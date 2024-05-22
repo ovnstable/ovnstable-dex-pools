@@ -66,6 +66,7 @@ export class ExchangerService {
           dbPool.apr = poolData.apr ? poolData.apr : dbPool.apr; // old value
           dbPool.chain = poolData.chain;
           dbPool.update_date = nowTime;
+          dbPool.pool_version = poolData.pool_version;
           await this.poolService.update(dbPool.address, dbPool);
           continue;
         }
@@ -80,6 +81,7 @@ export class ExchangerService {
         newPool.update_date = nowTime;
         newPool.platform = exchanger_type;
         newPool.chain = poolData.chain;
+        newPool.pool_version = poolData.pool_version;
 
         await this.poolService.create(newPool);
       }

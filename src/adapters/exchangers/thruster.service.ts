@@ -77,6 +77,7 @@ export class ThrusterService {
           .times(item.pairMetadata.volume24);
         poolData.apr = fees24.times(365).div(poolData.tvl).times(100).toFixed(2);
         poolData.chain = ChainType.BLAST;
+        poolData.pool_version = 'v2';
         pools.push(poolData);
         this.logger.log(`=========${ExchangerType.THRUSTER}=========`);
         this.logger.log('Found ovn pool: ', poolData);

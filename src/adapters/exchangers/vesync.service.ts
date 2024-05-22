@@ -44,6 +44,7 @@ export class VesyncService {
             poolData.tvl = item.tvl;
             poolData.apr = item.apr;
             poolData.chain = chainType;
+            poolData.pool_version = 'v2';
             pools.push(poolData);
             this.logger.log(`========= ${ExchangerType.VESYNC} ${chainType} =========`);
             itemCount++;

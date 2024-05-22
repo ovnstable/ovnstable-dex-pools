@@ -85,6 +85,7 @@ export class SwapBasedService {
               .toFixed(2);
 
             poolData.chain = ChainType.BASE;
+            poolData.pool_version = 'v2';
             pools.push(poolData);
             this.logger.log(`=========${ExchangerType.SWAPBLAST}=========`);
             itemCount++;

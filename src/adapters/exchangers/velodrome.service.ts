@@ -115,6 +115,7 @@ export class VelodromeService {
         poolData.tvl = tvl.toString();
         poolData.apr = apr.toString();
         poolData.chain = ChainType.OPTIMISM;
+        poolData.pool_version = 'v2';
         pools.push(poolData);
         this.logger.log(`=========${ExchangerType.VELODROME}=========`);
         itemCount++;

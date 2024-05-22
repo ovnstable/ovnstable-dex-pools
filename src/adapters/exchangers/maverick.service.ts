@@ -36,6 +36,7 @@ export class MaverickService {
             poolData.tvl = item.tvl.amount.toString();
             poolData.apr = (item.topBin.annualizedFeeGrowth * 100).toFixed(2);
             poolData.chain = ChainType.ZKSYNC;
+            poolData.pool_version = 'v2';
             pools.push(poolData);
             this.logger.log(`========= ${ExchangerType.MAVERICK} =========`);
             itemCount++;
