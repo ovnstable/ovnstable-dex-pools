@@ -5,14 +5,22 @@ import { ExchangerRequestError } from '../../exceptions/exchanger.request.error'
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
 import { getAgent } from '../../config/consts';
+import BigNumber from 'bignumber.js';
 
-const POOLS_MAP = {
+type mapEntity = {
+  [key: string]: {
+    address: string;
+    pool_version: string;
+  };
+};
+
+const USD_PLUS_MAP = {
   // pool name: pool address
-  'sAMM-FRAX/USD+': '0xD330841EF9527E3Bd0abc28a230C7cA8dec9423B',
-  'sAMM-USD+/DAI+': '0x667002F9DC61ebcBA8Ee1Cbeb2ad04060388f223',
-  'sAMM-USDC/USD+': '0x46e1B51e07851301f025ffeA506b140dB80a214A',
-  'sAMM-USD+/USDC.e': '0xd95E98fc33670dC033424E7Aa0578D742D00f9C7',
-  'vAMM-OVN/USD+': '0x844D7d2fCa6786Be7De6721AabdfF6957ACE73a0',
+  'sAMM-FRAX/USD+': { address: '0xD330841EF9527E3Bd0abc28a230C7cA8dec9423B', pool_version: 'v2' },
+  'sAMM-USD+/DAI+': { address: '0x667002F9DC61ebcBA8Ee1Cbeb2ad04060388f223', pool_version: 'v2' },
+  'sAMM-USDC/USD+': { address: '0x46e1B51e07851301f025ffeA506b140dB80a214A', pool_version: 'v2' },
+  'sAMM-USD+/USDC.e': { address: '0xd95E98fc33670dC033424E7Aa0578D742D00f9C7', pool_version: 'v2' },
+  'vAMM-OVN/USD+': { address: '0x844D7d2fCa6786Be7De6721AabdfF6957ACE73a0', pool_version: 'v2' },
 };
 
 @Injectable()
@@ -21,8 +29,15 @@ export class VelodromeService {
 
   BASE_API_URL = 'https://velodrome.finance/liquidity';
   METHOD_GET_PAIRS = '?query=usd%2B&filter=all';
+
   async getPoolsData(): Promise<PoolData[]> {
-    const url = `${this.BASE_API_URL}/${this.METHOD_GET_PAIRS}`;
+    const usdPlusPools = await this.getPools('?query=usd%2B&filter=all', USD_PLUS_MAP);
+
+    return [...usdPlusPools];
+  }
+
+  async getPools(queryString: string, poolsMap: mapEntity): Promise<PoolData[]> {
+    const url = `${this.BASE_API_URL}/${queryString}`;
 
     // Launch a headless browser
     const browser = await puppeteer.launch({
@@ -37,6 +52,7 @@ export class VelodromeService {
     try {
       // Create a new page
       const page = await browser.newPage();
+      await page.setViewport({ width: 1280, height: 800 });
       await page.setUserAgent(
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36',
       );
@@ -45,77 +61,43 @@ export class VelodromeService {
 
       // Navigate to the SPA
       await page.goto(url);
-      const markerOfLoadingIsFinish = '.justify-between.bg-white.p-4.text-sm.text-gray-600';
+      const markerOfLoadingIsFinish = '.justify-between.bg-white.p-5.text-sm.text-gray-600';
 
       // Wait for the desired content to load
       await page.waitForSelector(markerOfLoadingIsFinish);
 
-      // Extract the data from the page
-      const data = await page.evaluate(() => {
-        const markerListOfData = '.border-neutral-200';
+      const data = await page.$$eval('.space-y-1\\.5.shadow-sm.rounded-lg > div', elelents => {
+        return elelents.map(el => {
+          const name = el.querySelector('div:nth-child(1) strong').textContent;
+          const aprStr = el.querySelector('div:nth-child(2) span.tracking-wider').textContent;
+          const tvlStr = el.querySelector('div:nth-child(1) > a > div:nth-child(2)').textContent;
 
-        // This function runs in the context of the browser page
-        // You can use DOM manipulation and JavaScript to extract the data
-        const elementsData = document.querySelectorAll(markerListOfData);
-        const elements = elementsData[0].textContent.split('Deposit');
-        const extractedData = [];
-
-        elements.forEach(element => {
-          extractedData.push(element);
+          return {
+            name,
+            tvl: tvlStr.replace('TVL  ~$', '').replace(/,/g, ''),
+            apr: aprStr.replace('%', '').replace(/,/g, ''),
+          };
         });
-
-        return extractedData;
       });
 
-      // Display the extracted data
       const pools: PoolData[] = [];
       let itemCount = 0;
 
-      console.log(data);
-      for (let i = 0; i < data.length; i++) {
-        const element = data[i];
-        const str: string = element;
-        this.logger.log('String: from browser', str);
-        if (!str) {
+      for (const [key, value] of Object.entries(poolsMap)) {
+        const item = data.find(el => el.name === key);
+        if (!item) {
+          this.logger.error(`Pool not found in map. name: ${key} exType: ${ExchangerType.VELODROME}`);
           continue;
         }
-
-        // Extracting name: The name is at the beginning of the string and ends just before first –.
-        this.logger.log('Start search NAME');
-        const nameRegex =
-          /(sAMM-.+?Basic Stable|sAMMV2-.+?Basic Stable|vAMM-.+?Basic Volatile|vAMMV2-.+?Basic Volatile)/;
-        console.log(str, str.match(nameRegex));
-        const name = str.match(nameRegex)[0].replace('Basic Stable', '').replace('Basic Volatile', '').replace(' ', '');
-        this.logger.log('Name: ' + name);
-        const address = POOLS_MAP[name];
-        if (!address) {
-          this.logger.error(`Pool address not found in map. name: ${name} exType: ${ExchangerType.VELODROME}`);
-          continue;
-        }
-
-        this.logger.log('Start search TVL');
-        // Extracting TVL: TVL starts with "$" and ends just before "Total".
-        const tvlRegex = /TVL\s*~\$(.*?)APR/;
-        const tvlData = str.match(tvlRegex)[1];
-        const tvl = parseFloat(tvlData.replace(/,/g, ''));
-        this.logger.log('tvl: ' + name);
-
-        // Extracting APR: APR is after "APR" and ends just before "%".
-        const aprRegex = /APR([\d\.]+)/;
-        console.log('Start search APR');
-        const aprStr = str.replace(/,/g, '');
-        const aprData = aprStr.match(aprRegex)[1];
-        const apr = parseFloat(aprData.replace('%', ''));
-        this.logger.log('apr: ' + name);
 
         const poolData: PoolData = new PoolData();
-        poolData.address = address;
-        poolData.name = name;
+        poolData.address = value.address;
+        poolData.name = key;
         poolData.decimals = null;
-        poolData.tvl = tvl.toString();
-        poolData.apr = apr.toString();
-        poolData.chain = ChainType.OPTIMISM;
-        poolData.pool_version = 'v2';
+        poolData.tvl = BigNumber(item.tvl).toFixed(2);
+        poolData.apr = BigNumber(item.apr).toFixed(2);
+        poolData.chain = ChainType.BASE;
+        poolData.pool_version = value.pool_version;
         pools.push(poolData);
         this.logger.log(`=========${ExchangerType.VELODROME}=========`);
         itemCount++;
@@ -133,7 +115,5 @@ export class VelodromeService {
       this.logger.debug('Browser is close. ' + ExchangerType.VELODROME);
       await browser.close();
     }
-
-    return [];
   }
 }
