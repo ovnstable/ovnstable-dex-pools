@@ -20,11 +20,19 @@ export class LynexService {
         address: '0x58aacbccaec30938cb2bb11653cad726e5c4194a',
         token0: 'USDC',
         token1: 'USD+',
+        pool_version: 'v2',
       },
       {
         address: '0xc5f4c5c2077bbbac5a8381cf30ecdf18fde42a91',
         token0: 'USDT+',
         token1: 'USD+',
+        pool_version: 'v2',
+      },
+      {
+        address: '0x6f501662a76577fbb3bb230be5e8e69d41d8c711',
+        token0: 'FLY',
+        token1: 'USD+',
+        pool_version: 'v3',
       },
     ];
 
@@ -48,11 +56,11 @@ export class LynexService {
           poolData.address = item.address;
           poolData.name = poolMainData.token0 + '/' + poolMainData.token1;
           poolData.decimals = 18;
-          poolData.tvl = new BigNumber(item.token0.reserve).plus(item.token1.reserve).toFixed(2);
+          poolData.tvl = new BigNumber(item.gauge.tvl).toFixed(2);
 
           poolData.apr = `${item?.gauge?.apr}` ?? '0';
           poolData.chain = ChainType.LINEA;
-          poolData.pool_version = 'v2';
+          poolData.pool_version = poolMainData.pool_version;
           pools.push(poolData);
           this.logger.log(`=========${ExchangerType.LYNEX}=========`);
           this.logger.log('Found ovn pool: ', poolData);
