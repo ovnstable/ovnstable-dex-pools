@@ -28,7 +28,6 @@ export class VelodromeService {
   private readonly logger = new Logger(VelodromeService.name);
 
   BASE_API_URL = 'https://velodrome.finance/liquidity';
-  METHOD_GET_PAIRS = '?query=usd%2B&filter=all';
 
   async getPoolsData(): Promise<PoolData[]> {
     const usdPlusPools = await this.getPools('?query=usd%2B&filter=all', USD_PLUS_MAP);
@@ -96,7 +95,7 @@ export class VelodromeService {
         poolData.decimals = null;
         poolData.tvl = BigNumber(item.tvl).toFixed(2);
         poolData.apr = BigNumber(item.apr).toFixed(2);
-        poolData.chain = ChainType.BASE;
+        poolData.chain = ChainType.OPTIMISM;
         poolData.pool_version = value.pool_version;
         pools.push(poolData);
         this.logger.log(`=========${ExchangerType.VELODROME}=========`);
