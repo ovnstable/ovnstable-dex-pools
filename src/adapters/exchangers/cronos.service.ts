@@ -68,8 +68,6 @@ export class CronosService {
               AdaptersService.OVN_POOLS_NAMES.some(str => item.token0.name.toLowerCase().includes(str))) ||
             AdaptersService.OVN_POOLS_NAMES.some(str => item.token1.name.toLowerCase().includes(str))
           ) {
-            console.log('Found!');
-            console.log(item);
             const poolData: PoolData = new PoolData();
             poolData.address = item.id;
             poolData.name = this.getFilteredName(item.token0.name) + '/' + this.getFilteredName(item.token1.name);

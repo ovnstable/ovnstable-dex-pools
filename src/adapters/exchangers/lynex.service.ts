@@ -47,7 +47,6 @@ export class LynexService {
         const pools: PoolData[] = [];
         const [responseBody] = await Promise.all([data.json()]);
         const apiPoolsData = responseBody.data;
-        console.log(apiPoolsData, '+++apiPoolsData');
 
         apiPoolsData.forEach(item => {
           const poolData: PoolData = new PoolData();
