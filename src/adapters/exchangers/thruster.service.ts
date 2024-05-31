@@ -21,63 +21,23 @@ export class ThrusterService {
 
   private readonly logger = new Logger(ThrusterService.name);
 
-  async buildQuery(poolAddress: string) {
-    const query = `
-    query {
-        pairMetadata (pairId:"${poolAddress}:81457" quoteToken:token0) {
-            pairAddress
-            price
-            volume24
-            fee
-            token0 {
-                symbol
-                price
-                pooled
-            }
-            token1 {
-                symbol
-                price
-                pooled
-            }
-        }
-      }
-    `;
-
-    const data = await axios.post(
-      'https://graph.defined.fi/graphql',
-      { query },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: this.configService.get<string>('DEFINED_API_KEY'),
-        },
-      },
-    );
-
-    return data.data.data;
-  }
-
   async getPoolsData(): Promise<PoolData[]> {
     try {
       const pools: PoolData[] = [];
 
-      const filteredArray = await Promise.all(Object.values(POOLS).map(poolAddress => this.buildQuery(poolAddress)));
+      const data = await axios.get('https://api.thruster.finance/analytics/top-pools?chainId=81457');
+      const filteredArray = data.data.filter(pool => Object.values(POOLS).includes(pool.poolMetadata.poolAddress));
+      console.log(filteredArray);
       filteredArray.forEach(item => {
         const poolData: PoolData = new PoolData();
-        poolData.address = item.pairMetadata.pairAddress;
-        poolData.name = item.pairMetadata.token0.symbol + '/' + item.pairMetadata.token1.symbol;
+        poolData.address = item.poolMetadata.poolAddress;
+        poolData.name = item.poolMetadata.token0Symbol + '/' + item.poolMetadata.token1Symbol;
 
-        const token0USD = new BigNumber(item.pairMetadata.token0.pooled).times(item.pairMetadata.token0.price);
-        const token1USD = new BigNumber(item.pairMetadata.token1.pooled).times(item.pairMetadata.token1.price);
-        poolData.tvl = new BigNumber(token0USD).plus(token1USD).toFixed(2);
+        poolData.tvl = new BigNumber(item.poolAnalytics.tvl).toFixed(2);
 
-        const fees24 = new BigNumber(item.pairMetadata.fee)
-          .div(10000) // 500 -> 0.05%
-          .div(100)
-          .times(item.pairMetadata.volume24);
-        poolData.apr = fees24.times(365).div(poolData.tvl).times(100).toFixed(2);
+        poolData.apr = new BigNumber(item.poolAnalytics.apr24h).times(100).toFixed(2);
         poolData.chain = ChainType.BLAST;
-        poolData.pool_version = 'v2';
+        poolData.pool_version = (item.poolMetadata.poolVersion as string).toLowerCase();
         pools.push(poolData);
         this.logger.log(`=========${ExchangerType.THRUSTER}=========`);
         this.logger.log('Found ovn pool: ', poolData);
