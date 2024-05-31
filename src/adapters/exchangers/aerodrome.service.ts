@@ -31,6 +31,9 @@ const USD_PLUS_MAP = {
   'CL100-WETH/USD+': { address: '0x4D69971CCd4A636c403a3C1B00c85e99bB9B5606', pool_version: 'v3' },
   'CL1-USDC/USD+': { address: '0x0c1A09d5D0445047DA3Ab4994262b22404288A3B', pool_version: 'v3' },
   'CL1-USD+/USDbC': { address: '0x20086910E220D5f4c9695B784d304A72a0de403B', pool_version: 'v3' },
+  'CL1-USDz/USD+': { address: '0x4Ef1E503C4F1e5664ac98294d0e42ddC9c0FF961', pool_version: 'v3' },
+  'CL50-USD+/sFRAX': { address: '0x8e62bE92c6Fb091428d0d6cBa0C0e32529B27e51', pool_version: 'v3' },
+  'CL50-USD+/eUSD': { address: '0x9EfdF5b3E05e52c2957BDA3e89Ea35C5296A78f0', pool_version: 'v3' },
 };
 
 const OVN_MAP = {
