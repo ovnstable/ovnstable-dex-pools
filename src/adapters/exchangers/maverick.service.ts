@@ -9,7 +9,7 @@ import { ChainType } from '../../exchanger/models/inner/chain.type';
 @Injectable()
 export class MaverickService {
   private readonly logger = new Logger(MaverickService.name);
-  BASE_API_URL = 'https://api.mav.xyz/api/';
+  BASE_API_URL = 'https://api.mav.xyz/api/v4';
   POOLS = 'pools';
   CHAIN = '324';
 

@@ -7,6 +7,12 @@ import { ChainType } from '../../exchanger/models/inner/chain.type';
 import { AdaptersService } from '../adapters.service';
 import BN from 'bignumber.js';
 
+const POOLS = {
+  'USD+/DAI+': '0x164bc404c64fa426882d98dbce9b10d5df656eed',
+  'USDC+/USD+': '0xc3cb7e40b78427078e2cb0c5da0bf7a0650f89f8',
+  'USDbC/USD+': '0x282f9231e5294e7354744df36461c21e0e68061c',
+};
+
 @Injectable()
 export class SwapBasedService {
   private readonly logger = new Logger(SwapBasedService.name);
@@ -14,11 +20,11 @@ export class SwapBasedService {
   // get all api info / api data
   BASE_GRAPHQL_URL = 'https://api.thegraph.com/subgraphs/name/chimpydev/swapbase';
   BASE_URL = 'https://swapbased.finance/#/farm';
-  REWARD_TOKEN = 'BASE';
+  REWARD_TOKEN = 'COIN';
 
   async getPoolsData(): Promise<PoolData[]> {
     const rateData = await fetch(
-      'https://raw.githubusercontent.com/chimpydev/swapbase-lists/main/swapbase.farmslist7.json',
+      'https://raw.githubusercontent.com/chimpydev/swapbase-lists/main/swapbased.farmslist.json',
       {
         method: 'GET',
         headers: {
@@ -55,7 +61,7 @@ export class SwapBasedService {
         });
 
         if (rewardTokenPair) {
-          rewardTokenUsdPrice = new BN(rewardTokenPair?.reserveUSD).div(2).div(rewardTokenPair?.reserve1).toFixed(6);
+          rewardTokenUsdPrice = new BN(rewardTokenPair?.reserveUSD).div(2).div(rewardTokenPair?.reserve0).toFixed(6);
         }
 
         pairs.forEach(item => {
@@ -76,6 +82,8 @@ export class SwapBasedService {
             poolData.name = item.token0.symbol + '/' + item.token1.symbol;
             poolData.decimals = 18;
             poolData.tvl = (item.reserve0 * 1 + item.reserve1 * 1).toString();
+
+            console.log(itemRateData);
 
             poolData.apr = new BN(itemRateData?.rate ?? 0)
               .times(rewardTokenUsdPrice)

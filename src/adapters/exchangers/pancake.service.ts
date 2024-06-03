@@ -96,7 +96,7 @@ export class PancakeService {
 
           poolData.apr = '0';
           poolData.chain = chain;
-          poolData.pool_version = 'v2';
+          poolData.pool_version = 'v3';
           pools.push(poolData);
           this.logger.log(`=========${ExchangerType.PANCAKE}=========`);
           this.logger.log('Found ovn pool: ', poolData);
@@ -135,7 +135,7 @@ export class PancakeService {
 
     // Launch a headless browser
     const browser = await puppeteer.launch({
-      headless: 'new',
+      headless: false,
       ignoreHTTPSErrors: true,
       executablePath: getAgent(process.env.IS_MAC),
       args: ['--no-sandbox'],
@@ -146,12 +146,12 @@ export class PancakeService {
     try {
       // Create a new page
       const page = await browser.newPage();
-      await page.setViewport({ width: 1280, height: 800 });
+      await page.setViewport({ width: 1280, height: 1600 });
       await page.setUserAgent(
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36',
       );
       // Set a default timeout of 20 seconds
-      await page.setDefaultTimeout(60000);
+      await page.setDefaultTimeout(100000);
 
       // Navigate to the SPA
       await page.goto(url);
@@ -187,9 +187,11 @@ export class PancakeService {
         return poolsArr.some(value => item.includes(value));
       });
 
+      console.log(filteredArray);
+
       filteredArray.forEach(poolStr => {
         let pair = poolStr.split(' LP')[0].replace('-', '/');
-        pair = pair === 'USD+/USDC' ? 'USDC/USD+' : pair; // gql returns USDC/USD+ and fronted returns USD+/USDC
+        pair = pair === 'USD+/USDC.e' ? 'USDC/USD+' : pair; // gql returns USDC/USD+ and fronted returns USD+/USDC
 
         const aprMatch = poolStr.match(/APR([\d,.]+)%/);
         const apr = aprMatch ? aprMatch[1] : null;
