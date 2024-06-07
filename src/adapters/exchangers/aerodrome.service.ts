@@ -34,6 +34,8 @@ const USD_PLUS_MAP = {
   'CL1-USDz/USD+': { address: '0x4Ef1E503C4F1e5664ac98294d0e42ddC9c0FF961', pool_version: 'v3' },
   'CL50-USD+/sFRAX': { address: '0x8e62bE92c6Fb091428d0d6cBa0C0e32529B27e51', pool_version: 'v3' },
   'CL50-USD+/eUSD': { address: '0x9EfdF5b3E05e52c2957BDA3e89Ea35C5296A78f0', pool_version: 'v3' },
+  'CL200-USD+/wstETH': { address: '0xa01A2513E95263b9BaCe60B573ce874E1e7a5246', pool_version: 'v3' },
+  'CL200-DEGEN/USD+': { address: '0xa19acc3B4f11c46c2b1Fc36B5f592AF422Ee338c', pool_version: 'v3' },
 };
 
 const OVN_MAP = {
@@ -70,6 +72,7 @@ export class AerodromeService {
     try {
       // Create a new page
       const page = await browser.newPage();
+      await page.setCacheEnabled(false);
       await page.setViewport({ width: 1280, height: 800 });
       await page.setUserAgent(
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36',
@@ -87,7 +90,7 @@ export class AerodromeService {
       const data = await page.$$eval('.space-y-1\\.5.shadow-sm.rounded-lg > div', elelents => {
         return elelents.map(el => {
           const name = el.querySelector('div:nth-child(1) strong').textContent;
-          const aprStr = el.querySelector('div:nth-child(2) span.tracking-wider').textContent;
+          const aprStr = el.querySelector('div:nth-child(1) span.tracking-wider').textContent;
           const tvlStr = el.querySelector('div:nth-child(1) > a > div:nth-child(2)').textContent;
 
           return {
