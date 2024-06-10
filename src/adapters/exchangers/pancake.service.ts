@@ -94,6 +94,7 @@ export class PancakeService {
           const poolData: PoolData = new PoolData();
           poolData.address = item.id;
           poolData.name = poolsObj[item.id.toLowerCase()].replace('-', '/');
+          if (poolData.name == 'USD+/ETH') poolData.name = 'USD+/WETH';
           poolData.decimals = 18;
           poolData.tvl = new BigNumber(item.totalValueLockedUSD).toFixed(2);
 
@@ -193,6 +194,7 @@ export class PancakeService {
       filteredArray.forEach(poolStr => {
         let pair = poolStr.split(' LP')[0].replace('-', '/');
         pair = pair === 'USD+/USDC.e' ? 'USD+/USDC' : pair; // gql returns USDC/USD+ and fronted returns USD+/USDC
+        pair = pair === 'USD+/ETH' ? 'USD+/WETH' : pair; // gql returns USDC/USD+ and fronted returns USD+/USDC
 
         const aprMatch = poolStr.match(/APR([\d,.]+)%/);
         const apr = aprMatch ? aprMatch[1] : null;
