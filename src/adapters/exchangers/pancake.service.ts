@@ -12,15 +12,18 @@ const TIME_FOR_TRY = 5_000; // 5 sec.
 
 // lowerCase important
 const ZK_POOLS = {
-  'USD+-USDC': '0x6a8fc7e8186ddc572e149dfaa49cfae1e571108b',
+  '0x6a8fc7e8186ddc572e149dfaa49cfae1e571108b': 'USD+-USDC',
 };
 const ARB_POOLS = {
-  'USDT+-USD+': '0x8a06339abd7499af755df585738ebf43d5d62b94',
-  'OVN-USD+': '0x714d48cb99b87f274b33a89fbb16ead191b40b6c',
+  '0x8a06339abd7499af755df585738ebf43d5d62b94': 'USDT+-USD+',
+  '0x714d48cb99b87f274b33a89fbb16ead191b40b6c': 'OVN-USD+',
+  '0xa1F9159e11aD48524c16C9bf10bf440815b03e6C': 'USD+-USDC',
+  '0xf92768916015b5ebd9fa54d6ba10da5864e24914': 'USD+-ARB',
+  '0xe37304f7489ed253b2a46a1d9dabdca3d311d22e': 'USD+-ETH',
 };
 
 const buildQuery = (pools: { [key: string]: string }) => {
-  const formattedPools = JSON.stringify(Object.values(pools));
+  const formattedPools = JSON.stringify(Object.keys(pools));
   console.log(formattedPools);
   return `
         query pools {
@@ -66,9 +69,9 @@ export class PancakeService {
   BASE_URL_ZK = 'https://pancakeswap.finance/farms?chain=zkSync';
 
   async getPools(chain: ChainType): Promise<PoolData[]> {
-    const pools = chain === ChainType.ARBITRUM ? ARB_POOLS : ZK_POOLS;
+    const poolsObj = chain === ChainType.ARBITRUM ? ARB_POOLS : ZK_POOLS;
     const url = chain === ChainType.ARBITRUM ? this.BASE_GRAPHQL_ARB : this.BASE_GRAPHQL_ZK;
-    const queryFirstPool = buildQuery(pools);
+    const queryFirstPool = buildQuery(poolsObj);
 
     const response = fetch(url, {
       method: 'POST',
@@ -90,9 +93,9 @@ export class PancakeService {
         apiPoolsData.forEach(item => {
           const poolData: PoolData = new PoolData();
           poolData.address = item.id;
-          poolData.name = item.token0.symbol + '/' + item.token1.symbol;
+          poolData.name = poolsObj[item.id.toLowerCase()].replace('-', '/');
           poolData.decimals = 18;
-          poolData.tvl = new BigNumber(item.totalValueLockedToken0).plus(item.totalValueLockedToken1).toFixed(2);
+          poolData.tvl = new BigNumber(item.totalValueLockedUSD).toFixed(2);
 
           poolData.apr = '0';
           poolData.chain = chain;
@@ -182,16 +185,14 @@ export class PancakeService {
         return extractedData;
       });
 
-      const poolsArr = chain === ChainType.ARBITRUM ? Object.keys(ARB_POOLS) : Object.keys(ZK_POOLS);
+      const poolsArr = chain === ChainType.ARBITRUM ? Object.values(ARB_POOLS) : Object.values(ZK_POOLS);
       const filteredArray = data.filter(item => {
         return poolsArr.some(value => item.includes(value));
       });
 
-      console.log(filteredArray);
-
       filteredArray.forEach(poolStr => {
         let pair = poolStr.split(' LP')[0].replace('-', '/');
-        pair = pair === 'USD+/USDC.e' ? 'USDC/USD+' : pair; // gql returns USDC/USD+ and fronted returns USD+/USDC
+        pair = pair === 'USD+/USDC.e' ? 'USD+/USDC' : pair; // gql returns USDC/USD+ and fronted returns USD+/USDC
 
         const aprMatch = poolStr.match(/APR([\d,.]+)%/);
         const apr = aprMatch ? aprMatch[1] : null;
