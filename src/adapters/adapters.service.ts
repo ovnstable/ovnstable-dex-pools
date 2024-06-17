@@ -19,7 +19,6 @@ import { FraxService } from './exchangers/frax.service';
 import { SyncswapService } from './exchangers/syncswap.service';
 import { SwapBlastService } from './exchangers/swapblast.service';
 import { ConvexService } from './exchangers/convex.service';
-import { DysonService } from './exchangers/dyson.service';
 import { SwapBasedService } from './exchangers/swapbased.service';
 import { ThrusterService } from './exchangers/thruster.service';
 import { AmbientService } from './exchangers/ambient.service';
@@ -51,7 +50,6 @@ export class AdaptersService {
     private swapblastServuce: SwapBlastService,
     private swapBasedService: SwapBasedService,
     private convexService: ConvexService,
-    private dysonService: DysonService,
     private thrusterService: ThrusterService,
     private ambientService: AmbientService,
     private bladeSwapService: BladeSwapService,
@@ -113,9 +111,6 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.CONVEX) {
       return await this.convexService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.DYSON) {
-      return await this.dysonService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.THRUSTER) {
       return await this.thrusterService.getPoolsData();

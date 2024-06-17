@@ -19,7 +19,6 @@ import { FraxService } from './exchangers/frax.service';
 import { SyncswapService } from './exchangers/syncswap.service';
 import { SwapBlastService } from './exchangers/swapblast.service';
 import { ConvexService } from './exchangers/convex.service';
-import { DysonService } from './exchangers/dyson.service';
 import { SwapBasedService } from './exchangers/swapbased.service';
 import { ThrusterService } from './exchangers/thruster.service';
 import { AmbientService } from './exchangers/ambient.service';
@@ -50,7 +49,6 @@ import { BladeSwapService } from './exchangers/bladeswap.service';
     SwapBlastService,
     SwapBasedService,
     ConvexService,
-    DysonService,
     ThrusterService,
     AmbientService,
     BladeSwapService,
