@@ -34,6 +34,24 @@ export class LynexService {
         token1: 'USD+',
         pool_version: 'v3',
       },
+      {
+        address: '0xbe23da11fbf9da0f7c13ea73a4bb511b9bc00177',
+        token0: 'USDT+',
+        token1: 'USDT',
+        pool_version: 'v2',
+      },
+      {
+        address: '0x2bee5c1633222f8478100bf6ab6cab6956bdcfe0',
+        token0: 'USDC',
+        token1: 'USD+',
+        pool_version: 'v3',
+      },
+      {
+        address: '0x66b5847bf79629c777a3897da98ccc284d15e33a',
+        token0: 'USD+',
+        token1: 'WETH',
+        pool_version: 'v3',
+      },
     ];
 
     const response = fetch(this.BASE_URL, {
@@ -52,6 +70,7 @@ export class LynexService {
           const poolData: PoolData = new PoolData();
           const poolMainData = poolsToLoad.find(_ => _.address === item.address);
           if (!poolMainData) return;
+          console.log(poolMainData);
           poolData.address = item.address;
           poolData.name = poolMainData.token0 + '/' + poolMainData.token1;
           poolData.decimals = 18;
