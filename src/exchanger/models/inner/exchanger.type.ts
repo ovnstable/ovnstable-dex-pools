@@ -23,7 +23,7 @@ export enum ExchangerType {
   THRUSTER = 'Thruster',
   AMBIENT = 'Ambient',
   BLADESWAP = 'Bladeswap',
-  TRADERJOE = 'Trader Joe',
+  TRADERJOE = 'Traderjoe',
 }
 
 export const DEX_SUPPORT_SKIM: ExchangerType[] = [
