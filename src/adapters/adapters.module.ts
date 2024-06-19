@@ -23,6 +23,7 @@ import { SwapBasedService } from './exchangers/swapbased.service';
 import { ThrusterService } from './exchangers/thruster.service';
 import { AmbientService } from './exchangers/ambient.service';
 import { BladeSwapService } from './exchangers/bladeswap.service';
+import { TraderJoeService } from './exchangers/traderjoe.service';
 
 //
 @Module({
@@ -52,6 +53,7 @@ import { BladeSwapService } from './exchangers/bladeswap.service';
     ThrusterService,
     AmbientService,
     BladeSwapService,
+    TraderJoeService,
   ],
   exports: [AdaptersService],
 })
