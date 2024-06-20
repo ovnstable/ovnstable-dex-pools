@@ -149,7 +149,7 @@ export class PancakeService {
       filteredArray.forEach(poolStr => {
         const pair = poolStr.split(' LP')[0];
         const tmp = poolsArr.find(pool => pool.ui == pair);
-        const aprMatch = poolStr.match(/APR([\d,.]+)%/);
+        const aprMatch = poolStr.match(/APR(?:Up to)?([\d,.]+)%/);
         const apr = aprMatch ? aprMatch[1] : null;
 
         pools.forEach(pool => {
@@ -162,6 +162,7 @@ export class PancakeService {
       return pools;
     } catch (e) {
       const errorMessage = `Error when loading ${ExchangerType.PANCAKE} pairs. URL: ${url}`;
+      console.log(e);
       this.logger.error(errorMessage, e);
       throw new ExchangerRequestError(errorMessage);
     } finally {
