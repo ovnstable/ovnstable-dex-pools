@@ -28,7 +28,7 @@ const USD_PLUS_MAP = {
   'vAMM-USD+/sFRAX': { address: '0xbB38EeBd670A9F3cafe6D3170862ccD930cB25f9', pool_version: 'v2' },
   'sAMM-USD+/eUSD': { address: '0x8041e2A135D2da7A8E21E4B14113D8245EC532e1', pool_version: 'v2' },
   'vAMM-USD+/wstETH': { address: '0xf15B30a0a823f588B523fD794A43939F0B1dC582', pool_version: 'v2' },
-  'CL-DOLA/USD+': { address: '0x96331Fcb46A7757854d9E26AFf3aCA2815D623fD', pool_version: 'v3' },
+  'CL1-DOLA/USD+': { address: '0x96331Fcb46A7757854d9E26AFf3aCA2815D623fD', pool_version: 'v3' },
   'CL100-WETH/USD+': { address: '0x4D69971CCd4A636c403a3C1B00c85e99bB9B5606', pool_version: 'v3' },
   'CL1-USDC/USD+': { address: '0x0c1A09d5D0445047DA3Ab4994262b22404288A3B', pool_version: 'v3' },
   'CL1-USD+/USDbC': { address: '0x20086910E220D5f4c9695B784d304A72a0de403B', pool_version: 'v3' },
