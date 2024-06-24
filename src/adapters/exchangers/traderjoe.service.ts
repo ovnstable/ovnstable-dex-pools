@@ -84,7 +84,7 @@ export class TraderJoeService {
       for (const [key, value] of Object.entries(POOLS_MAP)) {
         const item = data.find(el => el.name === key);
         if (!item) {
-          this.logger.error(`Pool not found in map. name: ${key} exType: ${ExchangerType.AERODROME}`);
+          this.logger.error(`Pool not found in map. name: ${key} exType: ${ExchangerType.TRADERJOE}`);
           continue;
         }
 
@@ -93,10 +93,10 @@ export class TraderJoeService {
         poolData.name = key;
         poolData.tvl = BigNumber(item.tvl).toFixed(2);
         poolData.apr = BigNumber(item.apr).toFixed(2);
-        poolData.chain = ChainType.BASE;
+        poolData.chain = ChainType.ARBITRUM;
         poolData.pool_version = value.pool_version;
         pools.push(poolData);
-        this.logger.log(`=========${ExchangerType.AERODROME}=========`);
+        this.logger.log(`=========${ExchangerType.TRADERJOE}=========`);
         itemCount++;
         this.logger.log('Found ovn pool #: ', itemCount);
         this.logger.log('Found ovn pool: ', poolData);
@@ -105,11 +105,11 @@ export class TraderJoeService {
 
       return pools;
     } catch (e) {
-      const errorMessage = `Error when load ${ExchangerType.AERODROME} pairs. url: ${url}`;
+      const errorMessage = `Error when load ${ExchangerType.TRADERJOE} pairs. url: ${url}`;
       this.logger.error(errorMessage, e);
       throw new ExchangerRequestError(errorMessage);
     } finally {
-      this.logger.debug('Browser is close. ' + ExchangerType.AERODROME);
+      this.logger.debug('Browser is close. ' + ExchangerType.TRADERJOE);
       await browser.close();
     }
   }

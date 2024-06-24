@@ -21,6 +21,14 @@ const ARB_POOLS = {
   '0xe37304f7489ed253b2a46a1d9dabdca3d311d22e': { ui: 'USD+-ETH', graph: 'WETH/USD+' },
 };
 
+const BASE_POOLS = {
+  '0x5b9feb72588d2800892a00d2abb4ca9071df846e': { ui: 'USD+-ETH', graph: 'WETH/USD+' },
+  '0xa4846201e94d2a5399774926f760a36d52ac22bf': { ui: 'USD+-wstETH', graph: 'USD+/wstETH' },
+  '0x40c91ebd1fa940a363989ac80a31b3a988dd649b': { ui: 'USD+-cbETH', graph: 'cbETH/USD+' },
+  '0x98ee8cd99370ab19f18fb9033337995076867ee9': { ui: 'BRETT-USD+', graph: 'BRETT/USD+' },
+  '0xdd5ac923f03a97ff9f0cfbfa0f5e155e46c3727d': { ui: 'DEGEN-USD+', graph: 'DEGEN/USD+' },
+};
+
 const buildQuery = (pools: { [key: string]: any }) => {
   const formattedPools = JSON.stringify(Object.keys(pools));
   return `
@@ -49,12 +57,32 @@ export class PancakeService {
   private readonly logger = new Logger(PancakeService.name);
   private readonly BASE_GRAPHQL_ARB = 'https://api.thegraph.com/subgraphs/name/pancakeswap/exchange-v3-arb';
   private readonly BASE_GRAPHQL_ZK = 'https://api.studio.thegraph.com/query/45376/exchange-v3-zksync/version/latest';
+  private readonly BASE_GRAPHQL_BASE = 'https://api.studio.thegraph.com/query/45376/exchange-v3-base/version/latest';
   private readonly BASE_URL_ARB = 'https://pancakeswap.finance/farms?chain=arb';
   private readonly BASE_URL_ZK = 'https://pancakeswap.finance/farms?chain=zkSync';
+  private readonly BASE_URL_BASE = 'https://pancakeswap.finance/farms?chain=base';
 
   async getPools(chain: ChainType): Promise<PoolData[]> {
-    const poolsObj = chain === ChainType.ARBITRUM ? ARB_POOLS : ZK_POOLS;
-    const url = chain === ChainType.ARBITRUM ? this.BASE_GRAPHQL_ARB : this.BASE_GRAPHQL_ZK;
+    let poolsObj;
+    let url;
+
+    switch (chain) {
+      case ChainType.ARBITRUM:
+        poolsObj = ARB_POOLS;
+        url = this.BASE_GRAPHQL_ARB;
+        break;
+      case ChainType.ZKSYNC:
+        poolsObj = ZK_POOLS;
+        url = this.BASE_GRAPHQL_ZK;
+        break;
+      case ChainType.BASE:
+        poolsObj = BASE_POOLS;
+        url = this.BASE_GRAPHQL_BASE;
+        break;
+      default:
+        throw new Error(`Unsupported chain type: ${chain}`);
+    }
+
     const queryFirstPool = buildQuery(poolsObj);
 
     try {
@@ -85,7 +113,7 @@ export class PancakeService {
         poolData.pool_version = 'v3';
 
         this.logger.log(`=========${ExchangerType.PANCAKE}=========`);
-        this.logger.log('Found ovn pool: ', poolData);
+        this.logger.log('Found pool: ', poolData);
         this.logger.log('==================');
 
         return poolData;
@@ -94,7 +122,7 @@ export class PancakeService {
       const newPools = await this.initAprs(pools, chain);
 
       if (newPools.some(pool => BigNumber(pool.apr).eq(0))) {
-        throw new Error(`Some Pancake pool apr === 0, ${newPools} data`);
+        throw new Error(`Some Pancake pool APR === 0, ${newPools} data`);
       }
 
       return newPools;
@@ -106,12 +134,34 @@ export class PancakeService {
   }
 
   async getPoolsData(): Promise<PoolData[]> {
-    const [arbPools, zkPools] = await Promise.all([this.getPools(ChainType.ARBITRUM), this.getPools(ChainType.ZKSYNC)]);
-    return [...arbPools, ...zkPools];
+    const [arbPools, zkPools, basePools] = await Promise.all([
+      this.getPools(ChainType.ARBITRUM),
+      this.getPools(ChainType.ZKSYNC),
+      this.getPools(ChainType.BASE),
+    ]);
+    return [...arbPools, ...zkPools, ...basePools];
   }
 
   private async initAprs(pools: PoolData[], chain: ChainType): Promise<PoolData[]> {
-    const url = chain === ChainType.ARBITRUM ? this.BASE_URL_ARB : this.BASE_URL_ZK;
+    let url;
+    let poolsArr;
+
+    switch (chain) {
+      case ChainType.ARBITRUM:
+        url = this.BASE_URL_ARB;
+        poolsArr = Object.values(ARB_POOLS);
+        break;
+      case ChainType.ZKSYNC:
+        url = this.BASE_URL_ZK;
+        poolsArr = Object.values(ZK_POOLS);
+        break;
+      case ChainType.BASE:
+        url = this.BASE_URL_BASE;
+        poolsArr = Object.values(BASE_POOLS);
+        break;
+      default:
+        throw new Error(`Unsupported chain type: ${chain}`);
+    }
 
     const browser = await puppeteer.launch({
       headless: 'new',
@@ -143,7 +193,6 @@ export class PancakeService {
         return Array.from(elements).map(element => element.textContent);
       });
 
-      const poolsArr = chain === ChainType.ARBITRUM ? Object.values(ARB_POOLS) : Object.values(ZK_POOLS);
       const filteredArray = data.filter(item => poolsArr.some(value => item.includes(value.ui)));
 
       filteredArray.forEach(poolStr => {
@@ -162,7 +211,6 @@ export class PancakeService {
       return pools;
     } catch (e) {
       const errorMessage = `Error when loading ${ExchangerType.PANCAKE} pairs. URL: ${url}`;
-      console.log(e);
       this.logger.error(errorMessage, e);
       throw new ExchangerRequestError(errorMessage);
     } finally {
@@ -171,3 +219,4 @@ export class PancakeService {
     }
   }
 }
+``;
