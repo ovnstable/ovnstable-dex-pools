@@ -2,7 +2,6 @@ import { Module, OnModuleInit } from '@nestjs/common';
 import { AdaptersService } from './adapters.service';
 import { VelocoreService } from './exchangers/velocore.service';
 import { VelodromeService } from './exchangers/velodrome.service';
-import { SoluneaService } from './exchangers/solunea.service';
 import { CronosService } from './exchangers/cronos.service';
 import { VesyncService } from './exchangers/vesync.service';
 import { ExternalModule } from '../external/external.module';
@@ -24,6 +23,7 @@ import { ThrusterService } from './exchangers/thruster.service';
 import { AmbientService } from './exchangers/ambient.service';
 import { BladeSwapService } from './exchangers/bladeswap.service';
 import { TraderJoeService } from './exchangers/traderjoe.service';
+import { TelegramService } from 'src/telegram/telegram.service';
 
 //
 @Module({
@@ -33,7 +33,6 @@ import { TraderJoeService } from './exchangers/traderjoe.service';
     // Exchangers:
     VelocoreService,
     VelodromeService,
-    SoluneaService,
     CronosService,
     VesyncService,
     VeplusService,
@@ -54,6 +53,7 @@ import { TraderJoeService } from './exchangers/traderjoe.service';
     AmbientService,
     BladeSwapService,
     TraderJoeService,
+    TelegramService,
   ],
   exports: [AdaptersService],
 })

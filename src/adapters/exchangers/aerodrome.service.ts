@@ -6,6 +6,7 @@ import { ChainType } from '../../exchanger/models/inner/chain.type';
 import puppeteer from 'puppeteer';
 import { getAgent } from '../../config/consts';
 import BigNumber from 'bignumber.js';
+import { TelegramService } from 'src/telegram/telegram.service';
 
 type mapEntity = {
   [key: string]: {
@@ -86,28 +87,30 @@ export class AerodromeService {
 
       // Wait for the desired content to load
       await page.waitForSelector(markerOfLoadingIsFinish);
+      const data = await page.$$eval('.space-y-1\\.5.shadow-sm.rounded-lg > div', elements => {
+        return elements.map(el => {
+          const nameElement = el.querySelector('div:nth-child(1) strong');
+          const aprElement = el.querySelector('div:nth-child(1) span.tracking-wider');
+          const tvlElement = el.querySelector('div:nth-child(1) > a > div:nth-child(2)');
 
-      const data = await page.$$eval('.space-y-1\\.5.shadow-sm.rounded-lg > div', elelents => {
-        return elelents.map(el => {
-          const name = el.querySelector('div:nth-child(1) strong').textContent;
-          const aprStr = el.querySelector('div:nth-child(1) span.tracking-wider').textContent;
-          const tvlStr = el.querySelector('div:nth-child(1) > a > div:nth-child(2)').textContent;
+          const name = nameElement ? nameElement.textContent : '';
+          const aprStr = aprElement ? aprElement.textContent : '0';
+          const tvlStr = tvlElement ? tvlElement.textContent : '0';
 
           return {
             name,
-            tvl: tvlStr.replace('TVL  ~$', '').replace(/,/g, ''),
-            apr: aprStr.replace('%', '').replace(/,/g, ''),
+            tvl: tvlStr ? tvlStr.replace('TVL  ~$', '').replace(/,/g, '') : null,
+            apr: aprStr ? aprStr.replace('%', '').replace(/,/g, '') : null,
           };
         });
       });
 
       const pools: PoolData[] = [];
-      let itemCount = 0;
 
       for (const [key, value] of Object.entries(poolsMap)) {
         const item = data.find(el => el.name === key);
         if (!item) {
-          this.logger.error(`Pool not found in map. name: ${key} exType: ${ExchangerType.AERODROME}`);
+          this.logger.error(`Item ${key} not found in list`, '');
           continue;
         }
 
@@ -120,18 +123,12 @@ export class AerodromeService {
         poolData.chain = ChainType.BASE;
         poolData.pool_version = value.pool_version;
         pools.push(poolData);
-        this.logger.log(`=========${ExchangerType.AERODROME}=========`);
-        itemCount++;
-        this.logger.log('Found ovn pool #: ', itemCount);
-        this.logger.log('Found ovn pool: ', poolData);
-        this.logger.log('==================');
       }
 
       return pools;
     } catch (e) {
       const errorMessage = `Error when load ${ExchangerType.AERODROME} pairs. url: ${url}`;
-      this.logger.error(errorMessage, e);
-      throw new ExchangerRequestError(errorMessage);
+      this.logger.error(errorMessage);
     } finally {
       this.logger.debug('Browser is close. ' + ExchangerType.AERODROME);
       await browser.close();
