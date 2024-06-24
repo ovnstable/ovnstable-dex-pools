@@ -7,6 +7,7 @@ import { PoolData } from './dto/pool.data.dto';
 import { ExchangerRequestError } from '../../exceptions/exchanger.request.error';
 import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
+import { TelegramService } from 'src/telegram/telegram.service';
 
 const POOLS = [
   {
@@ -29,8 +30,6 @@ const POOLS = [
 
 @Injectable()
 export class AmbientService {
-  constructor(private configService: ConfigService) {}
-
   private readonly logger = new Logger(AmbientService.name);
 
   private async fetchData(url: string, params: any) {

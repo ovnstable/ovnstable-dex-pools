@@ -43,7 +43,7 @@ export class BladeSwapService {
 
       // Navigate to the SPA
       await page.goto(url);
-      await page.waitForSelector('table > tbody > tr:nth-child(1) > td > div > div > span');
+      await page.waitForSelector('table > tbody > tr:nth-child(1) > td > div > div span');
 
       const poolRow = await page.$$eval('table > tbody > tr', elements => {
         return elements.map(tr => {

@@ -32,7 +32,7 @@ export class MaverickService {
 
             poolData.address = item.id;
             poolData.name = item.name.replace('-', '/');
-            poolData.decimals = item.tokenBData.decimals;
+            poolData.decimals = item.tokenB.decimals;
             poolData.tvl = item.tvl.amount.toString();
             poolData.apr = (item.topBin.annualizedFeeGrowth * 100).toFixed(2);
             poolData.chain = ChainType.ZKSYNC;

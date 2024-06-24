@@ -38,6 +38,7 @@
     "class-validator": "^0.14.0",
     "ethers": "^5.7.2",
     "joi": "^17.12.2",
+    "nestjs-telegraf": "^2.7.0",
     "node-fetch": "^2.6.12",
     "pg": "^8.7.3",
     "puppeteer": "^20.7.3",
@@ -45,6 +46,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
+    "telegraf": "^4.16.3",
     "typeorm": "^0.2.44"
   },
   "devDependencies": {

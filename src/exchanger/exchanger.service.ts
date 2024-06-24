@@ -5,6 +5,7 @@ import { Pool } from '../pool/models/entities/pool.entity';
 import { PoolService } from '../pool/pool.service';
 import { ExchangerType } from './models/inner/exchanger.type';
 import { ConfigService } from '@nestjs/config';
+import { TelegramLogger } from 'src/telegram/telegram-logger.service';
 
 @Injectable()
 export class ExchangerService {
@@ -14,7 +15,10 @@ export class ExchangerService {
     private poolService: PoolService,
     private adaptersService: AdaptersService,
     private configService: ConfigService,
-  ) {}
+    private telegramLogger: TelegramLogger,
+  ) {
+    this.telegramLogger.setContext(ExchangerService.name);
+  }
 
   @Cron(CronExpression.EVERY_30_MINUTES)
   async runScheduler(): Promise<void> {
@@ -26,15 +30,46 @@ export class ExchangerService {
     }
   }
 
+  @Cron(CronExpression.EVERY_DAY_AT_10AM)
+  async showLastUpdate() {
+    if (this.configService.get('NODE_ENV') !== 'prod') {
+      const pools = await this.poolService.findAll();
+      const now = new Date();
+
+      const res: { platform: string; poolName: string; timeSinceUpdate: number }[] = pools.map(pool => {
+        const timeSinceUpdate = now.getTime() - new Date(pool.update_date).getTime();
+        return { platform: pool.platform, poolName: pool.name, timeSinceUpdate };
+      });
+
+      this.telegramLogger.lastUpdate(res);
+    } else {
+      console.log('Scheduler is disabled');
+    }
+  }
+
   async updateAllPools(): Promise<void> {
     console.log('updateAllPools from exchanger');
 
     const exchanger_types = Object.values(ExchangerType);
     console.log('exchangers: ', exchanger_types);
 
+    const startTime = Date.now();
+
+    const success = [];
+    const fail = [];
     for (const exchanger_type of exchanger_types) {
-      await this.updateExchangerPool(exchanger_type);
+      try {
+        await this.updateExchangerPool(exchanger_type);
+        success.push(exchanger_type);
+      } catch (e) {
+        fail.push(exchanger_type);
+      }
     }
+
+    const endTime = Date.now();
+    const elapsedTime = (endTime - startTime) / 1000; // Elapsed time in seconds
+
+    this.telegramLogger.alertEnd(success, fail, elapsedTime);
   }
 
   async updateSinglePool(exchanger: ExchangerType): Promise<void> {
