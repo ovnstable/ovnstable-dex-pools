@@ -43,7 +43,7 @@ export class PoolService {
   }
 
   async findOne(address: string): Promise<Pool> {
-    return await this.poolRepository.findOne(address);
+    return await this.poolRepository.findOne({ where: { address } });
   }
 
   async findByAddress(_address: string): Promise<Pool> {
@@ -89,8 +89,8 @@ export class PoolService {
     return poolDtos;
   }
 
-  private async innerFindByAddress(_address: string): Promise<Pool> {
-    return await this.poolRepository.findOne({ address: _address });
+  private async innerFindByAddress(address: string): Promise<Pool> {
+    return await this.poolRepository.findOne({ where: { address } });
   }
 
   private async getPoolsWithTvlLimit(limit: number): Promise<Pool[]> {
