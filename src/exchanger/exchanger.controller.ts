@@ -11,6 +11,11 @@ export class ExchangeController {
     return await this.exchangeService.updateAllPools();
   }
 
+  @Get('/sync/lastUpdate')
+  async lastUpdate(): Promise<any> {
+    return await this.exchangeService.showLastUpdate();
+  }
+
   @Get('/sync/:exchanger')
   async syncOne(@Param('exchanger') exchanger: string): Promise<any> {
     return await this.exchangeService.updateSinglePool(ExchangerType[exchanger.toUpperCase()]);

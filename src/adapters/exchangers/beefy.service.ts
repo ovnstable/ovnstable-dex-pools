@@ -7,6 +7,7 @@ import { ExchangerType } from '../../exchanger/models/inner/exchanger.type';
 import { AdaptersService } from '../adapters.service';
 import { ChainType } from '../../exchanger/models/inner/chain.type';
 import { getAgent } from '../../config/consts';
+import BigNumber from 'bignumber.js';
 
 const POOLS_MAP = {
   'aerodrome-ovn-usd+': {
@@ -39,42 +40,21 @@ export class BeefylService {
 
         // console.log('Response data: ', data.data);
         const pairs = data.data;
-        let itemCount = 0;
+        // let itemCount = 0;
         // pairs = key - pool name, value - pool data
-        for (const [key, value] of Object.entries(pairs)) {
-          if (key && AdaptersService.OVN_POOLS_NAMES.some(str => key.toLowerCase().includes(str))) {
-            this.logger.log('Found ovn pool: ', key);
-
-            const poolElement = POOLS_MAP[key];
-            if (!poolElement) {
-              this.logger.error(`Pool address not found in map. name: ${key} exType: ${ExchangerType.BEEFY}`);
-              continue;
-            }
-
-            this.logger.log(
-              'Found ovn pool: ',
-              key,
-              poolElement.address,
-              poolElement.symbol,
-              poolElement.exchangerType,
-            );
-            this.logger.log('==================');
-            this.logger.log('value:', value);
-
+        for (const [key, value] of Object.entries(POOLS_MAP)) {
+          if (Object.keys(pairs).includes(key)) {
+            const pairData = pairs[key];
             const poolData: PoolData = new PoolData();
-            poolData.address = poolElement.address + '_' + poolElement.exchangerType;
-            poolData.name = poolElement.symbol;
-            poolData.decimals = null;
-            poolData.tvl = (value['totalSupply'] * value['price']).toString();
+            poolData.address = value.address + '_' + value.exchangerType;
+            poolData.name = value.symbol;
+            poolData.tvl = BigNumber(pairData.totalSupply).times(pairData.price).toFixed(2);
             poolData.apr = await this.getApr(key);
-            poolData.chain = poolElement.chainType;
+            poolData.chain = value.chainType;
             poolData.pool_version = 'v2';
             pools.push(poolData);
-            this.logger.log(`========= ${ExchangerType.BEEFY} =========`);
-            itemCount++;
-            this.logger.log('Found ovn pool #: ', itemCount);
-            this.logger.log('Found ovn pool: ', poolData);
-            this.logger.log('==================');
+          } else {
+            this.logger.error(`Pool ${key} not found`);
           }
         }
 

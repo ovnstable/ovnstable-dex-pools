@@ -7,6 +7,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ExternalModule } from './external/external.module';
 import { PostgresConfigService } from './config/database.config';
 import { configValidationSchema } from './config/config.schema';
+import { TelegramModule } from './telegram/telegram.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { configValidationSchema } from './config/config.schema';
     PoolModule,
     ExchangerModule,
     ExternalModule,
+    TelegramModule,
   ],
   controllers: [],
   providers: [],
