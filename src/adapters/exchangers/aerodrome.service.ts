@@ -110,8 +110,7 @@ export class AerodromeService {
       for (const [key, value] of Object.entries(poolsMap)) {
         const item = data.find(el => el.name === key);
         if (!item) {
-          this.logger.error(`Item ${key} not found in list`, '');
-          continue;
+          throw new ExchangerRequestError(`Item ${key} not found in list`);
         }
 
         const poolData: PoolData = new PoolData();
@@ -128,7 +127,8 @@ export class AerodromeService {
       return pools;
     } catch (e) {
       const errorMessage = `Error when load ${ExchangerType.AERODROME} pairs. url: ${url}`;
-      this.logger.error(errorMessage);
+      this.logger.error(e);
+      throw new ExchangerRequestError(errorMessage);
     } finally {
       this.logger.debug('Browser is close. ' + ExchangerType.AERODROME);
       await browser.close();
