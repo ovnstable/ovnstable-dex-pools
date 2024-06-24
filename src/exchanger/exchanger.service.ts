@@ -59,10 +59,8 @@ export class ExchangerService {
     const fail = [];
     for (const exchanger_type of exchanger_types) {
       try {
-        if (exchanger_type === 'Aerodrome') {
-          await this.updateExchangerPool(exchanger_type);
-          success.push(exchanger_type);
-        }
+        await this.updateExchangerPool(exchanger_type);
+        success.push(exchanger_type);
       } catch (e) {
         console.log('added error', e);
         fail.push(exchanger_type);
