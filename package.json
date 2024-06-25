@@ -44,7 +44,7 @@
     "puppeteer": "^20.7.3",
     "puppeteer-core": "^20.7.4",
     "reflect-metadata": "^0.1.13",
-    "rimraf": "^3.0.2",
+    "rimraf": "^5.0.7",
     "rxjs": "^7.2.0",
     "telegraf": "^4.16.3",
     "typeorm": "^0.3.20"
