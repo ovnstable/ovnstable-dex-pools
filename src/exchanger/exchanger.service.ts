@@ -32,7 +32,7 @@ export class ExchangerService {
 
   @Cron(CronExpression.EVERY_DAY_AT_10AM)
   async showLastUpdate() {
-    if (this.configService.get('NODE_ENV') !== 'prod') {
+    if (this.configService.get('NODE_ENV') === 'prod') {
       const pools = await this.poolService.findAll();
       const now = new Date();
 
