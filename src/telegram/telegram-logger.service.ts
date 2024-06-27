@@ -16,8 +16,13 @@ export class TelegramLogger extends ConsoleLogger {
   //     this.telegramService.sendMessage(TEXT.START(exchanges));
   //   }
 
-  alertEnd(successExchanges: ExchangerType[], failedExchanges: ExchangerType[], elsapsedTime: number) {
-    this.telegramService.sendMessage(TEXT.END(successExchanges, failedExchanges, elsapsedTime));
+  alertEnd(
+    successExchanges: ExchangerType[],
+    failedExchanges: ExchangerType[],
+    pausedExchanges: ExchangerType[],
+    elsapsedTime: number,
+  ) {
+    this.telegramService.sendMessage(TEXT.END(successExchanges, failedExchanges, pausedExchanges, elsapsedTime));
   }
 
   lastUpdate(data: { platform: string; poolName: string; timeSinceUpdate: number }[]) {

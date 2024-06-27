@@ -57,7 +57,15 @@ export class ExchangerService {
 
     const success = [];
     const fail = [];
+    const paused = [];
+
+    const pausedPools = [ExchangerType.SWAPBASED];
+
     for (const exchanger_type of exchanger_types) {
+      if (pausedPools.includes(exchanger_type)) {
+        paused.push(exchanger_type);
+        continue;
+      }
       try {
         await this.updateExchangerPool(exchanger_type);
         success.push(exchanger_type);
@@ -70,7 +78,7 @@ export class ExchangerService {
     const endTime = Date.now();
     const elapsedTime = (endTime - startTime) / 1000; // Elapsed time in seconds
 
-    this.telegramLogger.alertEnd(success, fail, elapsedTime);
+    this.telegramLogger.alertEnd(success, fail, paused, elapsedTime);
   }
 
   async updateSinglePool(exchanger: ExchangerType): Promise<void> {

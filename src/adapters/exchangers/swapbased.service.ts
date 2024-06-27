@@ -52,6 +52,7 @@ export class SwapBasedService {
         const pools: PoolData[] = [];
         const [responseBody] = await Promise.all([data.json()]);
         let itemCount = 0;
+        console.log(responseBody.data);
         const pairs = responseBody.data.pairs;
         let rewardTokenUsdPrice = '0';
 

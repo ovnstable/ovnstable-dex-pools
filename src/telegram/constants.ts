@@ -16,7 +16,12 @@ export const TEXT = {
     });
     return res;
   },
-  END: (exchangesSuccess: ExchangerType[], exchangesFail: ExchangerType[], elapsedTime: number) => {
+  END: (
+    exchangesSuccess: ExchangerType[],
+    exchangesFail: ExchangerType[],
+    exchangesPaused: ExchangerType[],
+    elapsedTime: number,
+  ) => {
     const minutes = Math.floor(elapsedTime / 60);
     const seconds = Math.floor(elapsedTime % 60);
     const formattedTime = `${minutes}m ${seconds}s`;
@@ -27,6 +32,13 @@ export const TEXT = {
     exchangesSuccess.forEach(exchange => {
       res += `✅ ${exchange}\n`;
     });
+
+    if (exchangesPaused.length > 0) {
+      res += `\n`;
+      exchangesPaused.forEach(exchange => {
+        res += `⏸️ ${exchange}\n`;
+      });
+    }
 
     if (exchangesFail.length > 0) {
       res += `\n`;

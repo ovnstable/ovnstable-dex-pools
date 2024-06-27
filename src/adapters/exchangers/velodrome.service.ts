@@ -67,9 +67,13 @@ export class VelodromeService {
 
       const data = await page.$$eval('.space-y-1\\.5.shadow-sm.rounded-lg > div', elelents => {
         return elelents.map(el => {
-          const name = el.querySelector('div:nth-child(1) strong').textContent;
-          const aprStr = el.querySelector('div:nth-child(2) span.tracking-wider').textContent;
-          const tvlStr = el.querySelector('div:nth-child(1) > a > div:nth-child(2)').textContent;
+          const nameElement = el.querySelector('div:nth-child(1) strong');
+          const aprElement = el.querySelector('div:nth-child(2) span.tracking-wider');
+          const tvlElement = el.querySelector('div:nth-child(1) > a > div:nth-child(2)');
+
+          const name = nameElement ? nameElement.textContent : '';
+          const aprStr = aprElement ? aprElement.textContent : '0';
+          const tvlStr = tvlElement ? tvlElement.textContent : '0';
 
           return {
             name,
