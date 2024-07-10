@@ -61,11 +61,8 @@ export class PancakeService {
       const pools = await Promise.all(
         poolAddresses.map(async address => {
           const url = `${this.BASE_URL}/${chainPath}/${address}`;
-          console.log(url);
           const response = await fetch(url);
           const data = await response.json();
-
-          console.log(data);
 
           const poolData = new PoolData();
           poolData.address = data.id;
@@ -75,10 +72,6 @@ export class PancakeService {
           poolData.apr = '0';
           poolData.chain = chain;
           poolData.pool_version = 'v3';
-
-          this.logger.log(`=========${ExchangerType.PANCAKE}=========`);
-          this.logger.log('Found pool: ', poolData);
-          this.logger.log('==================');
 
           return poolData;
         }),
@@ -148,12 +141,8 @@ export class PancakeService {
       filteredArray.forEach(poolStr => {
         const pair = poolStr.split(' LP')[0];
         const tmp = poolsArr.find(pool => pool.ui === pair);
-        console.log(poolStr);
-        const aprMatch = poolStr.match(/APR(?:Up to)?([\d,.]+)%/);
-        console.log(aprMatch);
-        const apr = aprMatch ? aprMatch[1] : null;
-        console.log(tmp);
-        console.log(pools);
+        const aprMatch = poolStr.match(/APR(?:Up to)?([\d,.]+)%(?:([\d,.]+)%)?/);
+        const apr = aprMatch ? aprMatch[2] || aprMatch[1] : null;
 
         pools.forEach(pool => {
           if (pool.name === tmp.graph && pool.apr < apr) {
