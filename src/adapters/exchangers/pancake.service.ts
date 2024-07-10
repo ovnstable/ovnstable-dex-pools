@@ -23,6 +23,7 @@ const ARB_POOLS = {
 const BASE_POOLS = {
   '0x5b9feb72588d2800892a00d2abb4ca9071df846e': { ui: 'USD+-ETH', graph: 'WETH/USD+' },
   '0xa4846201e94d2a5399774926f760a36d52ac22bf': { ui: 'USD+-wstETH', graph: 'USD+/wstETH' },
+  '0xcC7BfD85395042EE0cACe335E40b549b3d08Eb78': { ui: 'OVN-ETH', graph: 'WETH/OVN' }, // New OVN pool added
 };
 
 @Injectable()
@@ -126,13 +127,32 @@ export class PancakeService {
       await page.waitForSelector(markerOfLoadingIsFinish);
       await new Promise(resolve => setTimeout(resolve, TIME_FOR_TRY));
       await page.waitForSelector('input[placeholder="Search Farms"]');
+
+      // First search with "+"
       await page.type('input[placeholder="Search Farms"]', '+');
       await new Promise(resolve => setTimeout(resolve, TIME_FOR_TRY));
 
-      const data = await page.evaluate(() => {
+      const dataPlus = await page.evaluate(() => {
         const elements = document.querySelectorAll('#table-container tr');
         return Array.from(elements).map(element => element.textContent);
       });
+
+      // Clear the input field
+      await page.evaluate(() => {
+        const inputElement = document.querySelector('input[placeholder="Search Farms"]') as HTMLInputElement;
+        inputElement.value = '';
+      });
+
+      // Second search with "OVN"
+      await page.type('input[placeholder="Search Farms"]', 'OVN');
+      await new Promise(resolve => setTimeout(resolve, TIME_FOR_TRY));
+
+      const dataOvn = await page.evaluate(() => {
+        const elements = document.querySelectorAll('#table-container tr');
+        return Array.from(elements).map(element => element.textContent);
+      });
+
+      const data = [...dataPlus, ...dataOvn]; // Combine the results from both searches
 
       const poolsArr = Object.values(poolsObj);
 
