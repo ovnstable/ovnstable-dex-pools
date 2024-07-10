@@ -3,7 +3,6 @@ import { ExchangerType } from 'src/exchanger/models/inner/exchanger.type';
 import { VelocoreService } from './exchangers/velocore.service';
 import { VelodromeService } from './exchangers/velodrome.service';
 import { PoolData } from './exchangers/dto/pool.data.dto';
-import { CronosService } from './exchangers/cronos.service';
 import { VesyncService } from './exchangers/vesync.service';
 import { VeplusService } from './exchangers/veplus.service';
 import { GndService } from './exchangers/gnd.service';
@@ -33,7 +32,6 @@ export class AdaptersService {
   constructor(
     private velocoreService: VelocoreService,
     private velodromService: VelodromeService,
-    private cronosService: CronosService,
     private vesyncService: VesyncService,
     private veplusService: VeplusService,
     private gndService: GndService,
@@ -63,9 +61,6 @@ export class AdaptersService {
     }
     if (exchanger_type === ExchangerType.VELODROME) {
       return await this.velodromService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.CHRONOS) {
-      return await this.cronosService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.VESYNC) {
       return await this.vesyncService.getPoolsData();

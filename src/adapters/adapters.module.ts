@@ -2,7 +2,6 @@ import { Module, OnModuleInit } from '@nestjs/common';
 import { AdaptersService } from './adapters.service';
 import { VelocoreService } from './exchangers/velocore.service';
 import { VelodromeService } from './exchangers/velodrome.service';
-import { CronosService } from './exchangers/cronos.service';
 import { VesyncService } from './exchangers/vesync.service';
 import { ExternalModule } from '../external/external.module';
 import { VeplusService } from './exchangers/veplus.service';
@@ -33,7 +32,6 @@ import { TelegramService } from 'src/telegram/telegram.service';
     // Exchangers:
     VelocoreService,
     VelodromeService,
-    CronosService,
     VesyncService,
     VeplusService,
     GndService,
@@ -58,10 +56,7 @@ import { TelegramService } from 'src/telegram/telegram.service';
   exports: [AdaptersService],
 })
 export class AdaptersModule implements OnModuleInit {
-  constructor(private cronosService: CronosService) {}
-
   async onModuleInit() {
     console.log(`Initialization adapters...`);
-    await this.cronosService.loadGaugeContracts();
   }
 }

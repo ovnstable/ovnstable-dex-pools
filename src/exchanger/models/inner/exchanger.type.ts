@@ -5,7 +5,6 @@ export enum ExchangerType {
   CONVEX = 'Convex',
   VEPLUS = 'Veplus',
   VELOCORE = 'Velocore',
-  CHRONOS = 'Chronos',
   VESYNC = 'Vesync',
   GND = 'Gnd',
   DRACULA = 'Dracula',
