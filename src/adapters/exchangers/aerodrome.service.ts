@@ -37,7 +37,8 @@ const USD_PLUS_MAP = {
   'CL50-USD+/eUSD': { address: '0x9EfdF5b3E05e52c2957BDA3e89Ea35C5296A78f0', pool_version: 'v3' },
   'CL200-USD+/wstETH': { address: '0xa01A2513E95263b9BaCe60B573ce874E1e7a5246', pool_version: 'v3' },
   'CL200-DEGEN/USD+': { address: '0xa19acc3B4f11c46c2b1Fc36B5f592AF422Ee338c', pool_version: 'v3' },
-  'sAMM-USD+/MAI': { address: '0x3FF5bfE3ff5e1877664Fe25862871554e632b9C9sAMM-USD+/MAI', pool_version: 'v2' },
+  'sAMM-USD+/MAI': { address: '0x3FF5bfE3ff5e1877664Fe25862871554e632b9C9', pool_version: 'v2' },
+  'CL200-TKN/USD+': { address: '0x6f8e210030f6eE6933b032628a0e148a1CcfF6a6', pool_version: 'v3' },
 };
 
 const OVN_MAP = {
