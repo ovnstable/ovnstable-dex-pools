@@ -15,15 +15,15 @@ const ZK_POOLS = {
 };
 const ARB_POOLS = {
   '0x8a06339abd7499af755df585738ebf43d5d62b94': { ui: 'USDT+-USD+', graph: 'USDT+/USD+' },
-  '0xa1f9159e11ad48524c16c9bf10bf440815b03e6c': { ui: 'USD+-USDC', graph: 'USDC/USD+' },
+  // '0xa1f9159e11ad48524c16c9bf10bf440815b03e6c': { ui: 'USD+-USDC', graph: 'USDC/USD+' },
   '0xf92768916015b5ebd9fa54d6ba10da5864e24914': { ui: 'USD+-ARB', graph: 'ARB/USD+' },
   '0xe37304f7489ed253b2a46a1d9dabdca3d311d22e': { ui: 'USD+-ETH', graph: 'WETH/USD+' },
 };
 
 const BASE_POOLS = {
-  '0x5b9feb72588d2800892a00d2abb4ca9071df846e': { ui: 'USD+-ETH', graph: 'WETH/USD+' },
+  // '0x5b9feb72588d2800892a00d2abb4ca9071df846e': { ui: 'USD+-ETH', graph: 'WETH/USD+' },
   '0xa4846201e94d2a5399774926f760a36d52ac22bf': { ui: 'USD+-wstETH', graph: 'USD+/wstETH' },
-  '0xcC7BfD85395042EE0cACe335E40b549b3d08Eb78': { ui: 'OVN-ETH', graph: 'WETH/OVN' }, // New OVN pool added
+  // '0xcC7BfD85395042EE0cACe335E40b549b3d08Eb78': { ui: 'OVN-ETH', graph: 'WETH/OVN' },
 };
 
 @Injectable()
