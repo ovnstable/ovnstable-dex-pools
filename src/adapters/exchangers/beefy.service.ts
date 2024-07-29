@@ -169,7 +169,7 @@ export class BeefylService {
       // StrategyStrategy addressVault addressThe vault deposits the user's vAMM-OVN/USD+ in a Aerodrome farm, earning the platform's governance token. Earned token is swapped for more of the underlying assets in order to acquire more of the same liquidity token. To complete the compounding cycle, the new vAMM-OVN/USD+ is added to the farm, ready to go for the next earning event. The transaction cost required to do all this is socialized among the vault's users.APY breakdownTOTAL APY130,847%Vault APR718.92%AuditedCommunity Audit
       // parse this string and get APY
       str = str.replace(/,/g, '');
-      const aprRegex = /(?<=TOTAL APY)[0-9.]+(?=%)/;
+      const aprRegex = /(?<=Total APY)[0-9.]+(?=%)/;
       const match = str.match(aprRegex);
       if (!match || !match.length) {
         this.logger.error(`APY not found. String: ${str}`);

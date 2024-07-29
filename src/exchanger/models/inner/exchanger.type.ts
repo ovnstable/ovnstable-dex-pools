@@ -4,14 +4,9 @@ export enum ExchangerType {
   BEEFY = 'Beefy',
   CONVEX = 'Convex',
   VEPLUS = 'Veplus',
-  VELOCORE = 'Velocore',
-  VESYNC = 'Vesync',
   GND = 'Gnd',
-  DRACULA = 'Dracula',
-  MAVERICK = 'Maverick',
   CURVE = 'Curve',
   PANCAKE = 'Pancake',
-  SYNCSWAP = 'Syncswap',
   LYNEX = 'Lynex',
   FRAX = 'Frax Finance',
   SWAPBLAST = 'Swapblast',
@@ -22,8 +17,4 @@ export enum ExchangerType {
   TRADERJOE = 'Traderjoe',
 }
 
-export const DEX_SUPPORT_SKIM: ExchangerType[] = [
-  ExchangerType.VELODROME,
-  ExchangerType.AERODROME,
-  ExchangerType.VELOCORE,
-];
+export const DEX_SUPPORT_SKIM: ExchangerType[] = [ExchangerType.VELODROME, ExchangerType.AERODROME];
