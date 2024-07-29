@@ -10,9 +10,6 @@ import { getAgent } from '../../config/consts';
 
 const TIME_FOR_TRY = 5000; // 5 sec
 
-const ZK_POOLS = {
-  '0x6a8fc7e8186ddc572e149dfaa49cfae1e571108b': { ui: 'USD+-USDC.e', graph: 'USDC.e/USD+' },
-};
 const ARB_POOLS = {
   '0x8a06339abd7499af755df585738ebf43d5d62b94': { ui: 'USDT+-USD+', graph: 'USDT+/USD+' },
   // '0xa1f9159e11ad48524c16c9bf10bf440815b03e6c': { ui: 'USD+-USDC', graph: 'USDC/USD+' },
@@ -41,11 +38,6 @@ export class PancakeService {
         poolsObj = ARB_POOLS;
         chainPath = 'arbitrum';
         chainPostfix = 'arb';
-        break;
-      case ChainType.ZKSYNC:
-        poolsObj = ZK_POOLS;
-        chainPath = 'zksync';
-        chainPostfix = 'zksync';
         break;
       case ChainType.BASE:
         poolsObj = BASE_POOLS;
@@ -94,9 +86,8 @@ export class PancakeService {
 
   async getPoolsData(): Promise<PoolData[]> {
     const arbPools = await this.getPools(ChainType.ARBITRUM);
-    const zkPools = await this.getPools(ChainType.ZKSYNC);
     const basePools = await this.getPools(ChainType.BASE);
-    return [...arbPools, ...zkPools, ...basePools];
+    return [...arbPools, ...basePools];
   }
 
   private async initAprs(

@@ -1,20 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ExchangerType } from 'src/exchanger/models/inner/exchanger.type';
-import { VelocoreService } from './exchangers/velocore.service';
 import { VelodromeService } from './exchangers/velodrome.service';
 import { PoolData } from './exchangers/dto/pool.data.dto';
-import { VesyncService } from './exchangers/vesync.service';
 import { VeplusService } from './exchangers/veplus.service';
 import { GndService } from './exchangers/gnd.service';
-import { DraculaService } from './exchangers/dracula.service';
-import { MaverickService } from './exchangers/maverick.service';
 import { CurveService } from './exchangers/curve.service';
 import { PancakeService } from './exchangers/pancake.service';
 import { AerodromeService } from './exchangers/aerodrome.service';
 import { BeefylService } from './exchangers/beefy.service';
 import { LynexService } from './exchangers/lynex.service';
 import { FraxService } from './exchangers/frax.service';
-import { SyncswapService } from './exchangers/syncswap.service';
 import { SwapBlastService } from './exchangers/swapblast.service';
 import { ConvexService } from './exchangers/convex.service';
 import { SwapBasedService } from './exchangers/swapbased.service';
@@ -30,20 +25,15 @@ export class AdaptersService {
   static OVN_POOLS_NAMES: string[] = ['usd+', 'dai+', 'usdt+', 'eth+', 'ovn'];
 
   constructor(
-    private velocoreService: VelocoreService,
     private velodromService: VelodromeService,
-    private vesyncService: VesyncService,
     private veplusService: VeplusService,
     private gndService: GndService,
-    private draculaService: DraculaService,
-    private maverickService: MaverickService,
     private curveService: CurveService,
     private aerodromeService: AerodromeService,
     private beefylService: BeefylService,
     private pancakeService: PancakeService,
     private lynexService: LynexService,
     private fraxService: FraxService,
-    private syncswapService: SyncswapService,
     private swapblastServuce: SwapBlastService,
     private swapBasedService: SwapBasedService,
     private convexService: ConvexService,
@@ -53,29 +43,14 @@ export class AdaptersService {
     private traderJoeService: TraderJoeService,
   ) {}
   async getPools(exchanger_type: ExchangerType): Promise<PoolData[]> {
-    if (exchanger_type === ExchangerType.SYNCSWAP) {
-      return await this.syncswapService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.VELOCORE) {
-      return await this.velocoreService.getPoolsData();
-    }
     if (exchanger_type === ExchangerType.VELODROME) {
       return await this.velodromService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.VESYNC) {
-      return await this.vesyncService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.VEPLUS) {
       return await this.veplusService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.GND) {
       return await this.gndService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.DRACULA) {
-      return await this.draculaService.getPoolsData();
-    }
-    if (exchanger_type === ExchangerType.MAVERICK) {
-      return await this.maverickService.getPoolsData();
     }
     if (exchanger_type === ExchangerType.CURVE) {
       return await this.curveService.getPoolsData();
