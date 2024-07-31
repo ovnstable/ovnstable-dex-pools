@@ -39,6 +39,8 @@ const USD_PLUS_MAP = {
   'CL200-DEGEN/USD+': { address: '0xa19acc3B4f11c46c2b1Fc36B5f592AF422Ee338c', pool_version: 'v3' },
   'sAMM-USD+/MAI': { address: '0x3FF5bfE3ff5e1877664Fe25862871554e632b9C9', pool_version: 'v2' },
   'CL200-TKN/USD+': { address: '0x6f8e210030f6eE6933b032628a0e148a1CcfF6a6', pool_version: 'v3' },
+  'CL200-BRETT/USD+': { address: '0xFAD14c545E464e04c737d00643296144eb20c7F8', pool_version: 'v3' },
+  'CL1-USD+/USDT': { address: '0xE9C137071861fbA0359eEcCB5865C2588D1Be2BE', pool_version: 'v3' },
 };
 
 const OVN_MAP = {
@@ -53,87 +55,99 @@ export class AerodromeService {
   BASE_API_URL = 'https://aerodrome.finance/liquidity';
 
   async getPoolsData(): Promise<PoolData[]> {
-    const usdPlusPools = await this.getPools('?query=usd%2B&filter=all', USD_PLUS_MAP);
-    const ovnPools = await this.getPools('?query=ovn&filter=all', OVN_MAP);
+    const usdPlusPools = await this.getPools('?query=usd%2B&filter=all', USD_PLUS_MAP, 2);
+    const ovnPools = await this.getPools('?query=ovn&filter=all', OVN_MAP, 1);
 
     return [...usdPlusPools, ...ovnPools];
   }
 
-  async getPools(queryString: string, poolsMap: mapEntity): Promise<PoolData[]> {
-    const url = `${this.BASE_API_URL}/${queryString}`;
+  async getPools(queryString: string, poolsMap: mapEntity, maxPages: number): Promise<PoolData[]> {
+    let pageIndex = 1;
+    let pageNumber = 1;
+    const data: any[] = [];
 
-    // Launch a headless browser
-    const browser = await puppeteer.launch({
-      headless: 'new',
-      ignoreHTTPSErrors: true,
-      executablePath: getAgent(process.env.IS_MAC),
-      args: ['--no-sandbox'],
-    });
+    while (pageNumber <= maxPages) {
+      const url = `${this.BASE_API_URL}/${queryString}&page=${pageIndex}`;
 
-    this.logger.debug('Browser is start. ' + ExchangerType.AERODROME);
-
-    try {
-      // Create a new page
-      const page = await browser.newPage();
-      await page.setCacheEnabled(false);
-      await page.setViewport({ width: 1280, height: 800 });
-      await page.setUserAgent(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36',
-      );
-      // Set a default timeout of 20 seconds
-      await page.setDefaultTimeout(60000);
-
-      // Navigate to the SPA
-      await page.goto(url);
-      const markerOfLoadingIsFinish = '.justify-between.bg-white.p-5.text-sm.text-gray-600';
-
-      // Wait for the desired content to load
-      await page.waitForSelector(markerOfLoadingIsFinish);
-      const data = await page.$$eval('.space-y-1\\.5.shadow-sm.rounded-lg > div', elements => {
-        return elements.map(el => {
-          const nameElement = el.querySelector('div:nth-child(1) strong');
-          const aprElement = el.querySelector('div:nth-child(1) span.tracking-wider');
-          const tvlElement = el.querySelector('div:nth-child(1) > a > div:nth-child(2)');
-
-          const name = nameElement ? nameElement.textContent : '';
-          const aprStr = aprElement ? aprElement.textContent : '0';
-          const tvlStr = tvlElement ? tvlElement.textContent : '0';
-
-          return {
-            name,
-            tvl: tvlStr ? tvlStr.replace('TVL  ~$', '').replace(/,/g, '') : null,
-            apr: aprStr ? aprStr.replace('%', '').replace(/,/g, '') : null,
-          };
-        });
+      // Launch a headless browser
+      const browser = await puppeteer.launch({
+        headless: 'new',
+        ignoreHTTPSErrors: true,
+        executablePath: getAgent(process.env.IS_MAC),
+        args: ['--no-sandbox'],
       });
 
-      const pools: PoolData[] = [];
+      this.logger.debug('Browser is start. ' + ExchangerType.AERODROME);
 
-      for (const [key, value] of Object.entries(poolsMap)) {
-        const item = data.find(el => el.name === key);
-        if (!item) {
-          throw new ExchangerRequestError(`Item ${key} not found in list`);
-        }
+      try {
+        // Create a new page
+        const page = await browser.newPage();
+        await page.setCacheEnabled(false);
+        await page.setViewport({ width: 1280, height: 800 });
+        await page.setUserAgent(
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36',
+        );
+        // Set a default timeout of 20 seconds
+        await page.setDefaultTimeout(60000);
 
-        const poolData: PoolData = new PoolData();
-        poolData.address = value.address;
-        poolData.name = key;
-        poolData.decimals = null;
-        poolData.tvl = BigNumber(item.tvl).toFixed(2);
-        poolData.apr = BigNumber(item.apr).toFixed(2);
-        poolData.chain = ChainType.BASE;
-        poolData.pool_version = value.pool_version;
-        pools.push(poolData);
+        // Navigate to the SPA
+        await page.goto(url);
+        const markerOfLoadingIsFinish = '.justify-between.bg-white.p-5.text-sm.text-gray-600';
+
+        // Wait for the desired content to load
+        await page.waitForSelector(markerOfLoadingIsFinish);
+        const pageData = await page.$$eval('.space-y-1\\.5.shadow-sm.rounded-lg > div', elements => {
+          return elements.map(el => {
+            const nameElement = el.querySelector('div:nth-child(1) strong');
+            const aprElement = el.querySelector('div:nth-child(1) span.tracking-wider');
+            const tvlElement = el.querySelector('div:nth-child(1) > a > div:nth-child(2)');
+
+            const name = nameElement ? nameElement.textContent : '';
+            const aprStr = aprElement ? aprElement.textContent : '0';
+            const tvlStr = tvlElement ? tvlElement.textContent : '0';
+
+            return {
+              name,
+              tvl: tvlStr ? tvlStr.replace('TVL  ~$', '').replace(/,/g, '') : null,
+              apr: aprStr ? aprStr.replace('%', '').replace(/,/g, '') : null,
+            };
+          });
+        });
+
+        pageNumber++;
+
+        data.push(...pageData);
+      } catch (e) {
+        const errorMessage = `Error when load ${ExchangerType.AERODROME} pairs. url: ${url}`;
+        this.logger.error(e);
+        throw new ExchangerRequestError(errorMessage);
+      } finally {
+        this.logger.debug('Browser is close. ' + ExchangerType.AERODROME);
+        await browser.close();
       }
 
-      return pools;
-    } catch (e) {
-      const errorMessage = `Error when load ${ExchangerType.AERODROME} pairs. url: ${url}`;
-      this.logger.error(e);
-      throw new ExchangerRequestError(errorMessage);
-    } finally {
-      this.logger.debug('Browser is close. ' + ExchangerType.AERODROME);
-      await browser.close();
+      pageIndex++;
     }
+
+    const pools: PoolData[] = [];
+
+    for (const [key, value] of Object.entries(poolsMap)) {
+      const item = data.find(el => el.name === key);
+      if (!item) {
+        throw new ExchangerRequestError(`Item ${key} not found in list`);
+      }
+
+      const poolData: PoolData = new PoolData();
+      poolData.address = value.address;
+      poolData.name = key;
+      poolData.decimals = null;
+      poolData.tvl = BigNumber(item.tvl).toFixed(2);
+      poolData.apr = BigNumber(item.apr).toFixed(2);
+      poolData.chain = ChainType.BASE;
+      poolData.pool_version = value.pool_version;
+      pools.push(poolData);
+    }
+
+    return pools;
   }
 }
